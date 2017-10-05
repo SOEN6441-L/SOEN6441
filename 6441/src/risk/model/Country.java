@@ -12,7 +12,15 @@ public class Country {
     private final StringProperty belongContient;
     private final StringProperty belongPlayer;
     private final StringProperty armyNumber;
+    private String connectedCountry[];
 
+
+    public String[] getConnectedCountry() {
+        return connectedCountry;
+    }
+    public void setConnectedCountry(String[] connectedCountry){
+        this.connectedCountry = connectedCountry;
+    }
 
     public Country() {
         this(null,null);
@@ -25,6 +33,7 @@ public class Country {
 
         this.belongPlayer = new SimpleStringProperty("Player1");
         this.armyNumber = new SimpleStringProperty("0");
+        this.connectedCountry = new String[]{"a", "b", "c"};
     }
 
     public String getCountryName(){

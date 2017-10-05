@@ -3,15 +3,17 @@ package risk.view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import javafx.scene.control.ListView;
-import java.awt.event.ActionEvent;
-import javafx.util.Callback;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import risk.model.Continent;
 import risk.model.Country;
-import risk.model.Countryfill;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import risk.model.DoDrawing;
 
-import java.util.Observable;
 
 public class MapEditorCtl {
 
@@ -31,10 +33,32 @@ public class MapEditorCtl {
     @FXML
     private void initialize(){
 
+
+        Pane root = new Pane();
+
+        Canvas canvas = new Canvas(300, 300);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        //doDrawing(gc);
+
+        DoDrawing draw = new DoDrawing();
+        draw.doDrawing(gc);
+
+        root.getChildren().add(canvas);
+
+        Scene scene = new Scene(root, 1000 , 1000, Color.WHITESMOKE);
+        Stage stage = new Stage();
+        stage.setTitle("Stroke and fill");
+        stage.setScene(scene);
+        stage.show();
+
+
+
         countryList.setItems(countrylistFillData());
         continentList.setItems(continentListFillData());
 
     }
+
+
 
     private ObservableList<String> countrylistFillData(){
         System.out.println("11");
