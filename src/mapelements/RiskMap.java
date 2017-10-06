@@ -75,6 +75,7 @@ public class RiskMap {
 				countries.put(continentName,new ArrayList<Country>().add(new Country(countryName, continentName)));
 			}
 			// adding succeed
+			countryNum++;
 			return true;
 		}
 
