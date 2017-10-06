@@ -25,8 +25,8 @@ public class RiskMap {
 	}
 	
 	public boolean addContinent(String continentName){
-		//if (countries.get(name)!=null) {
-		if (continents.contains(continentName) ){
+		if (countries.get(continentName)!=null) {
+		//if (continents.contains(continentName) ){
 				JOptionPane.showMessageDialog(null,"Continnet '"+continentName+"' exists");
 			return false;
 
@@ -43,12 +43,43 @@ public class RiskMap {
 
 	}
 	public boolean addCountry(String continentName, String countryName){
-		if (countries.get(continentName)  ){
-			JOptionPane.showMessageDialog(null,"Country '"+name+"' exists");
-			return false;
-		}else {
+		//default the country just added doesn't exist
+		boolean nonExist = true;
+
+		//checking all the existing countries, see if there's one has the same name as the new on
+		for (ArrayList<Country> existingCountryList: countries.values()) {
+			for (Country existingCountry: existingCountryList) {
+				if(existingCountry.countryName == countryName){
+					//if there's one has the same name, then default noExit become false
+					nonExist = nonExist && false;
+				}
+
+			}
 
 		}
+
+		//if the country just added has already existed
+		if(nonExist == false){
+			//popup warning that the country exist already
+			JOptionPane.showMessageDialog(null,"Country '"+countryName+"' exists");
+			//adding failed
+			return false;
+		}else{//otherwise
+			//if the country just added belong to a existing continent
+			if(countries.containsKey(continentName)){
+				//Then adding the country to the existing continent
+				countries.get(continentName).add(new Country(countryName, continentName));
+			}else{
+				//if the country just added belong to a nonexisting continent
+				//then create a new continent and put the country in it
+				countries.put(continentName,new ArrayList<Country>().add(new Country(countryName, continentName)));
+			}
+			// adding succeed
+			return true;
+		}
+
+
+
 	}
 
 }
