@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import mapelements.RiskMap;
+
 /**
  * This is a class, which used to creat a window for player to edit maps for games
  * 
@@ -30,8 +32,12 @@ public class MapEditor extends JFrame {
 	
 	private JTable countryMatrix;
 	private JScrollPane scrollPaneForMatrix;
+	
+	private RiskMap newMap; 
     
 	private void initGUI(){  
+		
+		newMap = new RiskMap("Untitled");
 		
 		//configuration
         setTitle("Map Editor - Untitled");  
@@ -44,6 +50,8 @@ public class MapEditor extends JFrame {
         //not capable adjust windows size  
         setResizable(false);  
         setLayout(null);  
+        
+        
         
         labelContinent = new javax.swing.JLabel("Continents: total = 0");  
         add(labelContinent);  
@@ -109,7 +117,16 @@ public class MapEditor extends JFrame {
     { 
         public void actionPerformed(ActionEvent e) 
         {
-        	JOptionPane.showMessageDialog(null, "new continent" );
+        	//JOptionPane.showMessageDialog(null, "new continent" );
+        	String inputWord=JOptionPane.showInputDialog(null,"Input the continent name: ");
+        	if (inputWord!=null){
+        		if (inputWord.isEmpty()){
+        			JOptionPane.showMessageDialog(null,"Continnet name can't be empty");
+        		}
+        		else {
+        			newMap.addContinent(inputWord);
+        		}
+        	}
         }
     }
     
