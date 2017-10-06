@@ -41,7 +41,8 @@ public class RiskMap {
 	}	
 	
 	public boolean addContinent(String continentName){
-		if (countries.get(continentName)!=null) {
+//		if (countries.get(continentName)!=null) {
+		if (countries.keySet().contains(continentName)){
 			JOptionPane.showMessageDialog(null,"Continnet '"+continentName+"' already exists");
 			return false;
 		}	
