@@ -3,16 +3,10 @@ package mapeditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 
-import mapelements.Continent;
-import mapelements.Country;
 import mapelements.RiskMap;
 
 /**
@@ -32,9 +26,11 @@ public class MapEditor extends JFrame {
 	//label show info
 	private JLabel labelContinent;
 	private JLabel labelCountry;
-
+    
+	private JTree treeContinent;
 	private JScrollPane scrollPaneForContinent;
 	
+	private JTable countryMatrix;
 	private JScrollPane scrollPaneForMatrix;
 	
 	private RiskMap newMap; 
@@ -44,7 +40,7 @@ public class MapEditor extends JFrame {
 		newMap = new RiskMap("Untitled");
 		
 		//configuration
-		setTitle("Map Editor - Untitled");  
+        setTitle("Map Editor - Untitled");  
         setSize(1024,770);
         int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
         int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
@@ -63,8 +59,9 @@ public class MapEditor extends JFrame {
         Dimension size = labelContinent.getPreferredSize();
         labelContinent.setBounds(15,6,size.width+100,size.height);   
         
-        DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled");
-        JTree treeContinent= new JTree(myTreeRoot);
+        DefaultMutableTreeNode myTree = new DefaultMutableTreeNode("Map - Untitled");
+        myTree.add(new DefaultMutableTreeNode("Isolated Countries (0 countrie)"));
+        treeContinent= new JTree(myTree);
 
         scrollPaneForContinent= new JScrollPane(treeContinent,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         add(scrollPaneForContinent);  
@@ -116,60 +113,7 @@ public class MapEditor extends JFrame {
         setVisible(true);          
     }
 	
-	private void reloadNewMap(){  
-		newMap = null;
-		newMap = new RiskMap("Untitled");
-		
-		//configuration
-		setTitle("Map Editor - Untitled");  
-        labelContinent.setText("Continents: total = 0");  
-        
-        DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled");
-        JTree treeContinent= new JTree(myTreeRoot);
-
-        scrollPaneForContinent.removeAll();
-        scrollPaneForContinent.add(treeContinent);
-
-        labelCountry.setText("Countries(0) and connections(0):");  
-    }
-	
-	private void expandAll(JTree tree, TreePath parent) {
-	    TreeNode node = (TreeNode) parent.getLastPathComponent();
-	    if (node.getChildCount() >= 0) {
-	    	for (Enumeration e = node.children(); e.hasMoreElements();) {
-	    		TreeNode n = (TreeNode) e.nextElement();
-	    		TreePath path = parent.pathByAddingChild(n);
-	    		expandAll(tree, path);
-	      }
-	    }
-	    tree.expandPath(parent);
-	    // tree.collapsePath(parent);
-	}
-	
-	private void reloadContinents(){  
-		
-		//configuration
-        labelContinent.setText("Continents: total = "+String.valueOf(newMap.continents.size()));  
-        
-        DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled");
-		for (String loopContinentName : newMap.countries.keySet()) { 
-			ArrayList<Country> loopCountriesList = newMap.countries.get(loopContinentName);
-			DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinentName+" ("+loopCountriesList.size()+" countries)"); 
-			for (Country loopCountry:loopCountriesList){
-				loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.countryName));
-			}
-			myTreeRoot.add(loopContinentNode);
-		}
-		JTree treeContinent= new JTree(myTreeRoot);
-
-        scrollPaneForContinent.getViewport().removeAll();
-        scrollPaneForContinent.getViewport().add(treeContinent);
-        TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
-        expandAll(treeContinent, new TreePath(root));
-    }
-	
-	
-	private class newContinentHandler implements ActionListener 
+    private class newContinentHandler implements ActionListener 
     { 
         public void actionPerformed(ActionEvent e) 
         {
@@ -181,7 +125,6 @@ public class MapEditor extends JFrame {
         		}
         		else {
         			newMap.addContinent(inputWord);
-        			reloadContinents();
         		}
         	}
         }
@@ -191,34 +134,8 @@ public class MapEditor extends JFrame {
     { 
         public void actionPerformed(ActionEvent e) 
         {
-        	//JOptionPane.showMessageDialog(null, "new country" );
-        	JTextField countryInput = new JTextField();
-        	String continents[]= new String[newMap.continents.size()];
-        	int loopcount = 0;
-        	for (String loopContinentName : newMap.countries.keySet()) {
-        		continents[loopcount++]=loopContinentName;
-        	}
-        	JComboBox continentInput = new JComboBox(continents);
-
-        	Object[] message = {
-        	    "Input country Name:", countryInput,
-        	    "Choose Continent Name:", continentInput
-        	};  
-        	
-        	int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
-        	if (option == JOptionPane.OK_OPTION) {
-        		if (countryInput.getText().isEmpty()){
-        			JOptionPane.showMessageDialog(null,"Country name can't be empty");
-        		}
-        		else if (continentInput.getSelectedIndex()==-1){
-					JOptionPane.showMessageDialog(null,"Country must belong to a continent, choose one continent or create a new one.");
-        		}
-        		else {
-        			newMap.addCountry(countryInput.getText(), (String)continentInput.getItemAt(continentInput.getSelectedIndex()));
-        			reloadContinents();
-        		}
-        	}
-        }		
+        	JOptionPane.showMessageDialog(null, "new country" );
+        }
     }   
     
     private class saveToFileHandler implements ActionListener 
@@ -233,8 +150,7 @@ public class MapEditor extends JFrame {
     { 
         public void actionPerformed(ActionEvent e) 
         {
-        	//JOptionPane.showMessageDialog(null, "new map" );
-        	reloadNewMap();
+        	JOptionPane.showMessageDialog(null, "new map" );
         }
     }
     
