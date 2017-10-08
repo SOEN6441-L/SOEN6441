@@ -109,4 +109,58 @@ public class RiskMap {
 		adjacencyList.get(toCountry.countryID).remove(adjacencyList.get(toCountry.countryID).indexOf(fromCountry.countryID));
 		return true;
 	}	
+	
+	public boolean deleteCountry(String countryName){
+		Country deleteCountry = findCountry(countryName);
+		if(deleteCountry == null){
+			JOptionPane.showMessageDialog(null,"Country  '"+deleteCountry+"' does not exists");
+			return false;
+		}
+		//countries.get(deleteCountry.countryID).remove(deleteCountry);
+
+		for (ArrayList<Country> countryList: countries.values()) {
+			for(Country deleateCountry: countryList){
+				if(deleateCountry.countryName.equals(countryName)){
+					countryList.remove(deleateCountry);
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	public boolean deleteContinent(String continentName){
+		Continent deleteContinent = findContinent(continentName);
+		if(findContinent(continentName) == null){
+			JOptionPane.showMessageDialog(null,"Continent  '"+continentName+"'  you want delete does not exists");
+			return false;
+		}else {
+			if(countries.get(deleteContinent.continentID) != null){
+				moveContinentCountry(deleteContinent);
+				continents.remove(deleteContinent);
+				countries.remove(deleteContinent.continentID);
+				return true;
+			}else{
+				continents.remove(deleteContinent);
+				countries.remove(deleteContinent.continentID);
+				return true;
+			}
+		}
+
+	}
+
+	private boolean moveContinentCountry(Continent deleteContinent) {
+		String moveToContinentName = JOptionPane.showInputDialog("Please enter which Continent you want move to");
+
+		if(findContinent(moveToContinentName) == null){
+			JOptionPane.showMessageDialog(null,"Continent  '"+moveToContinentName+"'  you want move to does not exists");
+			return false;
+		}
+		ArrayList<Country> countriesNeedMove = countries.get(deleteContinent.continentID);
+
+		countries.put(findContinent(moveToContinentName).continentID, countriesNeedMove);
+
+		return true;
+	}
+
 }
