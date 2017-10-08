@@ -8,16 +8,20 @@ import javax.swing.JOptionPane;
 
 
 public class RiskMap {
+	private int globalIndex;
 	public String riskMapName;
 	public ArrayList<Continent> continents;
 	public int countryNum;
-	public Map<String,ArrayList<Country>> countries;
+	public Map<Integer,ArrayList<Country>> countries;
+	public Map<Integer,ArrayList<Integer>> adjacencyList;//add
 	
 	public RiskMap(String name){
+		this.globalIndex = 1;
 		this.riskMapName = name;
 		this.continents = new ArrayList<Continent>();
 		this.countryNum = 0;
-		this.countries = new HashMap<String,ArrayList<Country>>();
+		this.countries = new HashMap<Integer,ArrayList<Country>>();
+		this.adjacencyList = new HashMap<Integer,ArrayList<Integer>>();//add
 	}	
 	
 	public Country findCountry(String countryName) {
@@ -41,22 +45,21 @@ public class RiskMap {
 	}	
 	
 	public boolean addContinent(String continentName){
-//		if (countries.get(continentName)!=null) {
-		if (countries.keySet().contains(continentName)){
+		if (findContinent(continentName)!=null){ 	
 			JOptionPane.showMessageDialog(null,"Continnet '"+continentName+"' already exists");
 			return false;
 		}	
 		else {
-        	Continent newContinent = new Continent(continentName);
+        	Continent newContinent = new Continent(globalIndex++,continentName);
         	continents.add(newContinent);
-        	countries.put(continentName, new ArrayList<Country>());
-
+        	countries.put(newContinent.continentID, new ArrayList<Country>());
         	return true;
 		}
 	}
 	
 	public boolean addCountry(String countryName,String continentName){
-		ArrayList<Country> targetCountryList = countries.get(continentName);
+		int continentID = findContinent(continentName).continentID;
+		ArrayList<Country> targetCountryList = countries.get(continentID);
 		if (targetCountryList==null) {
 			JOptionPane.showMessageDialog(null,"Continnet '"+continentName+"' does not exists");
 			return false;
@@ -67,10 +70,43 @@ public class RiskMap {
 			return false;
 		}
 		
-		Country newCountry = new Country(countryName,continentName);
+		Country newCountry = new Country(globalIndex++,countryName,findContinent(continentName));
 		targetCountryList.add(newCountry);
+		adjacencyList.put(newCountry.countryID, new ArrayList<Integer>());//add
 		
 		countryNum++;
 		return true;
 	}
+	
+	public boolean addConnection(String countryNameFrom,String countryNameTo){
+		Country fromCountry = findCountry(countryNameFrom);
+		if (fromCountry==null){
+			JOptionPane.showMessageDialog(null,"Country  '"+countryNameFrom+"' does not exists");	
+			return false;
+		}		
+		Country toCountry = findCountry(countryNameTo);
+		if (toCountry==null){
+			JOptionPane.showMessageDialog(null,"Country  '"+countryNameTo+"' does not exists");
+			return false;
+		}			
+		adjacencyList.get(fromCountry.countryID).add(toCountry.countryID);
+		adjacencyList.get(toCountry.countryID).add(fromCountry.countryID);
+		return true;
+	}
+	
+	public boolean removeConnection(String countryNameFrom,String countryNameTo){
+		Country fromCountry = findCountry(countryNameFrom);
+		if (fromCountry==null){
+			JOptionPane.showMessageDialog(null,"Country  '"+countryNameFrom+"' does not exists");	
+			return false;
+		}		
+		Country toCountry = findCountry(countryNameTo);
+		if (toCountry==null){
+			JOptionPane.showMessageDialog(null,"Country  '"+countryNameTo+"' does not exists");
+			return false;
+		}			
+		adjacencyList.get(fromCountry.countryID).remove(adjacencyList.get(fromCountry.countryID).indexOf(toCountry.countryID));
+		adjacencyList.get(toCountry.countryID).remove(adjacencyList.get(toCountry.countryID).indexOf(fromCountry.countryID));
+		return true;
+	}	
 }

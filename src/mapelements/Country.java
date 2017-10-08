@@ -1,13 +1,15 @@
 package mapelements;
 
 public class Country {
+	public int countryID;
 	public String countryName;
-	public String belongToContinentName;
+	public Continent belongToContinent;
 	public boolean flagBFS;
 	
-	public Country(String name, String continentName){
+	public Country(int ID, String name, Continent continent){
+		this.countryID = ID;
 		this.countryName = name;
-		this.belongToContinentName = continentName;
+		this.belongToContinent = continent;
 		flagBFS = false;
 	}
 	
