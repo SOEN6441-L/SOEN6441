@@ -1,7 +1,8 @@
 package mapeditor;
 import javax.swing.*;  
 import java.awt.*;  
-import javax.swing.table.*;  
+import javax.swing.table.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.event.*;
 
 class RowHeaderTable extends JTable{  
@@ -14,10 +15,11 @@ class RowHeaderTable extends JTable{
 	public RowHeaderTable(JTable refTable,int columnWidth,Object[] columnTitle){  
 		super(new RowHeaderTableModel(refTable.getRowCount()));  
 		this.refTable=refTable;  
-		this.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);  
+		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
 		this.getColumnModel().getColumn(0).setPreferredWidth(columnWidth);  
 		this.setDefaultRenderer(Object.class,new RowHeaderRenderer(refTable,this,columnTitle));  
-		this.setPreferredScrollableViewportSize (new Dimension(columnWidth,0));  
+		this.setPreferredScrollableViewportSize (new Dimension(columnWidth,0)); 
+		this.setRowHeight(refTable.getRowHeight());
 	}  
 }  
 
@@ -42,13 +44,11 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
 		setBorder(UIManager.getBorder("TableHeader.cellBorder")); 
 		setHorizontalAlignment(CENTER);  
 		setBackground(header.getBackground());    
-		if ( isSelect(row) ){       
-			setForeground(Color.white);  
-			setBackground(Color.lightGray);  
-		}  
-        else{
-        	setForeground(header.getForeground());     
-        }  
+		setForeground(header.getForeground());
+		/*if ( isSelect(row) ){       
+			setForeground(Color.BLACK);  
+			setBackground(new Color(153,217,234));  
+		} */ 
 		setFont(header.getFont());  
 		if (row>=0) setText(String.valueOf(columnTitle[row]));
 		return this;  
@@ -84,4 +84,56 @@ class RowHeaderTableModel extends AbstractTableModel{
 	public Object getValueAt(int row, int column){  
 		return row;  
 	}  
-} 
+}    
+
+class MatrixRenderer implements TableCellRenderer{     
+
+	public static final DefaultTableCellRenderer DEFAULT_RENDERER =new DefaultTableCellRenderer();     
+	
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column){ 
+		
+		DEFAULT_RENDERER.setHorizontalAlignment(SwingConstants.CENTER);
+		Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
+		renderer.setFont(new java.awt.Font("dialog",Font.BOLD,12));
+		renderer.setForeground(Color.RED);
+		Color foreground, background; 
+
+		if (row == column) {     
+			//foreground = Color.YELLOW;     
+			background = new Color(210,210,210);   
+			//renderer.setForeground(foreground);     
+			renderer.setBackground(background);   
+		} 
+		else{
+			//foreground = Color.YELLOW;     
+			background = Color.white;   
+			//renderer.setForeground(foreground);     
+			renderer.setBackground(background);  
+		}
+		return renderer;     
+	}     
+}
+
+class  CategoryNodeRenderer  extends  DefaultTreeCellRenderer{
+	ImageIcon rootIcon = new ImageIcon("src/images/map.png");
+	ImageIcon continentIcon = new ImageIcon("src/images/continent.png");
+	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
+  
+	public  Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
+			boolean  leaf, int  row, boolean  hasFocus){   
+		super .getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus); 		
+		if (tree.getPathForRow(row)==null) {		
+		}
+		else if (tree.getPathForRow(row).getParentPath()==null){
+			setIcon(rootIcon);
+		}
+		else if (tree.getPathForRow(row).getParentPath().getParentPath()==null){
+			setIcon(continentIcon);
+		}
+		else{
+			setIcon(countryIcon);
+		}      
+		return this;   
+   }
+ } 
