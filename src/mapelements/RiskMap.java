@@ -108,58 +108,81 @@ public class RiskMap {
 		adjacencyList.get(fromCountry.countryID).remove(adjacencyList.get(fromCountry.countryID).indexOf(toCountry.countryID));
 		adjacencyList.get(toCountry.countryID).remove(adjacencyList.get(toCountry.countryID).indexOf(fromCountry.countryID));
 		return true;
-	}	
-	
+	}
+
 	public boolean deleteCountry(String countryName){
+		//delete country from HashMap of countries
 		Country deleteCountry = findCountry(countryName);
 		if(deleteCountry == null){
-			JOptionPane.showMessageDialog(null,"Country  '"+deleteCountry+"' does not exists");
+			JOptionPane.showMessageDialog(null,"Country  '"+deleteCountry+"' you want delete does not exists");
 			return false;
 		}
-		//countries.get(deleteCountry.countryID).remove(deleteCountry);
+		countries.get(deleteCountry.belongToContinent.continentID).remove(deleteCountry);
 
-		for (ArrayList<Country> countryList: countries.values()) {
-			for(Country deleateCountry: countryList){
-				if(deleateCountry.countryName.equals(countryName)){
-					countryList.remove(deleateCountry);
-				}
-			}
+		//delete relative connections
+		ArrayList<Integer> relativeCountries = adjacencyList.get(deleteCountry.countryID);
+		for(int relativeCountryID: relativeCountries){
+			adjacencyList.get(relativeCountryID).remove(adjacencyList.get(relativeCountryID).indexOf(deleteCountry.countryID));
 		}
-		
+		adjacencyList.remove(deleteCountry.countryID);
+		countryNum--;
 		return true;
 	}
 
 	public boolean deleteContinent(String continentName){
 		Continent deleteContinent = findContinent(continentName);
-		if(findContinent(continentName) == null){
+		if(deleteContinent == null){
 			JOptionPane.showMessageDialog(null,"Continent  '"+continentName+"'  you want delete does not exists");
 			return false;
-		}else {
-			if(countries.get(deleteContinent.continentID) != null){
-				moveContinentCountry(deleteContinent);
-				continents.remove(deleteContinent);
-				countries.remove(deleteContinent.continentID);
-				return true;
-			}else{
-				continents.remove(deleteContinent);
-				countries.remove(deleteContinent.continentID);
-				return true;
-			}
 		}
 
-	}
-
-	private boolean moveContinentCountry(Continent deleteContinent) {
-		String moveToContinentName = JOptionPane.showInputDialog("Please enter which Continent you want move to");
-
-		if(findContinent(moveToContinentName) == null){
-			JOptionPane.showMessageDialog(null,"Continent  '"+moveToContinentName+"'  you want move to does not exists");
+		if(countries.get(deleteContinent.continentID).size()>0){
+			JOptionPane.showMessageDialog(null,"Continent '"+continentName+"' is not empty, you need to delete/move all the countries in it.");
 			return false;
 		}
-		ArrayList<Country> countriesNeedMove = countries.get(deleteContinent.continentID);
+		else{
+			continents.remove(deleteContinent);
+			countries.remove(deleteContinent.continentID);
+			return true;
+		}
+	}
 
-		countries.put(findContinent(moveToContinentName).continentID, countriesNeedMove);
+	public boolean moveContinentCountry(String toContinentName, String countryName) {
+		Country moveCountry = findCountry(countryName);
+		if(moveCountry == null){
+			JOptionPane.showMessageDialog(null,"Country  '"+moveCountry+"' you want move does not exists");
+			return false;
+		}
+		Continent movetoContinent = findContinent(toContinentName);
+		if(movetoContinent == null){
+			JOptionPane.showMessageDialog(null,"Continent  '"+toContinentName+"'  you want move to does not exists");
+			return false;
+		}
+		countries.get(moveCountry.belongToContinent.continentID).remove(moveCountry);
+		countries.get(movetoContinent.continentID).add(moveCountry);
+		moveCountry.belongToContinent = movetoContinent;
 
+		return true;
+	}
+
+
+	public boolean renameCountry(String countryName, String newName){
+		Country changeCountry = findCountry(countryName);
+		if(changeCountry == null){
+			JOptionPane.showMessageDialog(null,"Country  '"+countryName+"'  you want change does not exists");
+			return false;
+		}
+		changeCountry.changeName(newName);
+		return true;
+	}
+
+	public boolean renameContinent(String continentName, String newName){
+		Continent changeContinent = findContinent(continentName);
+		if(changeContinent == null){
+			JOptionPane.showMessageDialog(null,"Continent  '"+continentName+"'  you want change does not exists");
+			return false;
+		}
+		changeContinent.changeName(newName);
 		return true;
 	}
 
