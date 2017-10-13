@@ -3,24 +3,32 @@ package mapeditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.TreePath
 
 import mapelements.Continent;
 import mapelements.Country;
 import mapelements.RiskMap;
 
 /**
- * This is a class, which used to creat a window for player to edit maps for games
+ * This is a class, which used to create a window for player to edit maps for games
  * 
  *
  */
@@ -32,17 +40,25 @@ public class MapEditor extends JFrame {
 	private JButton newContinentBtn;
 	private JButton newCountryBtn;
 	private JButton saveToFileBtn;
+	private JButton completeBtn;
+	private JButton clearBtn;
     
 	//label show info
 	private JLabel labelContinent;
 	private JLabel labelCountry;
 
+	private JPopupMenu continentMenu, countryMenu;
+	private JMenuItem mDeleteContinent, mRenameContinent;
+	private JMenuItem mDeleteCountry, mRenameCountry, mMoveCountry;
+
 	private JScrollPane scrollPaneForContinent;
 	
 	private JScrollPane scrollPaneForMatrix;
 	
-	private RiskMap newMap; 
-	
+	private RiskMap newMap;
+
+	private String selContinentName, selCountryName;
+
 	private boolean showPrompt;
     
 	private void initGUI(){  
@@ -70,18 +86,50 @@ public class MapEditor extends JFrame {
         
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled");
 		JTree treeContinent= new JTree(myTreeRoot);
+		treeContinent.setCellRenderer(new CategoryNodeRenderer());
 
 		scrollPaneForContinent= new JScrollPane(treeContinent,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		add(scrollPaneForContinent);  
-		scrollPaneForContinent.setBounds(15,30,300,660);	
+		scrollPaneForContinent.setBounds(15,30,300,660);
+
+		// Country Menu
+		continentMenu = new JPopupMenu();
+		mDeleteContinent = new JMenuItem("Delete     ",KeyEvent.VK_D);
+		mDeleteContinent.addActionListener(new mDeleteContinentHandler());
+		mRenameContinent = new JMenuItem("Rename     ",KeyEvent.VK_R);
+		mRenameContinent.addActionListener(new mRenameContinentHandler());
+
+		continentMenu.add(mDeleteContinent);
+		continentMenu.addSeparator();
+		continentMenu.add(mRenameContinent);
+
+		countryMenu = new JPopupMenu();
+		mDeleteCountry = new JMenuItem("Delete     ",KeyEvent.VK_D);
+		mDeleteCountry.addActionListener(new mDeleteCountryHandler());
+		mRenameCountry = new JMenuItem("Rename     ",KeyEvent.VK_R);
+		mRenameCountry.addActionListener(new mRenameCountryHandler());
+		mMoveCountry = new JMenuItem("Move to another continent",KeyEvent.VK_M);
+		mMoveCountry.addActionListener(new mMoveCountryHandler());
+
+		countryMenu.add(mDeleteCountry);
+		countryMenu.addSeparator();
+		countryMenu.add(mRenameCountry);
+		countryMenu.add(mMoveCountry);
 
 		//Matrix for countries and connections
 		labelCountry = new javax.swing.JLabel("Countries(0) and Adjacency Matrix:");  
 		add(labelCountry);  
 		labelCountry.setFont(new java.awt.Font("dialog",1,16));
 		size = labelCountry.getPreferredSize();
-		labelCountry.setBounds(scrollPaneForContinent.getBounds().x+(int)(scrollPaneForContinent.getBounds().getWidth()),6,size.width+200,size.height);         
-        
+		labelCountry.setBounds(scrollPaneForContinent.getBounds().x+(int)(scrollPaneForContinent.getBounds().getWidth()),6,size.width+200,size.height);
+
+		JLabel labelPrompt = new JLabel("Double click cells to add/remove connections.");
+		add(labelPrompt);
+		labelPrompt.setFont(new java.awt.Font("dialog",1,13));
+		labelPrompt.setForeground(Color.RED);
+		size = labelPrompt.getPreferredSize();
+		labelPrompt.setBounds(labelCountry.getBounds().x,710,size.width,size.height);
+
 		DefaultTableModel matrixModel = new DefaultTableModel(0,0);
 		
 		Object[] newIdentifiers={};
@@ -134,7 +182,25 @@ public class MapEditor extends JFrame {
 		//size = newCountry.getPreferredSize();
 		loadFromFileBtn.setBounds(newMapBtn.getBounds().x+size.width+10,700,size.width+10,size.height);  
 		loadFromFileBtn.addActionListener(new loadFromFileHandler());
-        
+
+		completeBtn = new javax.swing.JButton("Complete");
+		completeBtn.setMnemonic('e');
+		completeBtn.setDisplayedMnemonicIndex(5);
+		add(completeBtn);
+		size = completeBtn.getPreferredSize();
+		size.height-=4;
+		completeBtn.setBounds(scrollPaneForMatrix.getBounds().x+scrollPaneForMatrix.getWidth()-size.width-1,7,size.width,size.height);
+		completeBtn.setEnabled(false);
+		completeBtn.addActionListener(new completeHandler());
+
+		clearBtn = new javax.swing.JButton("Clear");
+		clearBtn.setMnemonic('r');
+		clearBtn.setDisplayedMnemonicIndex(4);
+		add(clearBtn);
+		clearBtn.setBounds(completeBtn.getBounds().x-size.width-10,7,size.width,size.height);
+		clearBtn.setEnabled(false);
+		clearBtn.addActionListener(new clearHandler());
+
 		setVisible(true);          
 	}
 	
@@ -148,6 +214,7 @@ public class MapEditor extends JFrame {
         
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled");
 		JTree treeContinent= new JTree(myTreeRoot);
+		treeContinent.setCellRenderer(new CategoryNodeRenderer());
 		scrollPaneForContinent.getViewport().removeAll();
 		scrollPaneForContinent.getViewport().add(treeContinent);
 		
@@ -182,7 +249,30 @@ public class MapEditor extends JFrame {
 			myTreeRoot.add(loopContinentNode);
 		}
 		JTree treeContinent= new JTree(myTreeRoot);
-
+		treeContinent.addMouseListener( new  MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				int selRow = treeContinent.getRowForLocation(e.getX(), e.getY());
+				TreePath selPath = treeContinent.getPathForLocation(e.getX(), e.getY());
+				if (selRow!=-1 && (e.getButton() == 3)){
+					treeContinent.setSelectionPath(selPath);
+					if (selPath!=null) {
+						if (selPath.getParentPath()==null){ //root node
+						}
+						else if (selPath.getParentPath().getParentPath()==null){//continents
+							selContinentName = selPath.getLastPathComponent().toString();
+							selContinentName = selContinentName.substring(0,selContinentName.indexOf(" ("));
+							continentMenu.show(e.getComponent(), e.getX()+5, e.getY()+5);
+						}
+						else{//countries
+							selCountryName = selPath.getLastPathComponent().toString();
+							countryMenu.show(e.getComponent(), e.getX()+5, e.getY()+5);
+						}
+					}
+				}
+				//popupMenu.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+		treeContinent.setCellRenderer(new CategoryNodeRenderer());
 		scrollPaneForContinent.getViewport().removeAll();
 		scrollPaneForContinent.getViewport().add(treeContinent);
 		TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
@@ -249,10 +339,8 @@ public class MapEditor extends JFrame {
 		});
 		
 		adjacencyMatrix.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		scrollPaneForMatrix.getViewport().removeAll();
-		scrollPaneForMatrix.getViewport().add(adjacencyMatrix);
-		scrollPaneForMatrix.setRowHeaderView(new RowHeaderTable(adjacencyMatrix,90,newIdentifiers));
-		
+		adjacencyMatrix.getTableHeader().setReorderingAllowed(false);
+
 		if ((newMap.countryNum>1) && (!showPrompt)) {
 			JLabel labelPrompt = new JLabel("Double click cells on the left-bottom part");  
 			add(labelPrompt);  
@@ -267,7 +355,19 @@ public class MapEditor extends JFrame {
 			size = labelPrompt2.getPreferredSize();
 			labelPrompt2.setBounds(labelCountry.getBounds().x,713,size.width,size.height); 
 			showPrompt = true;
-		}	
+		}
+		adjacencyMatrix.setDefaultRenderer(Object.class,new MatrixRenderer());
+
+		adjacencyMatrix.getTableHeader().setFont(new java.awt.Font("dialog",1,13));
+		adjacencyMatrix.getTableHeader().setForeground(Color.BLUE);
+		//adjacencyMatrix.getTableHeader().setDefaultRenderer(new AdjacencyMatrixHeaderRenderer(adjacencyMatrix));
+
+		scrollPaneForMatrix.getViewport().removeAll();
+		scrollPaneForMatrix.getViewport().add(adjacencyMatrix);
+		scrollPaneForMatrix.setRowHeaderView(new RowHeaderTable(adjacencyMatrix,90,newIdentifiers));
+
+		completeBtn.setEnabled(newMap.countryNum>1);
+		clearBtn.setEnabled(newMap.countryNum>1);
 	}
 		
 	private class newContinentHandler implements ActionListener { 
@@ -340,8 +440,102 @@ public class MapEditor extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			JOptionPane.showMessageDialog(null, "load from file" );
 		}
-	}    
-	
+	}
+
+	private class completeHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			newMap.addCompletedConnection();
+			reloadMatrix();
+		}
+	}
+
+	private class clearHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			newMap.removeAllConnection();
+			reloadMatrix();
+		}
+	}
+
+	class mDeleteContinentHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//JOptionPane.showMessageDialog(null,selContinentName);
+			if (newMap.deleteContinent(selContinentName)){
+				reloadContinents();
+			}
+		}
+	}
+
+	class mDeleteCountryHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if (newMap.deleteCountry(selCountryName)){
+				reloadContinents();
+				reloadMatrix();
+			}
+		}
+	}
+
+	private class mRenameContinentHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			String inputWord=JOptionPane.showInputDialog(null,"Input the new name for continent '"+selContinentName+"':");
+			if (inputWord!=null){
+				if (inputWord.isEmpty()){
+					JOptionPane.showMessageDialog(null,"Continnet name can't be empty");
+				}
+				else if (!inputWord.equals(selContinentName)) {
+					if (newMap.renameContinent(selContinentName,inputWord)){
+						reloadContinents();
+					}
+				}
+			}
+		}
+	}
+
+	private class mRenameCountryHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			String inputWord=JOptionPane.showInputDialog(null,"Input the new name for country '"+selCountryName+"':");
+			if (inputWord!=null){
+				if (inputWord.isEmpty()){
+					JOptionPane.showMessageDialog(null,"Country name can't be empty");
+				}
+				else if (!inputWord.equals(selCountryName)) {
+					if (newMap.renameCountry(selCountryName,inputWord)){
+						reloadContinents();
+						reloadMatrix();
+					}
+				}
+			}
+		}
+	}
+
+	private class mMoveCountryHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			Continent oldContinent = newMap.findCountry(selCountryName).belongToContinent;
+			String continents[]= new String[newMap.continents.size()-1];
+			int loopcount = 0;
+			for (Continent loopContinent : newMap.continents) {
+				if (!loopContinent.continentName.equals(oldContinent.continentName)){
+					continents[loopcount++]=loopContinent.continentName;
+				}
+			}
+			JComboBox continentInput = new JComboBox(continents);
+			Object[] message = {
+					"Move country '"+selCountryName+"' from '"+oldContinent.continentName+"' to:  ", continentInput
+			};
+			int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
+			if (option == JOptionPane.OK_OPTION) {
+				if (continentInput.getSelectedIndex()==-1){
+					JOptionPane.showMessageDialog(null,"Country must belong to a continent, choose one exiting continent or create a new one.");
+				}
+				else {
+					if (newMap.moveContinentCountry((String)continentInput.getItemAt(continentInput.getSelectedIndex()), selCountryName)){
+						reloadContinents();
+						reloadMatrix();
+					}
+				}
+			}
+		}
+	}
+
 	public static void main(String[] args) {  
 		MapEditor myMapEditor = new MapEditor();  
 		myMapEditor.initGUI();  
