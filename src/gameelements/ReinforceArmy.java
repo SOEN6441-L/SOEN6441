@@ -5,8 +5,9 @@ import mapelements.Country;
 import javax.swing.*;
 
 /**
- * Created by liarthur on 2017/10/14.
+ * The class of ReinforceArmy phase
  */
+
 public class ReinforceArmy {
 
     public int  countryNumbers;
@@ -15,6 +16,11 @@ public class ReinforceArmy {
     public String[] armyList;
 
     //计算并显示reinforce army数(chongwen)，card change（xueying已完成， 未联调），补齐三支，分配军队。（chongwen）
+
+    /**
+     * The constructor of class ReinforceArmy
+     * @param player The Player that is under the turn
+     */
     public ReinforceArmy(Player player){
         this.player = player;
         this.countryNumbers = player.getCountries().size();
@@ -28,14 +34,12 @@ public class ReinforceArmy {
         }
 
 
-        player.armies  = caculateArmyNumber(countryNumbers);
+        player.armies  = calculateArmyNumber(countryNumbers);
 
         this.armyList = new String[player.armies];
         for (int x = 0; x< player.armies; x++){
             armyList[x] = String.valueOf(x+1);
         }
-
-
 
 
 
@@ -56,7 +60,12 @@ public class ReinforceArmy {
 
     }
 
-    private int caculateArmyNumber(int countryNumbers) {
+    /**
+     * The function to calculate how many armies player get this turn
+     * @param countryNumbers
+     * @return the number of armies
+     */
+    private int calculateArmyNumber(int countryNumbers) {
         int armyNumbers;
         armyNumbers = Math.floorDiv(countryNumbers, 3);
         if (armyNumbers < 3){
@@ -66,6 +75,11 @@ public class ReinforceArmy {
         return armyNumbers;
     }
 
+    /**
+     * The funtion to let player to place the armies
+     * @param countryName the name of the country player want to place army on
+     * @param numberOfArmies the number of the army player want to place
+     */
     public void placeArmy(String countryName, int numberOfArmies){
         for (Country country: player.countries) {
             if(country.countryName.equals(countryName)){
