@@ -5,32 +5,44 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+/*
+*   This class is GUI for Exchange cards to armies.
+*   @Author Shirley/XUEYING LI
+*   @CreateTime 08/10/2017
+ */
 
 public class ExchangeInteraction extends JFrame{
     JPanel ContentPanel = new JPanel();
 
+    //Four buttons
     JButton b1 = new JButton("infantry");//creating instance of JButton
     JButton b2 = new JButton("cavalry");
     JButton b3 = new JButton("artillery");
     JButton submitButton = new JButton("submit");
 
-
+    //Three Icons of three images of three cards
     ImageIcon infantryIcon = new ImageIcon("src/images/infantry.png");
     ImageIcon cavalryIcon = new ImageIcon("src/images/cavalry.png");
     ImageIcon artilleryIcon = new ImageIcon("src/images/artillery.png");
     ImageIcon nullIcon = new ImageIcon("src/images/null(1).png");
 
+    //Three labels to store pictures of three cards
     JLabel Label1 = new JLabel("null");
     JLabel Label2 = new JLabel("null");
     JLabel Label3 = new JLabel("null");
 
+    //To see if Label is empty
     boolean[] isAvailiable = new boolean[3];
 
+    //Array to store cards
     int[] cards = new int[3];
 
+    //To count numbers of exchange
     int count = 0;
 
-
+    /*
+    *   This class is to set layout if GUI
+     */
     public ExchangeInteraction(){
         ContentPanel.setLayout(null);
         Label1.setIcon(nullIcon);
@@ -59,7 +71,11 @@ public class ExchangeInteraction extends JFrame{
         this.Mylistener();
     }
 
-    public JLabel getAndSetAvailiable (){
+   /*
+   *     This class is to check if label is available to store picture
+    */
+
+    public JLabel getAndSetAvailable (){
         for (int i = 0; i < 3; i++) {
             if (isAvailiable[i] == false) {
                 isAvailiable[i] = true;
@@ -76,12 +92,15 @@ public class ExchangeInteraction extends JFrame{
         return null;
     }
 
+    /*
+    *   This class is to Listen three buttons and three panels
+     */
     public void Mylistener(){
         b1.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(cards[0] > 0){
-                    JLabel al = getAndSetAvailiable();
+                    JLabel al = getAndSetAvailable();
                     if(al != null) {
                         al.setIcon(infantryIcon);
                         al.setText("infantry");
@@ -118,7 +137,7 @@ public class ExchangeInteraction extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(cards[1] > 0){
-                    JLabel al = getAndSetAvailiable();
+                    JLabel al = getAndSetAvailable();
                     if(al != null) {
                         al.setIcon(cavalryIcon);
                         al.setText("cavalry");
@@ -155,7 +174,7 @@ public class ExchangeInteraction extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(cards[2] > 0){
-                    JLabel al = getAndSetAvailiable();
+                    JLabel al = getAndSetAvailable();
                     if(al != null) {
                         al.setIcon(artilleryIcon);
                         al.setText("artillery");
@@ -339,6 +358,9 @@ public class ExchangeInteraction extends JFrame{
 
     }
 
+   /*
+   *    To clear three Labels
+    */
     public void ClearLabel(){
         Label1.setIcon(nullIcon);
         Label2.setIcon(nullIcon);
@@ -352,6 +374,9 @@ public class ExchangeInteraction extends JFrame{
 
     }
 
+    /*
+    *   To see name of labels
+     */
     public int GetLabel(JLabel label){
         if (label.getText() == "infantry"){
             return 0;
@@ -366,6 +391,9 @@ public class ExchangeInteraction extends JFrame{
             return -1;
     }
 
+    /*
+    *   To check if exchange is legal
+     */
     public boolean IfLegal(){
         if(Label1.getText()!="null"&&Label2.getText()!="null"&&Label3.getText()!="null"){
             if(Label1.getText() == Label2.getText() && Label3.getText() == Label2.getText() ){
@@ -380,6 +408,9 @@ public class ExchangeInteraction extends JFrame{
         return false;
     }
 
+    /*
+    *   To set button referring to numbers of this kind of cards
+     */
     public void SetButtonLabel(){
 
         b1.setText("infantry:"+this.cards[0]);
@@ -388,10 +419,15 @@ public class ExchangeInteraction extends JFrame{
 
     }
 
+    /*
+    *   To get cards from Player class
+     */
     public void GetAndSetCards(int[] cards){
         this.cards = cards;
     }
-
+    /*
+    *   To return cards after exchange
+     */
     public int[] getCards(){
         return cards;
     }

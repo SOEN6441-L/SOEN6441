@@ -7,15 +7,14 @@ public class Player {
     /*
     *   This class is to construct player;
     *   This class is to calculate how many armies are given according to numbers of cards.
-    *   @Shirley / Xueying Li
-    *   @07.OCT.2017
+    *   @Author Shirley / XUEYING LI
+    *   @CreateTime 07.OCT.2017
     *
      */
     String name = null;
     int[] cards = new int[3];
     int changeCardTimes = 0;
     ArrayList <Country> countries = new ArrayList<Country>();
-    int count = 5;
     int armies;
     int exchangeTime;
     int turn;
@@ -24,11 +23,12 @@ public class Player {
     *   This method is a class constructor.
      */
 
-    public Player(String newName, int[] newCards, ArrayList<Country> newCountries,int NewArmies, int exchangeTime,int CurrentTurn){
+    public Player(String newName, int[] newCards, ArrayList<Country> newCountries,int NewArmies, int NewExchangeTime,int CurrentTurn){
         name = newName;
         cards = newCards;
         countries = newCountries;
         armies = NewArmies;
+        exchangeTime = NewExchangeTime;
         turn = CurrentTurn;
     }
 
@@ -64,9 +64,16 @@ public class Player {
     }
 
     /*
-    *   This method is to determine if it is legal to exchange.
+    *   To calculate & return how many armies after exchange
      */
 
+    public int CalculateArmies(Player player){
+        int armies = player.exchangeTime*player.turn*5;
+        return armies;
+    }
+    /*
+    *   To test
+     */
 
     public static void main(String[] args){
         int exchangeTime;
@@ -83,4 +90,5 @@ public class Player {
         shirley.armies = shirley.turn * 5 * shirley.exchangeTime;
 
     }
+
 }

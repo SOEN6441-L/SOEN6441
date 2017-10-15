@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+    <list default="true" id="77cd0393-7f6a-4713-878a-6c0de9c54954" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$1.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$2.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$3.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$4.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$5.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$5.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$6.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$6.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$7.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction$7.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/ExchangeInteraction.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/Player.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/gameelements/Player.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$1.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$loadFromFileHandler.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$loadFromFileHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$newContinentHandler.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$newContinentHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$newCountryHandler.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$newCountryHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$newMapHandler.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$newMapHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$saveToFileHandler.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor$saveToFileHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapeditor/MapEditor.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapelements/Continent.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapelements/Continent.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapelements/Country.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapelements/Country.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/SOEN6441/mapelements/RiskMap.class" afterPath="$PROJECT_DIR$/out/production/SOEN6441/mapelements/RiskMap.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gameelements/ExchangeInteraction.java" afterPath="$PROJECT_DIR$/src/gameelements/ExchangeInteraction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gameelements/Player.java" afterPath="$PROJECT_DIR$/src/gameelements/Player.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -12,61 +34,42 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Player.java" pinned="false" current-in-tab="false">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Player.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gameelements/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
-              <caret line="79" column="34" lean-forward="true" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
+            <state relative-caret-position="238">
+              <caret line="66" column="18" lean-forward="true" selection-start-line="66" selection-start-column="18" selection-end-line="66" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#435#444#0" expanded="true" />
-                <element signature="e#887#888#0" expanded="true" />
-                <element signature="e#914#915#0" expanded="true" />
-                <element signature="e#945#946#0" expanded="true" />
-                <element signature="e#973#974#0" expanded="true" />
-                <element signature="e#1012#1013#0" expanded="true" />
-                <element signature="e#1050#1051#0" expanded="true" />
-                <element signature="e#1098#1099#0" expanded="true" />
-                <element signature="e#1130#1131#0" expanded="true" />
-                <element signature="e#1170#1171#0" expanded="true" />
-                <element signature="e#1204#1205#0" expanded="true" />
-                <element signature="e#1688#1697#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ExchangeInteraction.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ExchangeInteraction.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gameelements/ExchangeInteraction.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="397" column="0" lean-forward="true" selection-start-line="397" selection-start-column="0" selection-end-line="397" selection-end-column="0" />
+            <state relative-caret-position="-919">
+              <caret line="98" column="7" lean-forward="false" selection-start-line="98" selection-start-column="7" selection-end-line="98" selection-end-column="7" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#ExchangeInteraction#0;class#ExchangeInteraction#0" expanded="false" />
-                <element signature="method#getAndSetAvailiable#0;class#ExchangeInteraction#0" expanded="false" />
-                <element signature="method#Mylistener#0;class#ExchangeInteraction#0" expanded="false" />
-                <element signature="class#2462:3445" expanded="false" />
-                <element signature="method#mousePressed#0;class#2462:3445" expanded="false" />
-                <element signature="class#3480:4461" expanded="false" />
-                <element signature="method#mousePressed#0;class#3480:4461" expanded="false" />
-                <element signature="class#4496:5483" expanded="false" />
-                <element signature="method#mousePressed#0;class#4496:5483" expanded="false" />
-                <element signature="class#5528:6794" expanded="false" />
-                <element signature="method#mouseClicked#0;class#5528:6794" expanded="false" />
-                <element signature="method#mousePressed#0;class#5528:6794" expanded="false" />
-                <element signature="class#6833:7631" expanded="false" />
-                <element signature="class#7670:8468" expanded="false" />
-                <element signature="class#8507:9305" expanded="false" />
+                <element signature="method#getAndSetAvailable#0;class#ExchangeInteraction#0" expanded="false" />
+                <element signature="method#mousePressed#0;class#3010:3992" expanded="false" />
+                <element signature="class#4027:5007" expanded="false" />
+                <element signature="method#mousePressed#0;class#4027:5007" expanded="false" />
+                <element signature="class#5042:6028" expanded="false" />
+                <element signature="method#mousePressed#0;class#5042:6028" expanded="false" />
+                <element signature="class#6073:7339" expanded="false" />
+                <element signature="method#mousePressed#0;class#6073:7339" expanded="false" />
+                <element signature="class#7378:8176" expanded="false" />
+                <element signature="class#8215:9013" expanded="false" />
+                <element signature="class#9052:9850" expanded="false" />
                 <element signature="method#ClearLabel#0;class#ExchangeInteraction#0" expanded="false" />
                 <element signature="method#GetLabel#0;class#ExchangeInteraction#0" expanded="false" />
                 <element signature="method#IfLegal#0;class#ExchangeInteraction#0" expanded="false" />
                 <element signature="method#SetButtonLabel#0;class#ExchangeInteraction#0" expanded="false" />
-                <element signature="e#10711#10712#0" expanded="true" />
-                <element signature="e#10745#10746#0" expanded="true" />
-                <element signature="e#10775#10776#0" expanded="true" />
-                <element signature="e#10803#10804#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -106,9 +109,9 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="70" />
-    <option name="y" value="23" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="123" />
+    <option name="y" value="129" />
     <option name="width" value="1069" />
     <option name="height" value="777" />
   </component>
@@ -127,6 +130,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="AndroidView" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -149,12 +154,6 @@
               <item name="SOEN6441" type="b2602c69:ProjectViewProjectNode" />
               <item name="SOEN6441" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="images" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SOEN6441" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SOEN6441" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="mapeditor" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -167,16 +166,15 @@
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView" />
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Java" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -341,15 +339,18 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1507412018403</updated>
-      <workItem from="1507412019706" duration="28070000" />
+      <workItem from="1507412019706" duration="30966000" />
+      <workItem from="1507489150089" duration="339000" />
+      <workItem from="1508029497357" duration="72000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28070000" />
+    <option name="totallyTimeSpent" value="31377000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="70" y="23" width="1069" height="777" extended-state="0" />
+    <frame x="123" y="129" width="1069" height="777" extended-state="1" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -359,25 +360,25 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23012161" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23012161" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -388,11 +389,83 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="10" />
+      <option name="time" value="13" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/gameelements/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1501">
+          <caret line="91" column="5" lean-forward="false" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameelements/ExchangeInteraction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1862">
+          <caret line="98" column="7" lean-forward="false" selection-start-line="98" selection-start-column="7" selection-end-line="98" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#ExchangeInteraction#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#getAndSetAvailable#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#mousePressed#0;class#3010:3992" expanded="false" />
+            <element signature="class#4027:5007" expanded="false" />
+            <element signature="method#mousePressed#0;class#4027:5007" expanded="false" />
+            <element signature="class#5042:6028" expanded="false" />
+            <element signature="method#mousePressed#0;class#5042:6028" expanded="false" />
+            <element signature="class#6073:7339" expanded="false" />
+            <element signature="method#mousePressed#0;class#6073:7339" expanded="false" />
+            <element signature="class#7378:8176" expanded="false" />
+            <element signature="class#8215:9013" expanded="false" />
+            <element signature="class#9052:9850" expanded="false" />
+            <element signature="method#ClearLabel#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#GetLabel#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#IfLegal#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#SetButtonLabel#0;class#ExchangeInteraction#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameelements/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameelements/ExchangeInteraction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="9" column="12" lean-forward="true" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#ExchangeInteraction#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#getAndSetAvailable#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#mousePressed#0;class#3010:3992" expanded="false" />
+            <element signature="class#4027:5007" expanded="false" />
+            <element signature="method#mousePressed#0;class#4027:5007" expanded="false" />
+            <element signature="class#5042:6028" expanded="false" />
+            <element signature="method#mousePressed#0;class#5042:6028" expanded="false" />
+            <element signature="class#6073:7339" expanded="false" />
+            <element signature="method#mousePressed#0;class#6073:7339" expanded="false" />
+            <element signature="class#7378:8176" expanded="false" />
+            <element signature="class#8215:9013" expanded="false" />
+            <element signature="class#9052:9850" expanded="false" />
+            <element signature="method#ClearLabel#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#GetLabel#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#IfLegal#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#SetButtonLabel#0;class#ExchangeInteraction#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/mapeditor/MapEditor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
@@ -435,65 +508,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameelements/test.java">
+    <entry file="file://$PROJECT_DIR$/src/gameelements/test.java" />
+    <entry file="file://$PROJECT_DIR$/.project">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameelements/Player.java">
+    <entry file="file://$PROJECT_DIR$/.classpath">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="79" column="34" lean-forward="true" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#435#444#0" expanded="true" />
-            <element signature="e#887#888#0" expanded="true" />
-            <element signature="e#914#915#0" expanded="true" />
-            <element signature="e#945#946#0" expanded="true" />
-            <element signature="e#973#974#0" expanded="true" />
-            <element signature="e#1012#1013#0" expanded="true" />
-            <element signature="e#1050#1051#0" expanded="true" />
-            <element signature="e#1098#1099#0" expanded="true" />
-            <element signature="e#1130#1131#0" expanded="true" />
-            <element signature="e#1170#1171#0" expanded="true" />
-            <element signature="e#1204#1205#0" expanded="true" />
-            <element signature="e#1688#1697#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/a8f9c4aecbb2c49c8a887b93bb29f996/Message/MessageTemp/68daf72ff6fc237561a83c4654407e4a/File/Continent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gameelements/ExchangeInteraction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="397" column="0" lean-forward="true" selection-start-line="397" selection-start-column="0" selection-end-line="397" selection-end-column="0" />
+        <state relative-caret-position="-919">
+          <caret line="98" column="7" lean-forward="false" selection-start-line="98" selection-start-column="7" selection-end-line="98" selection-end-column="7" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#ExchangeInteraction#0;class#ExchangeInteraction#0" expanded="false" />
-            <element signature="method#getAndSetAvailiable#0;class#ExchangeInteraction#0" expanded="false" />
-            <element signature="method#Mylistener#0;class#ExchangeInteraction#0" expanded="false" />
-            <element signature="class#2462:3445" expanded="false" />
-            <element signature="method#mousePressed#0;class#2462:3445" expanded="false" />
-            <element signature="class#3480:4461" expanded="false" />
-            <element signature="method#mousePressed#0;class#3480:4461" expanded="false" />
-            <element signature="class#4496:5483" expanded="false" />
-            <element signature="method#mousePressed#0;class#4496:5483" expanded="false" />
-            <element signature="class#5528:6794" expanded="false" />
-            <element signature="method#mouseClicked#0;class#5528:6794" expanded="false" />
-            <element signature="method#mousePressed#0;class#5528:6794" expanded="false" />
-            <element signature="class#6833:7631" expanded="false" />
-            <element signature="class#7670:8468" expanded="false" />
-            <element signature="class#8507:9305" expanded="false" />
+            <element signature="method#getAndSetAvailable#0;class#ExchangeInteraction#0" expanded="false" />
+            <element signature="method#mousePressed#0;class#3010:3992" expanded="false" />
+            <element signature="class#4027:5007" expanded="false" />
+            <element signature="method#mousePressed#0;class#4027:5007" expanded="false" />
+            <element signature="class#5042:6028" expanded="false" />
+            <element signature="method#mousePressed#0;class#5042:6028" expanded="false" />
+            <element signature="class#6073:7339" expanded="false" />
+            <element signature="method#mousePressed#0;class#6073:7339" expanded="false" />
+            <element signature="class#7378:8176" expanded="false" />
+            <element signature="class#8215:9013" expanded="false" />
+            <element signature="class#9052:9850" expanded="false" />
             <element signature="method#ClearLabel#0;class#ExchangeInteraction#0" expanded="false" />
             <element signature="method#GetLabel#0;class#ExchangeInteraction#0" expanded="false" />
             <element signature="method#IfLegal#0;class#ExchangeInteraction#0" expanded="false" />
             <element signature="method#SetButtonLabel#0;class#ExchangeInteraction#0" expanded="false" />
-            <element signature="e#10711#10712#0" expanded="true" />
-            <element signature="e#10745#10746#0" expanded="true" />
-            <element signature="e#10775#10776#0" expanded="true" />
-            <element signature="e#10803#10804#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameelements/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="66" column="18" lean-forward="true" selection-start-line="66" selection-start-column="18" selection-end-line="66" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
