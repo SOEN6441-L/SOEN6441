@@ -6,7 +6,9 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-
+/**
+ * This is class RiskMap to achieve the function of edit map
+ */
 public class RiskMap {
 	private int globalIndex;
 	public String riskMapName;
@@ -18,6 +20,10 @@ public class RiskMap {
 	public Map<Integer,ArrayList<Country>> countries;
 	public Map<Integer,ArrayList<Integer>> adjacencyList;
 
+	/**
+	 * The constructor of class RiskMap
+	 * @param name The name of the Map that is editing
+	 */
 	public RiskMap(String name){
 		this.globalIndex = 1;
 		this.riskMapName = name;
@@ -33,6 +39,12 @@ public class RiskMap {
 		this.adjacencyList = new HashMap<Integer,ArrayList<Integer>>();
 	}
 
+
+	/**
+	 * Function to find the Country according to the Country's name
+	 * @param countryName Country's name
+	 * @return Country that found
+	 */
 	public Country findCountry(String countryName) {
 		for (ArrayList<Country> loopList : countries.values()) {
 			for (Country loopCountry:loopList){
@@ -44,6 +56,11 @@ public class RiskMap {
 		return null;
 	}
 
+	/**
+	 * Function to find the Continent according to the Continent's name
+	 * @param continentName Continent's name
+	 * @return Continent's name
+	 */
 	public Continent findContinent(String continentName) {
 		for (Continent loopContinent:continents){
 			if (loopContinent.continentName.equals(continentName)){
@@ -53,6 +70,11 @@ public class RiskMap {
 		return null;
 	}
 
+	/**
+	 * Function to add new Continent
+	 * @param continentName The name of the Continent want to add
+	 * @return succeed or not
+	 */
 	public boolean addContinent(String continentName){
 		if (findContinent(continentName)!=null) {
 			JOptionPane.showMessageDialog(null,"Continnet '"+continentName+"' already exists");
@@ -65,6 +87,12 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The function to add new Country in existing continent
+	 * @param countryName The name of the country want to add
+	 * @param continentName THe name of the existing Continent that the new country adding in
+	 * @return succeed or not
+	 */
 	public boolean addCountry(String countryName,String continentName){
 		int continentID = findContinent(continentName).continentID;
 		ArrayList<Country> targetCountryList = countries.get(continentID);
@@ -85,6 +113,12 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The function to add connection between two countries
+	 * @param countryNameFrom The name of the country want to add from
+	 * @param countryNameTo The name of the country want to add to
+	 * @return succeed or not
+	 */
 	public boolean addConnection(String countryNameFrom,String countryNameTo){
 		Country fromCountry = findCountry(countryNameFrom);
 		if (fromCountry==null){
@@ -102,6 +136,9 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The function to add a completed connection
+	 */
 	public void addCompletedConnection(){
 		for (int loopCountryID:adjacencyList.keySet()){
 			ArrayList<Integer> loopCountryList = adjacencyList.get(loopCountryID);
@@ -115,6 +152,12 @@ public class RiskMap {
 		this.modified = true;
 	}
 
+	/**
+	 * The function to remove the connection between two Countries
+	 * @param countryNameFrom The name of the Country that want to remove connection with
+	 * @param countryNameTo The name of the Country that want to remove connection to
+	 * @return succeed or not
+	 */
 	public boolean removeConnection(String countryNameFrom,String countryNameTo){
 		Country fromCountry = findCountry(countryNameFrom);
 		if (fromCountry==null){
@@ -132,6 +175,9 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The function to remove all connections
+	 */
 	public void removeAllConnection(){
 		for (ArrayList<Integer> loopCountryList:adjacencyList.values()){
 			loopCountryList.clear();
@@ -139,6 +185,12 @@ public class RiskMap {
 		this.modified = true;
 	}
 
+	/**
+	 * The function to rename the Country
+	 * @param countryName The name of the Country want to rename
+	 * @param newName The new name for the Country
+	 * @return
+	 */
 	public boolean renameCountry(String countryName, String newName){
 		Country changeCountry = findCountry(countryName);
 		if(changeCountry == null){
@@ -154,6 +206,11 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The function to delete a existing Country
+	 * @param countryName The name of Country want to delete
+	 * @return succeed or not
+	 */
 	public boolean deleteCountry(String countryName){
 		//delete country from HashMap of countries
 		Country deleteCountry = findCountry(countryName);
@@ -174,6 +231,12 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The funtion to rename the Continent
+	 * @param continentName The name of Continent want to rename
+	 * @param newName The new name for the Continent
+	 * @return succeed or not
+	 */
 	public boolean renameContinent(String continentName, String newName){
 		Continent changeContinent = findContinent(continentName);
 		if(changeContinent == null){
@@ -189,6 +252,12 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The function to change the number of armies player can have after take the whole Continent
+	 * @param continentName The name of the Continent want to change
+	 * @param controlNum The new number of the army
+	 * @return succeed or not
+	 */
 	public boolean changeContinentControl(String continentName, int controlNum){
 		Continent changeContinent = findContinent(continentName);
 		if(changeContinent == null){
@@ -200,6 +269,11 @@ public class RiskMap {
 		return true;
 	}
 
+	/**
+	 * The function to delete the Continent
+	 * @param continentName The name of the Continent want to delete
+	 * @return succeed
+	 */
 	public boolean deleteContinent(String continentName){
 		Continent deleteContinent = findContinent(continentName);
 		if(deleteContinent == null){
@@ -219,6 +293,12 @@ public class RiskMap {
 		}
 	}
 
+	/**
+	 * The function to move the Country to a other Continent
+	 * @param toContinentName The name of the Continent want to move the Country to
+	 * @param countryName The name of the Country that need to be moved
+	 * @return
+	 */
 	public boolean moveContinentCountry(String toContinentName, String countryName) {
 		Country moveCountry = findCountry(countryName);
 		if(moveCountry == null){
