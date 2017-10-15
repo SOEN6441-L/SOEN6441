@@ -13,4 +13,12 @@ public class Country {
 		flagBFS = false;
 	}
 	
+	public void changeName(String name){
+		this.countryName = name;
+	}	
+	
+	public void changeContinent(Continent toContinent){
+		this.belongToContinent = toContinent;
+	}	
+	
 }

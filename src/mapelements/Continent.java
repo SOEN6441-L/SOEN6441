@@ -9,4 +9,8 @@ public class Continent {
 		this.continentID = ID;
 		this.continentName = name;
 	}
+	
+	public void changeName(String name){
+		this.continentName = name;
+	}
 }
