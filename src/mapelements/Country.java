@@ -17,4 +17,13 @@ public class Country {
 		this.armyNumber = 0;
 	}
 	
+	public void changeName(String name){
+		this.countryName = name;
+	}	
+	
+	public void changeContinent(Continent toContinent){
+		this.belongToContinent = toContinent;
+	}	
+	
 }
+
