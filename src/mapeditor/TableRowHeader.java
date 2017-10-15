@@ -45,10 +45,10 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
 		setHorizontalAlignment(CENTER);  
 		setBackground(header.getBackground());    
 		setForeground(header.getForeground());
-		/*if ( isSelect(row) ){       
+		if ( isSelect(row) ){       
 			setForeground(Color.BLACK);  
 			setBackground(new Color(153,217,234));  
-		} */ 
+		} 
 		setFont(header.getFont());  
 		if (row>=0) setText(String.valueOf(columnTitle[row]));
 		return this;  
@@ -87,6 +87,11 @@ class RowHeaderTableModel extends AbstractTableModel{
 }    
 
 class MatrixRenderer implements TableCellRenderer{     
+	private int[] areaContinents;
+	
+	public MatrixRenderer(int[] area){
+		this.areaContinents = area;
+	}
 
 	public static final DefaultTableCellRenderer DEFAULT_RENDERER =new DefaultTableCellRenderer();     
 	
@@ -97,8 +102,9 @@ class MatrixRenderer implements TableCellRenderer{
 		Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
 		renderer.setFont(new java.awt.Font("dialog",Font.BOLD,12));
 		renderer.setForeground(Color.RED);
-		Color foreground, background; 
-
+		Color foreground, background;
+		table.setOpaque(true);
+		renderer.setPreferredSize(renderer.getPreferredSize());
 		if (row == column) {     
 			//foreground = Color.YELLOW;     
 			background = new Color(210,210,210);   
@@ -106,12 +112,19 @@ class MatrixRenderer implements TableCellRenderer{
 			renderer.setBackground(background);   
 		} 
 		else{
-			//foreground = Color.YELLOW;     
-			background = Color.white;   
-			//renderer.setForeground(foreground);     
-			renderer.setBackground(background);  
+			renderer.setBackground(Color.WHITE); 
+			for (int i=0;i<areaContinents.length-1;i++){
+				if (row<areaContinents[i+1] && row>=areaContinents[i] && column<areaContinents[i+1] && column>=areaContinents[i]){
+					renderer.setBackground(new Color(240,250,250));
+					break;
+				}
+			}
+			if (row > column){
+				renderer.setForeground(Color.RED); 
+			}
+			else renderer.setForeground(Color.LIGHT_GRAY);
 		}
-		return renderer;     
+		return renderer;
 	}     
 }
 
