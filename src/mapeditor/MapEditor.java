@@ -21,7 +21,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath
+import javax.swing.tree.TreePath;
 
 import mapelements.Continent;
 import mapelements.Country;
