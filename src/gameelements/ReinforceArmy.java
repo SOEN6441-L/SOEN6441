@@ -76,7 +76,7 @@ public class ReinforceArmy {
             String[] changeOrNot = new String[2];
             changeOrNot[0] = "Yes";
             changeOrNot[1] = "No";
-            Object change = JOptionPane.showInputDialog(null, "Choose Country",
+            Object change = JOptionPane.showInputDialog(null, "Do you want to change cards?",
                     "Input", JOptionPane.INFORMATION_MESSAGE, null, armyList,
                     changeOrNot[0]);
             if (change.equals("Yes")){
