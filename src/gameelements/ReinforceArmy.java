@@ -25,8 +25,6 @@ public class ReinforceArmy {
         this.countryNumbers = player.getCountries().size();
 
 
-
-
         this.countryList = new String[countryNumbers];
         int i = 0;
         for (Country country: player.countries) {
@@ -38,22 +36,23 @@ public class ReinforceArmy {
         player.armies  = calculateArmyNumber(countryNumbers);
 
 
-        this.armyList = new String[player.armies];
-        for (int x = 0; x< player.armies; x++){
-            armyList[x] = String.valueOf(x+1);
-        }
-
-
-
         while(player.armies > 0){
+
+            this.armyList = new String[player.armies];
+            for (int x = 0; x< player.armies; x++){
+                armyList[x] = String.valueOf(x+1);
+            }
+
+            //System.out.println();
             Object selectedCountry = JOptionPane.showInputDialog(null, "Choose Country",
                     "Input", JOptionPane.INFORMATION_MESSAGE, null, countryList,
-                    countryList[0]);
+                    null);
 
-            Object selectedArmyNumber = JOptionPane.showInputDialog(null, "Choose Country",
+            Object selectedArmyNumber = JOptionPane.showInputDialog(null, "Choose army number you want to place",
                     "Input", JOptionPane.INFORMATION_MESSAGE, null, armyList,
                     armyList[0]);
             int armyNumberSelect = Integer.parseInt((String) selectedArmyNumber);
+            System.out.println(armyNumberSelect);
             placeArmy((String)selectedCountry, armyNumberSelect);
 
             player.armies -= armyNumberSelect;
@@ -77,7 +76,7 @@ public class ReinforceArmy {
             changeOrNot[0] = "Yes";
             changeOrNot[1] = "No";
             Object change = JOptionPane.showInputDialog(null, "Do you want to change cards?",
-                    "Input", JOptionPane.INFORMATION_MESSAGE, null, armyList,
+                    "Input", JOptionPane.INFORMATION_MESSAGE, null, changeOrNot,
                     changeOrNot[0]);
             if (change.equals("Yes")){
                 changeCard();
