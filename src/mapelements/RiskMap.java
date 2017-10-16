@@ -47,6 +47,9 @@ public class RiskMap {
 		this.adjacencyList = new HashMap<Integer,ArrayList<Integer>>();
 	}
 
+    /**
+     * The constructor of class RiskMap
+     */
     public RiskMap(){
         this.globalIndex = 1;
         this.modified = false;
@@ -73,6 +76,11 @@ public class RiskMap {
 		return null;
 	}
 
+    /**
+     * Function to find the Country according to the Country's ID
+     * @param countryID
+     * @return Country that found
+     */
     public Country findCountryByID(int countryID) {
         for (ArrayList<Country> loopList : countries.values()) {
             for (Country loopCountry:loopList){
@@ -115,6 +123,12 @@ public class RiskMap {
 		return true;
 	}
 
+    /**
+     * Function to add new Continent
+     * @param continentName The name of the Continent want to add
+     * @param controlNum The number of Continents want to add
+     * @return succeed or not
+     */
     public boolean addContinent(String continentName, int controlNum){
         if (findContinent(continentName)!=null) {
             JOptionPane.showMessageDialog(null,"Continnet <"+continentName+"> already exists");
@@ -131,7 +145,7 @@ public class RiskMap {
 	/**
 	 * The function to add new Country in existing continent
 	 * @param countryName The name of the country want to add
-	 * @param continentName THe name of the existing Continent that the new country adding in
+	 * @param continentName The name of the existing Continent that the new country adding in
 	 * @return succeed or not
 	 */
 	public boolean addCountry(String countryName,String continentName){
@@ -154,6 +168,14 @@ public class RiskMap {
 		return true;
 	}
 
+    /**
+     * The function to add new Country in existing continent
+     * @param countryName The name of the country want to add
+     * @param continentName The name of the existing Continent that the new country adding in
+     * @param coordinateX The X coordinate of the country
+     * @param coordinateY The Y coordinate of the country
+     * @return succeed or not
+     */
     public boolean addCountry(String countryName,String continentName,int coordinateX, int coordinateY){
         Continent targetContinent = findContinent(continentName);
         if (targetContinent==null) {
@@ -381,6 +403,11 @@ public class RiskMap {
 		return true;
 	}
 
+    /**
+     * Check connection status
+     * @param localAdjacencyList adjacency list to be checked
+     * @return corrected or not
+     */
     public boolean checkConnection(Map<Integer,ArrayList<Integer>> localAdjacencyList) {
         if (localAdjacencyList.size()==0) return true;
         int sourceNode = -1;
@@ -396,6 +423,11 @@ public class RiskMap {
         else return false;
     }
 
+    /**
+     * Breadth First Search
+     * @param localAdjacencyList adjacency list to be checked
+     * @param sourceNode Root node
+     */
     public void BFS(Map<Integer,ArrayList<Integer>> localAdjacencyList, int sourceNode) {
         ArrayList<Integer> myChildren = new ArrayList<Integer>();
         for (int targetNode : localAdjacencyList.get(sourceNode)){
@@ -411,6 +443,11 @@ public class RiskMap {
         }
     }
 
+    /**
+     * Check whether the map is valid
+     * @param mode mode 0-upon save, 1-upon load
+     * @return succeed or not
+     */
     public boolean checkValid(int mode){ //mode 0-upon save, 1-upon load
         String errorMessage = null;
         //Check map connectivity
@@ -471,7 +508,11 @@ public class RiskMap {
         return true;
     }
 
-
+    /**
+     * Load Map File
+     * @param mapFileName The name of map file
+     * @return succeed or not
+     */
     public boolean loadMapFile(String mapFileName) {
         BufferedReader br = null;
         String inputLine = null;
@@ -608,6 +649,10 @@ public class RiskMap {
         return checkValid(1);
     }
 
+    /**
+     * Save map file
+     * @param mapFileName The name of map file
+     */
     public void saveToFile(String mapFileName) {
         File outputFile = new File(mapFileName);
         FileWriter fw = null;
