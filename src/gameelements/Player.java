@@ -4,12 +4,17 @@ import mapelements.*;
 import java.util.ArrayList;
 
 public class Player {
-    /*
-    *   This class is to construct player;
-    *   This class is to calculate how many armies are given according to numbers of cards.
-    *   @Author Shirley / XUEYING LI
-    *   @CreateTime 07.OCT.2017
-    *
+    /**
+     *   This class is to construct player;
+     *   This class is to calculate how many armies are given according to numbers of cards.
+     *   @Author Shirley / XUEYING LI
+     *   @CreateTime 07.OCT.2017
+     *   @param Name Name of player
+     *   @param cards Store numbers of three cards, infantry, cavalry,artillery respectively
+     *   @param changeCardTimes Store times of cards exchange
+     *   @param countries Store countries of the player
+     *   @param armies Store how many armies player have
+     *   @param exchangeTime Store exchange times of players
      */
     String name = null;
     int[] cards = new int[3];
@@ -17,20 +22,24 @@ public class Player {
     ArrayList <Country> countries = new ArrayList<Country>();
     int armies;
     int exchangeTime;
-    int turn;
 
-    /*
+    /**
     *   This method is a class constructor.
      */
 
-    public Player(String newName, int[] newCards, ArrayList<Country> newCountries,int NewArmies, int NewExchangeTime,int CurrentTurn){
+    public Player(String newName, int[] newCards, ArrayList<Country> newCountries,int NewArmies, int NewExchangeTime){
         name = newName;
         cards = newCards;
         countries = newCountries;
         armies = NewArmies;
         exchangeTime = NewExchangeTime;
-        turn = CurrentTurn;
     }
+
+    /**
+     * This class is to get Name of player
+     *
+     * @return name
+     */
 
     public String getName() {
         return name;
@@ -67,27 +76,28 @@ public class Player {
     *   To calculate & return how many armies after exchange
      */
 
-    public int CalculateArmies(Player player){
-        int armies = player.exchangeTime*player.turn*5;
-        return armies;
+    public void CalculateArmies(){
+        int armies = this.exchangeTime*5;
+        this.armies = this.armies+armies;
     }
     /*
     *   To test
      */
 
     public static void main(String[] args){
-        int exchangeTime;
         int [] cards = {3,2,2};
         ArrayList <Country> country = new ArrayList<Country>(3);
-        Player shirley = new Player("shirley",cards,country,0,0,0);
+        Player shirley = new Player("shirley",cards,country,0,0);
         if(shirley.ifForceExchange()){
             ExchangeInteraction ei = new ExchangeInteraction();
             ei.GetAndSetCards(cards);
             ei.SetButtonLabel();
-            cards = ei.getCards();
-            exchangeTime = ei.count;
+            shirley.cards = ei.getCards();
+            shirley.exchangeTime = ei.count;
         }
-        shirley.armies = shirley.turn * 5 * shirley.exchangeTime;
+        shirley.CalculateArmies();
+        System.out.println(shirley.armies);
+
 
     }
 
