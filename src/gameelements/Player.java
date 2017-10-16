@@ -24,7 +24,8 @@ public class Player {
     int exchangeTime;
 
     /**
-    *   This method is a class constructor.
+     *   This method is a class constructor.
+     *
      */
 
     public Player(String newName, int[] newCards, ArrayList<Country> newCountries,int NewArmies, int NewExchangeTime){
@@ -35,34 +36,35 @@ public class Player {
         exchangeTime = NewExchangeTime;
     }
 
-    /**
-     * This class is to get Name of player
-     *
-     * @return name
-     */
-
+    // get name of player
     public String getName() {
         return name;
     }
 
+    // get name of player
     public int[] getCards() {
         return cards;
     }
 
+    //get Change Card Times
     public int getChangeCardTimes() {
         return changeCardTimes;
     }
 
+    //get countries of player
     public ArrayList<Country> getCountries() {
         return countries;
     }
 
+    //set cards
     public void setCards(int[] cards){
         this.cards = cards;
     }
 
-    /*
-    *   This method is to judge if player must exchange cards with armies.
+    /**
+     *  This method is to judge if player must exchange cards with armies.
+     *
+     *  @return true if player is forced to exchange cards
      */
 
     public boolean ifForceExchange(){
@@ -72,18 +74,20 @@ public class Player {
             return false;
     }
 
-    /*
-    *   To calculate & return how many armies after exchange
+    /**
+     *   To calculate how many armies after exchanging and change number of armies of player
+     *
      */
 
     public void CalculateArmies(){
         int armies = this.exchangeTime*5;
         this.armies = this.armies+armies;
     }
-    /*
-    *   To test
-     */
 
+    /*
+     *   To test
+     *
+     *
     public static void main(String[] args){
         int [] cards = {3,2,2};
         ArrayList <Country> country = new ArrayList<Country>(3);
@@ -97,8 +101,7 @@ public class Player {
         }
         shirley.CalculateArmies();
         System.out.println(shirley.armies);
-
+    */
 
     }
 
-}
