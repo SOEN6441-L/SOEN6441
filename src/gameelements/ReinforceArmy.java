@@ -15,7 +15,6 @@ public class ReinforceArmy {
     public String[] countryList;
     public String[] armyList;
 
-    //计算并显示reinforce army数(chongwen)，card change（xueying已完成， 未联调），补齐三支，分配军队。（chongwen）
 
     /**
      * The constructor of class ReinforceArmy
@@ -24,6 +23,8 @@ public class ReinforceArmy {
     public ReinforceArmy(Player player){
         this.player = player;
         this.countryNumbers = player.getCountries().size();
+
+
 
 
         this.countryList = new String[countryNumbers];
@@ -35,6 +36,7 @@ public class ReinforceArmy {
 
 
         player.armies  = calculateArmyNumber(countryNumbers);
+
 
         this.armyList = new String[player.armies];
         for (int x = 0; x< player.armies; x++){
@@ -68,6 +70,20 @@ public class ReinforceArmy {
     private int calculateArmyNumber(int countryNumbers) {
         int armyNumbers;
         armyNumbers = Math.floorDiv(countryNumbers, 3);
+        if (this.player.ifForceExchange()){
+            changeCard();
+        }else{
+            String[] changeOrNot = new String[2];
+            changeOrNot[0] = "Yes";
+            changeOrNot[1] = "No";
+            Object change = JOptionPane.showInputDialog(null, "Choose Country",
+                    "Input", JOptionPane.INFORMATION_MESSAGE, null, armyList,
+                    changeOrNot[0]);
+            if (change.equals("Yes")){
+                changeCard();
+            }
+
+        }
         if (armyNumbers < 3){
             armyNumbers = 3;
         }
@@ -86,6 +102,18 @@ public class ReinforceArmy {
                 country.armyNumber += numberOfArmies;
             }
         }
+    }
+
+    /**
+     * This function is for player to change cards to armies
+     */
+    public void changeCard(){
+        ExchangeInteraction ei = new ExchangeInteraction();
+        ei.GetAndSetCards(this.player.cards);
+        ei.SetButtonLabel();
+        this.player.exchangeTime = ei.count;
+        this.player.cards = ei.cards;
+        this.player.CalculateArmies();
     }
 
 }
