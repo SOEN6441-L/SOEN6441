@@ -16,15 +16,19 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Fortification is seen as an object, and all methods in this phases are seen as its actions.
- * In this class, it contains all necessary actions in fortification phase. Player can move army from 
- * one country to another
+ * This class is the implementation phase of fortification phase in the Risk.
+ * <p> The fortification is a mechanism that allow players move army from one<br> 
+ * of their country to another.</p>
+ *
+ * @author Jingyu Lu
+ * @version alpha 0.1
+ * @see javax.swing.JFrame
  *
  */
 public class FortificationPhase extends JFrame{
 
 	//format of table 
-	MyTableContent my_table_content=new MyTableContent();
+	FillTableContent my_table_content=new FillTableContent();
 	//components in this window
 	JLabel currentPlayer=new JLabel();
 
@@ -76,6 +80,11 @@ public class FortificationPhase extends JFrame{
 		rfpContainer.add(splitPane, BorderLayout.CENTER);
 		rfpContainer.add(footerPanel, BorderLayout.SOUTH);
 		
+		/**
+		 * Adds the specified window listener to receive window events from this window.
+		 * @see java.awt.Window.addWindowListener(WindowListener arg0) #removeWindowListener(java.awt.event.WindowListener)
+		 * @see java.awt.Window.addWindowListener(WindowListener arg0) #getWindowListeners()
+		 */
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e){
 				System.exit(0);
@@ -88,102 +97,21 @@ public class FortificationPhase extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	class MyTableContent extends AbstractTableModel{
-
-		//store all data used in table in array
-		//title
-		final String[] column_names={"Country", "Number of Armies"};
-		
-		//content in rows
-		final Object[][] table_content={
-				{"China","oo"},
-				{"UUUUU","4"},
-				{"EEEEE","3"},
-				{"JJJJJ","2"},
-				{"KKKKK","1"},
-				{"FFFFF","1"},
-				{"YYYYY","o"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-				{"China","oo"},
-		};
-		
-		//overwrite methods so that to be invoked by JTable
-		@Override
-		public int getColumnCount() {
-			// get num of columns
-			return column_names.length;
-		}
-
-		@Override
-		public int getRowCount() {
-			// get num of rows
-			return table_content.length;
-		}
-		
-		@Override
-		public Class getColumnClass(int columnIndex) {
-			// type of each element in table
-			return getValueAt(0, columnIndex).getClass();
-		}
-
-		@Override
-		public String getColumnName(int column) {
-			// get name of some columns 
-			return column_names[column];
-		}
-
-		@Override
-		public Object getValueAt(int row, int column) {
-			// get data in row+column
-			return table_content[row][column];
-		}
-
-		private void printTable(){
-			int num_of_row=getRowCount();
-			int num_of_column=getColumnCount();
+	/**
+	 * Print information in table
+	 */
+	private void printTable(){
+		int num_of_row=my_table_content.getRowCount();
+		int num_of_column=my_table_content.getColumnCount();
 			
-			for(int i=0;i<num_of_row;i++){
-				System.out.print("row"+i+":");
-				for(int j=0;j<num_of_column;j++){
-					System.out.print(" "+table_content[i][j]);
-				}
-				System.out.println();
+		for(int i=0;i<num_of_row;i++){
+			System.out.print("row"+i+":");
+			for(int j=0;j<num_of_column;j++){
+				System.out.print(" "+my_table_content.table_content[i][j]);
 			}
-			System.out.println("-------------------------");
+			System.out.println();
 		}
-		
+		System.out.println("-------------------------");
 	}
 	
 	public static void main(String[] args) {
