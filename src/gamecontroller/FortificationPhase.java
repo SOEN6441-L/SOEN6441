@@ -16,10 +16,12 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Fortification is seen as an object, and all methods in this phases are seen as its actions.
- * In this class, it contains all necessary actions in fortification phase. Player can move army from 
- * one country to another
+ * This class is the implementation phase of fortification phase in the Risk.
+ * <p> The fortification is a mechanism that allow players move army from one<br> 
+ * of their country to another.</p>
  *
+ * @version alpha 0.1
+ * @see javax.swing.JFrame
  */
 public class FortificationPhase extends JFrame{
 
@@ -88,14 +90,20 @@ public class FortificationPhase extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	/**
+	 * Inner class, which used to fill the table in window.
+	 * <p> This class extends from AbstractTableModel</p>
+	 * 
+	 * @see AbstractTableModel
+	 */
 	class MyTableContent extends AbstractTableModel{
 
 		//store all data used in table in array
 		//title
-		final String[] column_names={"Country", "Number of Armies"};
+		String[] column_names={"Country", "Number of Armies"};
 		
 		//content in rows
-		final Object[][] table_content={
+		Object[][] table_content={
 				{"China","oo"},
 				{"UUUUU","4"},
 				{"EEEEE","3"},
