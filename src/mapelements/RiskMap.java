@@ -737,5 +737,14 @@ public class RiskMap {
 		}
 		return true;
 	}
+	public void findPath(Map<Integer,ArrayList<Integer>> localAdjacencyList,int sourceNode) {
+		if (localAdjacencyList.size()==0) return;
+		for (int loopCountry : localAdjacencyList.keySet()) {
+			findCountryByID(loopCountry).flagDFS = false;
+		}
+		findCountries = 0;
+		//findCountryByID(sourceNode).flagDFS = true;
+		DFS(localAdjacencyList,sourceNode);
+	}
 
 }
