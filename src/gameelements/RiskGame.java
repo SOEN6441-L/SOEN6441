@@ -122,7 +122,7 @@ public class RiskGame {
                 players[i].setState(1);
                 players[i].setTotalArmies(players[i].getCountries().size());
                 players[i].setInitialArmies(players.length);
-                for (int j=0;j<4;j++){ // initial cards, maybe removed for later build
+                for (int j=0;j<5;j++){ // initial cards, maybe removed for later build
                     int randomCard = (int)(Math.random()*3);
                     players[i].addCard(randomCard);
                 }
