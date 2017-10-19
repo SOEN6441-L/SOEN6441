@@ -275,9 +275,7 @@ public class FortificationPhaseView extends JDialog{
 
 
 
-    /**
-     * To add action listener to the enter button
-     */
+
     /*private class enterBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (player.getState()==1){
