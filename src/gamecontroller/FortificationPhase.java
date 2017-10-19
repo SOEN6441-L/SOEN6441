@@ -19,9 +19,6 @@ import javax.swing.table.AbstractTableModel;
  * This class is the implementation phase of fortification phase in the Risk.
  * <p> The fortification is a mechanism that allow players move army from one<br> 
  * of their country to another.</p>
- *
- * @version alpha 0.1
- * @see javax.swing.JFrame
  */
 public class FortificationPhase extends JFrame{
 
