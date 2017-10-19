@@ -6,18 +6,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -35,11 +31,9 @@ import mapelements.RiskMap;
  *
  */
 public class MapEditor extends JFrame {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	//button in window
 	private JButton newMapBtn;
 	private JButton loadFromFileBtn;
@@ -69,10 +63,10 @@ public class MapEditor extends JFrame {
 	private RiskMap newMap;
 	
 	private String selContinentName, selCountryName, lastUsedContinent="";
-	private String matrixDisplayMode = "prefered"; //prefered, same
+	private String matrixDisplayMode = "preferred"; //preferred, same
 	private int matrixColumnWidth = 25, continentExpandMode = 1;
     
-	private void initGUI(){  
+	private MapEditor(){  
 		
 		newMap = new RiskMap("Untitled");
 		//configuration
@@ -80,7 +74,7 @@ public class MapEditor extends JFrame {
 		setSize(1280,700);
 		int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
 		int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-		setLocation((screenWidth-1280)/2, (screenHeight-700)/2);  
+		setLocation((screenWidth-1280)/2, (screenHeight-700)/2-30);  
 		//set exit program when close the window  
 		setDefaultCloseOperation(3);  
 		//not capable adjust windows size  
@@ -99,7 +93,7 @@ public class MapEditor extends JFrame {
 		treeContinent.setCellRenderer(new CategoryNodeRenderer());
 
 		scrollPaneForContinent= new JScrollPane(treeContinent,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		add(scrollPaneForContinent);  
+		add(scrollPaneForContinent);
 		scrollPaneForContinent.setBounds(15,35,300,580);	
 
 	    continentMenu = new JPopupMenu();	
@@ -232,9 +226,24 @@ public class MapEditor extends JFrame {
 		add(colWidthEdit);  	     
 		colWidthEdit.setBounds(setWidthBtn.getBounds().x-size.width+19,7,size.width-20,size.height);
 		colWidthEdit.setEnabled(false);		
+		
+		this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);   
         
 		setVisible(true);          
 	}
+	
+	@Override
+	protected void processWindowEvent(WindowEvent e){
+		if (e.getID() == WindowEvent.WINDOW_CLOSING){
+			if (newMap.modified){
+				if (JOptionPane.showConfirmDialog(null,
+						"This will discard any modification since last save, do you want to proceed?",
+						"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
+					return;	
+			}
+		}	
+		super.processWindowEvent(e);
+	}	
 	
 	private void loadNewMap(){  		
 		newMap = null;
@@ -443,7 +452,7 @@ public class MapEditor extends JFrame {
 		adjacencyMatrix.getTableHeader().setForeground(Color.BLUE);
 		//adjacencyMatrix.getTableHeader().setDefaultRenderer(new AdjacencyMatrixHeaderRenderer(adjacencyMatrix));
 		int maxWidth;
-		if (matrixDisplayMode.equals("prefered"))
+		if (matrixDisplayMode.equals("preferred"))
 			maxWidth = FitTableColumns(adjacencyMatrix);
 		else maxWidth = FitTableColumns(adjacencyMatrix,matrixColumnWidth); 
 		
@@ -503,20 +512,18 @@ public class MapEditor extends JFrame {
 				while (retry){
 					int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
 					if (option == JOptionPane.OK_OPTION) {
-						if (countryInput.getText()!=null){
-							if (countryInput.getText().trim().isEmpty()){
-								JOptionPane.showMessageDialog(null,"Country name can't be empty");
-							}
-							else if (continentInput.getSelectedIndex()==-1){
-								JOptionPane.showMessageDialog(null,"Country must belong to a continent, choose one exiting continent or create a new one.");
-							}
-							else {
-								lastUsedContinent = (String)continentInput.getItemAt(continentInput.getSelectedIndex());
-								if (newMap.addCountry(countryInput.getText().trim(), lastUsedContinent)){
-									reloadContinents();
-									reloadMatrix();
-									retry = false;
-								}
+						if (countryInput.getText()==null||countryInput.getText().trim().isEmpty()){
+							JOptionPane.showMessageDialog(null,"Country name can't be empty");
+						}
+						else if (continentInput.getSelectedIndex()==-1){
+							JOptionPane.showMessageDialog(null,"Country must belong to a continent, choose one exiting continent or create a new one.");
+						}
+						else {
+							lastUsedContinent = (String)continentInput.getItemAt(continentInput.getSelectedIndex());
+							if (newMap.addCountry(countryInput.getText().trim(), lastUsedContinent)){
+								reloadContinents();
+								reloadMatrix();
+								retry = false;
 							}
 						}
 					}
@@ -536,17 +543,33 @@ public class MapEditor extends JFrame {
 				chooser.setDialogTitle("Save map file");
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setAcceptAllFileFilterUsed(false);
+				chooser.setFileFilter(new FileFilter(){
+					@Override
+					public boolean accept(File f){
+						if(f.getName().endsWith(".map")||f.isDirectory())
+							return true;
+						else return false;
+					}
+					public String getDescription(){
+						return "Map files(*.map)";
+					}
+				});				
 				if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
 					return;
 				}	
-				outputFileName = chooser.getSelectedFile().getAbsolutePath();
-				if (outputFileName.trim().isEmpty()){
+				outputFileName = chooser.getSelectedFile().getAbsolutePath().trim();
+				if (outputFileName.isEmpty()){
 					JOptionPane.showMessageDialog(null,"Map file name invalid");
 				}
 				else{
-					newMap.saveToFile(outputFileName.trim());
-					setTitle("Map Editor - "+newMap.riskMapName+"by "+newMap.author);
-					reloadContinents();
+					if (outputFileName.indexOf(".map")==-1){
+						outputFileName+=".map";
+					}
+					if (newMap.saveToFile(outputFileName)){
+						JOptionPane.showMessageDialog(null,"Successfully save the file.");
+						setTitle("Map Editor - "+newMap.riskMapName+" by "+newMap.author);
+						reloadContinents();
+					}
 				}
 			}	
 		}
@@ -575,32 +598,43 @@ public class MapEditor extends JFrame {
 					return;	
 			}
 			String inputFileName;
-        	JFileChooser chooser;
-        	chooser = new JFileChooser();
-            chooser.setCurrentDirectory(new java.io.File("./src/map"));
-            chooser.setDialogTitle("Choose map file");
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setAcceptAllFileFilterUsed(false);
-            if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
-            	return;
-            }			
-        	inputFileName = chooser.getSelectedFile().getAbsolutePath();
-        	if (inputFileName.trim().isEmpty()){
-        		JOptionPane.showMessageDialog(null,"Map file name invalid");
-        	}
-        	else{
-        		RiskMap existingMap = new RiskMap();
-        		if (existingMap.loadMapFile(inputFileName.trim())){
-        			newMap = null;
-        			newMap = existingMap;	
-        			newMap.modified = false;
+			JFileChooser chooser;
+			chooser = new JFileChooser();
+			chooser.setCurrentDirectory(new java.io.File("./src/map"));
+			chooser.setDialogTitle("Choose map file");
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			chooser.setAcceptAllFileFilterUsed(false);
+			chooser.setFileFilter(new FileFilter(){
+				@Override
+				public boolean accept(File f){
+					if(f.getName().endsWith(".map")||f.isDirectory())
+						return true;
+					else return false;
+				}
+				public String getDescription(){
+					return "Map files(*.map)";
+				}
+			});
+			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+				return;
+			}			
+			inputFileName = chooser.getSelectedFile().getAbsolutePath();
+			if (inputFileName.trim().isEmpty()){
+				JOptionPane.showMessageDialog(null,"Map file name invalid");
+			}
+			else{
+				RiskMap existingMap = new RiskMap();
+				if (existingMap.loadMapFile(inputFileName.trim(),1)){
+					newMap = null;
+					newMap = existingMap;	
+					newMap.modified = false;
         		
-        			setTitle("Map Editor - "+newMap.riskMapName+" by "+newMap.author);   
+					setTitle("Map Editor - "+newMap.riskMapName+" by "+newMap.author);   
         		
-        			reloadContinents();		
-        			reloadMatrix();	
-        		}
-        	}
+					reloadContinents();		
+					reloadMatrix();	
+				}
+			}
 		}
 	} 
 	
@@ -620,7 +654,7 @@ public class MapEditor extends JFrame {
 	
 	private class adjustWidthHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
-			matrixDisplayMode = "prefered";
+			matrixDisplayMode = "preferred";
 			FitTableColumns(adjacencyMatrix);
 		}
 	}	
@@ -709,13 +743,14 @@ public class MapEditor extends JFrame {
 			while(retry){
 				String inputWord=JOptionPane.showInputDialog(null,"Input the new control number for continent <"+selContinentName+">:",oldControlNum);
 				if (inputWord!=null){
-					if (inputWord.trim().isEmpty()){
+					inputWord = inputWord.trim();
+					if (inputWord.isEmpty()){
 						JOptionPane.showMessageDialog(null,"Control number can't be empty");
 					}
 					else{
 						Pattern pattern = Pattern.compile("[0-9]*");  
-						if (pattern.matcher(inputWord.trim()).matches()){ 
-							if (newMap.changeContinentControl(selContinentName, Integer.parseInt(inputWord.trim())))
+						if (pattern.matcher(inputWord).matches()){ 
+							if (newMap.changeContinentControl(selContinentName, Integer.parseInt(inputWord)))
 								reloadContinents();
 								retry = false;
 						}
@@ -784,8 +819,7 @@ public class MapEditor extends JFrame {
 	}	
 	
 	public static void main(String[] args) {  
-		MapEditor myMapEditor = new MapEditor();  
-		myMapEditor.initGUI();  
+		MapEditor myMapEditor = new MapEditor(); 
 	}  
 }
     

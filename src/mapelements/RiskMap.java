@@ -12,7 +12,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+
+import mapeditor.BasicInfoView;
 
 /**
  * This is class RiskMap to achieve the function of edit map
@@ -30,7 +33,7 @@ public class RiskMap {
 
 	/**
 	 * The constructor of class RiskMap
-	 * @param name The name of the Map that is editing
+	 * @param name of the Map that is editing
 	 */
 	public RiskMap(String name){
 		this.globalIndex = 1;
@@ -39,7 +42,7 @@ public class RiskMap {
 		this.warn = "yes";
 		this.wrap = "no";
 		this.image = "none";
-		this.scroll = "no";
+		this.scroll = "none";
 		this.modified = false;
 		this.continents = new ArrayList<Continent>();
 		this.countryNum = 0;
@@ -51,12 +54,12 @@ public class RiskMap {
      * The constructor of class RiskMap
      */
     public RiskMap(){
-        this.globalIndex = 1;
-        this.modified = false;
-        this.continents = new ArrayList<Continent>();
-        this.countryNum = 0;
-        this.countries = new HashMap<Integer,ArrayList<Country>>();
-        this.adjacencyList = new HashMap<Integer,ArrayList<Integer>>();
+    	this.globalIndex = 1;
+    	this.modified = false;
+    	this.continents = new ArrayList<Continent>();
+    	this.countryNum = 0;
+    	this.countries = new HashMap<Integer,ArrayList<Country>>();
+    	this.adjacencyList = new HashMap<Integer,ArrayList<Integer>>();
     }
 
 
@@ -81,15 +84,15 @@ public class RiskMap {
      * @param countryID
      * @return Country that found
      */
-    public Country findCountryByID(int countryID) {
-        for (ArrayList<Country> loopList : countries.values()) {
-            for (Country loopCountry:loopList){
-                if (loopCountry.countryID==countryID){
-                    return loopCountry;
-                }
-            }
-        }
-        return null;
+	public Country findCountryByID(int countryID) {
+    	for (ArrayList<Country> loopList : countries.values()) {
+    		for (Country loopCountry:loopList){
+    			if (loopCountry.countryID==countryID){
+    				return loopCountry;
+    			}
+    		}
+    	}
+    	return null;
     }
 
 	/**
@@ -129,17 +132,17 @@ public class RiskMap {
      * @param controlNum The number of Continents want to add
      * @return succeed or not
      */
-    public boolean addContinent(String continentName, int controlNum){
-        if (findContinent(continentName)!=null) {
-            JOptionPane.showMessageDialog(null,"Continnet <"+continentName+"> already exists");
-            return false;
-        }
-        Continent newContinent = new Continent(globalIndex++,continentName);
-        newContinent.controlNum = controlNum;
-        continents.add(newContinent);
-        countries.put(newContinent.continentID, new ArrayList<Country>());
-        this.modified = true;
-        return true;
+	public boolean addContinent(String continentName, int controlNum){
+    	if (findContinent(continentName)!=null) {
+    		JOptionPane.showMessageDialog(null,"Continnet <"+continentName+"> already exists");
+    		return false;
+    	}
+    	Continent newContinent = new Continent(globalIndex++,continentName);
+    	newContinent.controlNum = controlNum;
+    	continents.add(newContinent);
+    	countries.put(newContinent.continentID, new ArrayList<Country>());
+    	this.modified = true;
+    	return true;
     }
 
 	/**
@@ -176,26 +179,27 @@ public class RiskMap {
      * @param coordinateY The Y coordinate of the country
      * @return succeed or not
      */
-    public boolean addCountry(String countryName,String continentName,int coordinateX, int coordinateY){
-        Continent targetContinent = findContinent(continentName);
-        if (targetContinent==null) {
-            JOptionPane.showMessageDialog(null,"Continnet <"+continentName+"> does not exists");
-            return false;
-        }
+	public boolean addCountry(String countryName,String continentName,int coordinateX, int coordinateY){
+		
+    	Continent targetContinent = findContinent(continentName);
+    	if (targetContinent==null) {
+    		JOptionPane.showMessageDialog(null,"Continnet <"+continentName+"> does not exists");
+    		return false;
+    	}
 
-        if (findCountry(countryName)!=null){
-            JOptionPane.showMessageDialog(null,"Country <"+countryName+"> already exists");
-            return false;
-        }
+    	if (findCountry(countryName)!=null){
+    		JOptionPane.showMessageDialog(null,"Country <"+countryName+"> already exists");
+    		return false;
+    	}
 
-        Country newCountry = new Country(globalIndex++,countryName,targetContinent);
-        newCountry.coordinate[0] = coordinateX;
-        newCountry.coordinate[1] = coordinateY;
-        countries.get(targetContinent.continentID).add(newCountry);
-        adjacencyList.put(newCountry.countryID, new ArrayList<Integer>());
-        countryNum++;
-        this.modified = true;
-        return true;
+    	Country newCountry = new Country(globalIndex++,countryName,targetContinent);
+    	newCountry.coordinate[0] = coordinateX;
+    	newCountry.coordinate[1] = coordinateY;
+    	countries.get(targetContinent.continentID).add(newCountry);
+    	adjacencyList.put(newCountry.countryID, new ArrayList<Integer>());
+    	countryNum++;
+    	this.modified = true;
+    	return true;
     }
 
 	/**
@@ -408,277 +412,329 @@ public class RiskMap {
      * @param localAdjacencyList adjacency list to be checked
      * @return corrected or not
      */
-    public boolean checkConnection(Map<Integer,ArrayList<Integer>> localAdjacencyList) {
-        if (localAdjacencyList.size()==0) return true;
-        int sourceNode = -1;
-        for (int loopCountry : localAdjacencyList.keySet()) {
-            findCountryByID(loopCountry).flagBFS = false;
-            if (sourceNode==-1) sourceNode = loopCountry;
-        }
-        findCountries = 1;
-        findCountryByID(sourceNode).flagBFS = true;
-        BFS(localAdjacencyList,sourceNode);
+	public boolean checkConnection(Map<Integer,ArrayList<Integer>> localAdjacencyList) {
+		if (localAdjacencyList.size()==0) return true;
+		int sourceNode = -1;
+		for (int loopCountry : localAdjacencyList.keySet()) {
+			findCountryByID(loopCountry).flagDFS = false;
+			if (sourceNode==-1) sourceNode = loopCountry;
+		}
+		findCountries = 0;
+		//findCountryByID(sourceNode).flagDFS = true;
+		DFS(localAdjacencyList,sourceNode);
 
-        if (findCountries==localAdjacencyList.size()) return true;
-        else return false;
-    }
+		if (findCountries==localAdjacencyList.size()) return true;
+		else return false;
+	}
 
     /**
-     * Breadth First Search
+     * Depth First Search
      * @param localAdjacencyList adjacency list to be checked
      * @param sourceNode Root node
      */
-    public void BFS(Map<Integer,ArrayList<Integer>> localAdjacencyList, int sourceNode) {
-        ArrayList<Integer> myChildren = new ArrayList<Integer>();
-        for (int targetNode : localAdjacencyList.get(sourceNode)){
-            Country targetCountry = findCountryByID(targetNode);
-            if (!targetCountry.flagBFS){
-                findCountries++;
-                targetCountry.flagBFS = true;
-                myChildren.add(targetNode);
-            }
-        }
-        for (int targetNode : myChildren){
-            BFS(localAdjacencyList,targetNode);
-        }
-    }
+	public void DFS(Map<Integer,ArrayList<Integer>> localAdjacencyList, int sourceNode) {
+		findCountryByID(sourceNode).flagDFS = true;
+		findCountries++;
+		for (int targetNode : localAdjacencyList.get(sourceNode)){
+			Country targetCountry = findCountryByID(targetNode);
+			if (!targetCountry.flagDFS){
+				DFS(localAdjacencyList,targetNode);
+			}
+		}
+	}
 
     /**
      * Check whether the map is valid
-     * @param mode mode 0-upon save, 1-upon load
+     * @param mode mode 0-upon save, 1-upon load 2- upon game load
      * @return succeed or not
      */
-    public boolean checkValid(int mode){ //mode 0-upon save, 1-upon load
-        String errorMessage = null;
-        //Check map connectivity
-        if (!checkConnection(adjacencyList)) errorMessage="Important error: The whole map is not a connected graph.\n";
-        //Check continents connectivity
-        for (Continent loopContinent: continents){
-            if (countries.get(loopContinent.continentID).size()==0){
-                errorMessage+="Important error: The continent <"+loopContinent.continentName+"> has no country in it.\n";
-                continue;
-            }
-            Map<Integer,ArrayList<Integer>> loopAdjacencyList = new HashMap<Integer,ArrayList<Integer>>();
-            for (Country loopCountry: countries.get(loopContinent.continentID)){
-                loopAdjacencyList.put(loopCountry.countryID, new ArrayList<Integer>());
-                for (Integer neighbour: adjacencyList.get(loopCountry.countryID)){
-                    if (findCountryByID(neighbour).belongToContinent.continentID==loopContinent.continentID){
-                        loopAdjacencyList.get(loopCountry.countryID).add(neighbour);
-                    }
-                }
-            }
-            if (!checkConnection(loopAdjacencyList)) errorMessage+="Important error: The continent <"+loopContinent.continentName+"> is not a connected graph.\n";
-        }
+	public boolean checkValid(int mode){ //mode 0-upon save, 1-upon load 2-upon game load
+		String errorMessage = null;
+		if ((continents.size()==0)||(adjacencyList.size()==0)){
+			errorMessage = "Error: There is no countries.\n";
+		}
+		else{
+			//Check map connectivity
+			if (!checkConnection(adjacencyList)) errorMessage="Error: The whole map is not a connected graph.\n";
+			//Check continents connectivity
+			for (Continent loopContinent: continents){
+				if (countries.get(loopContinent.continentID).size()==0){
+					if (errorMessage == null)
+						errorMessage = "Error: The continent <"+loopContinent.continentName+"> has no country in it.\n";
+					else
+						errorMessage += "Error: The continent <"+loopContinent.continentName+"> has no country in it.\n";
+					continue;
+				}
+				Map<Integer,ArrayList<Integer>> loopAdjacencyList = new HashMap<Integer,ArrayList<Integer>>();
+				for (Country loopCountry: countries.get(loopContinent.continentID)){
+					loopAdjacencyList.put(loopCountry.countryID, new ArrayList<Integer>());
+					for (Integer neighbour: adjacencyList.get(loopCountry.countryID)){
+						if (findCountryByID(neighbour).belongToContinent.continentID==loopContinent.continentID){
+							loopAdjacencyList.get(loopCountry.countryID).add(neighbour);
+						}
+					}
+				}
+				if (!checkConnection(loopAdjacencyList)){
+					if (errorMessage == null)
+						errorMessage="Error: The continent <"+loopContinent.continentName+"> is not a connected graph.\n";
+					else errorMessage+="Error: The continent <"+loopContinent.continentName+"> is not a connected graph.\n";
+				}
+			}
+		}	
 
-        if (errorMessage!=null) {
-            if (mode==1){
-                if (JOptionPane.showConfirmDialog(null,
-                        errorMessage+"Do you still want to open the map and correct them?",
-                        "Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
-                    return false;
-            }
-            else {
-                JOptionPane.showMessageDialog(null,errorMessage);
-                return false;
-            }
-        }
+		if (errorMessage!=null) {
+			if (mode==1){
+				if (JOptionPane.showConfirmDialog(null,
+						errorMessage+"Do you still want to open the map and correct these errors?",
+						"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
+					return false;
+			}
+			else {
+				JOptionPane.showMessageDialog(null,errorMessage);
+				return false;
+			}
+		}
 
-        boolean warn = false;
-        if ((this.author==null)||(this.wrap==null)||(this.scroll==null)||(this.image==null)||(this.warn==null)){
-            warn = true;
-        }
-        else {
-            Set<String> validValues = new HashSet<String>();
-            validValues.add("yes");
-            validValues.add("no");
-            if (!validValues.contains(this.wrap)||!validValues.contains(this.warn)){
-                warn = true;
-            }
-            validValues.clear();
-            validValues.add("horizontal");
-            validValues.add("vertical");
-            validValues.add("none");
-            if (!validValues.contains(this.scroll)){
-                warn = true;
-            }
-        }
-        if (warn) {
-            JOptionPane.showMessageDialog(null,"There are some warnings");
-        }
-        return true;
-    }
+		boolean flagWarning = false;
+		if ((this.author==null)||(this.wrap==null)||(this.scroll==null)||(this.image==null)||(this.warn==null))
+			flagWarning = true;
+		else {
+			Set<String> validValues = new HashSet<String>();
+			validValues.add("yes");
+			validValues.add("no");
+			if (!validValues.contains(this.wrap)||!validValues.contains(this.warn)){
+				flagWarning = true;
+			}
+			validValues.clear();
+			validValues.add("horizontal");
+			validValues.add("vertical");
+			validValues.add("none");
+			if (!validValues.contains(this.scroll))
+				flagWarning = true;
+		}
+		if ((flagWarning)||mode==0) {
+			BasicInfoView basicInfo = new BasicInfoView(this,mode); 
+			int state = 1;
+			if (mode!=2) {
+				basicInfo.setVisible(true);
+				state = basicInfo.state;
+			}
+			basicInfo.dispose();
+			if (state==0) return false;
+		}
+		return true;
+	}
 
     /**
      * Load Map File
      * @param mapFileName The name of map file
      * @return succeed or not
      */
-    public boolean loadMapFile(String mapFileName) {
-        BufferedReader br = null;
-        String inputLine = null;
-        int rowNumber = 0;
-        String dateArea = "none";//none, Map, Continents, Territories;
-        Map<String,ArrayList<String>> countriesList = new HashMap<String,ArrayList<String>>();
-        try{
-            br = new BufferedReader(new FileReader(mapFileName));
-            this.riskMapName = (mapFileName.substring(mapFileName.lastIndexOf("\\")+1,mapFileName.lastIndexOf(".")));
-            while ((inputLine = br.readLine()) != null){
-                rowNumber++;
-                inputLine = inputLine.trim();
-                int index;
-                if (!inputLine.isEmpty()){
-                    switch (inputLine){
-                        case "[Map]":
-                            dateArea = "Map";
-                            break;
-                        case "[Continents]":
-                            dateArea = "Continents";
-                            break;
-                        case "[Territories]":
-                            dateArea = "Territories";
-                            break;
-                        default:
-                            switch (dateArea){
-                                case "Map":
-                                    index = inputLine.indexOf("=");
-                                    if (index!=-1){
-                                        String keyword = inputLine.substring(0,index).trim().toLowerCase();
-                                        String value = inputLine.substring(index+1).trim();
-                                        if (!keyword.isEmpty()){
-                                            switch (keyword){
-                                                case "author":
-                                                    if (!value.isEmpty()) this.author = value;
-                                                    break;
-                                                case "warn":
-                                                    if (!value.isEmpty()) this.warn = value;
-                                                    break;
-                                                case "image":
-                                                    if (!value.isEmpty()) this.image = value;
-                                                    break;
-                                                case "wrap":
-                                                    if (!value.isEmpty()) this.wrap = value;
-                                                    break;
-                                                case "scroll":
-                                                    if (!value.isEmpty()) this.scroll = value;
-                                                    break;
-                                            }
-                                        }
-                                    }
-                                    break;
+	public boolean loadMapFile(String mapFileName, int mode) {//mode 1-mapEditor 2-RiskGame 
+		BufferedReader br = null;
+		String inputLine = null;
+		int rowNumber = 0;
+		String dateArea = "none";//none, Map, Continents, Territories;
+		Map<String,ArrayList<String>> countriesList = new HashMap<String,ArrayList<String>>();
+		try{
+			br = new BufferedReader(new FileReader(mapFileName));
+			this.riskMapName = (mapFileName.substring(mapFileName.lastIndexOf("\\")+1,mapFileName.lastIndexOf(".")));
+			while ((inputLine = br.readLine()) != null){
+				rowNumber++;
+				inputLine = inputLine.trim();
+				int index;
+				if (!inputLine.isEmpty()){
+					switch (inputLine){
+					case "[Map]":
+						dateArea = "Map";
+						break;
+					case "[Continents]":
+						dateArea = "Continents";
+						break;
+					case "[Territories]":
+						dateArea = "Territories";
+						break;
+					default:
+						switch (dateArea){
+						case "Map":
+							index = inputLine.indexOf("=");
+							if (index!=-1){
+								String keyword = inputLine.substring(0,index).trim().toLowerCase();
+								String value = inputLine.substring(index+1).trim();
+								if (!keyword.isEmpty()){
+									switch (keyword){
+									case "author":
+										if (!value.isEmpty()) this.author = value;
+										break;
+									case "warn":
+										if (!value.isEmpty()) this.warn = value;
+										break;
+									case "image":
+										if (!value.isEmpty()) this.image = value;
+										break;
+									case "wrap":
+										if (!value.isEmpty()) this.wrap = value;
+										break;
+									case "scroll":
+										if (!value.isEmpty()) this.scroll = value;
+										break;
+									default:
+										JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Invalid format.");
+										return false;
+									}
+								}
+							}
+							else{
+								JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Invalid format.");
+								return false;								
+							}
+							break;
+						case "Continents":
+							index = inputLine.indexOf("=");
+							if (index!=-1){
+								String continentName = inputLine.substring(0,index).trim();
+								String controlNum = inputLine.substring(index+1).trim();
+								if (continentName==null||controlNum==null){
+									JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Invalid format.");
+									return false;									
+								}
+								if (continentName.isEmpty()||controlNum.isEmpty()){
+									JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Invalid format.");
+									return false;									
+								}									
+								Pattern pattern = Pattern.compile("[0-9]*");
+								if (pattern.matcher(controlNum).matches()){
+									if (!this.addContinent(continentName,Integer.parseInt(controlNum))) return false;
+								}
+								else {
+									JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Continent <"+continentName+">'s control number must be integer.");
+									return false;
+								}
+							}	
+							else{
+								JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Invalid format.");
+								return false;								
+							}							
+							break;
 
-                                case "Continents":
-                                    index = inputLine.indexOf("=");
-                                    if (index!=-1){
-                                        String continentName = inputLine.substring(0,index).trim();
-                                        String controlNum = inputLine.substring(index+1).trim();
-                                        if (!continentName.isEmpty()){
-                                            Pattern pattern = Pattern.compile("[0-9]*");
-                                            if (pattern.matcher(controlNum).matches()){
-                                                if (!this.addContinent(continentName,Integer.parseInt(controlNum))) return false;
-                                            }
-                                            else {
-                                                JOptionPane.showMessageDialog(null,"Continent <"+continentName+">'s control number is invalid.");
-                                                return false;
-                                            }
-                                        }
-                                    }
-                                    break;
+						case "Territories":
+							String[] countryInfo = inputLine.split(",");
+							if (countryInfo.length>=4){
+								String countryName = countryInfo[0].trim();
+								String belongContinentName = countryInfo[3].trim();
+								if (countryName.isEmpty()){
+									JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Country name can't be empty");
+									return false;
+								}
+								if (belongContinentName.isEmpty()){
+									JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Continent name can't be empty");
+									return false;
+								}
+								Pattern pattern = Pattern.compile("[0-9]*");
+								if (!pattern.matcher(countryInfo[1].trim()).matches()||!pattern.matcher(countryInfo[2].trim()).matches()){
+									JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Coordinates must be integer.");
+									return false;
+								}
+								if (!this.addCountry(countryName,belongContinentName,Integer.parseInt(countryInfo[1].trim()),
+										Integer.parseInt(countryInfo[2].trim()))) 
+									return false;
+								countriesList.put(countryName, new ArrayList<String>());
+								for (int i=4;i<countryInfo.length;i++){
+									if (countriesList.get(countryName).contains(countryInfo[i].trim())){
+										JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Duplicate record in adjacency list.");
+										return false;
+									}
+									countriesList.get(countryName).add(countryInfo[i].trim());
+								}
+							}
+							else{
+								JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+": Not enough data.");
+								return false;
+							}
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)br.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}   
 
-                                case "Territories":
-                                    String[] countryInfo = inputLine.split(",");
-                                    if (countryInfo.length>=4){
-                                        String countryName = countryInfo[0].trim();
-                                        String belongContinentName = countryInfo[3].trim();
-                                        if (countryName.isEmpty()){
-                                            JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+", country name can't be empty");
-                                            return false;
-                                        }
-                                        if (belongContinentName.isEmpty()){
-                                            JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+", continent name can't be empty");
-                                            return false;
-                                        }
-                                        Pattern pattern = Pattern.compile("[0-9]*");
-                                        if (!pattern.matcher(countryInfo[1].trim()).matches()||!pattern.matcher(countryInfo[2].trim()).matches()){
-                                            JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+", coordinate must be integer.");
-                                            return false;
-                                        }
-                                        if (!this.addCountry(countryName,belongContinentName,Integer.parseInt(countryInfo[1].trim()),
-                                                Integer.parseInt(countryInfo[2].trim()))) return false;
-                                        countriesList.put(countryName, new ArrayList());
-                                        for (int i=4;i<countryInfo.length;i++){
-                                            if (countriesList.get(countryName).contains(countryInfo[i].trim())){
-                                                JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+", duplicate record in adjacency list.");
-                                                return false;
-                                            }
-                                            countriesList.get(countryName).add(countryInfo[i].trim());
-                                        }
-                                    }
-                                    else{
-                                        JOptionPane.showMessageDialog(null,"Fatal error in line "+rowNumber+", not enough data.");
-                                        return false;
-                                    }
-                            }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (br != null)br.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+		for (String loopCountry : countriesList.keySet()) {
+			ArrayList<String> neighbours = countriesList.get(loopCountry);
+			for (String loopNeighbour:neighbours){
+				if (!countriesList.containsKey(loopNeighbour)){
+					JOptionPane.showMessageDialog(null,"Fatal error: Country <"+loopNeighbour+"> in <"+loopCountry+">'s adjacency list is not exist.");
+					return false;
+				}
+				if (!countriesList.get(loopNeighbour).contains(loopCountry)){
+					JOptionPane.showMessageDialog(null,"Fatal error: The connection between country <"+loopCountry+"> and <"+loopNeighbour+"> is not paired.");
+					return false;
+				}
+				adjacencyList.get(findCountry(loopCountry).countryID).add(findCountry(loopNeighbour).countryID);
+			}
+		}
 
-        for (String loopCountry : countriesList.keySet()) {
-            ArrayList<String> neighbours = countriesList.get(loopCountry);
-            for (String loopNeighbour:neighbours){
-                if (!countriesList.containsKey(loopNeighbour)){
-                    JOptionPane.showMessageDialog(null,"Fatal error, country <"+loopNeighbour+"> does not exist.");
-                    return false;
-                }
-                if (!countriesList.get(loopNeighbour).contains(loopCountry)){
-                    JOptionPane.showMessageDialog(null,"Fatal error, the connection between country <"+loopCountry+"> and <"+loopNeighbour+"> is not paired.");
-                    return false;
-                }
-                adjacencyList.get(findCountry(loopCountry).countryID).add(findCountry(loopNeighbour).countryID);
-            }
-        }
-
-        return checkValid(1);
-    }
+		return checkValid(mode);
+	}
 
     /**
      * Save map file
      * @param mapFileName The name of map file
+     * @return succeed or not
      */
-    public void saveToFile(String mapFileName) {
-        File outputFile = new File(mapFileName);
-        FileWriter fw = null;
-        try{
-            if (!outputFile.exists()) {
-                outputFile.createNewFile();
-            }
-            fw = new FileWriter(outputFile.getAbsoluteFile(),false);
-            fw.write("[Map]\r\n");
-            fw.write("author="+this.author+"\r\n");
-            fw.write("warn="+this.warn+"\r\n");
-            fw.write("image="+this.image+"\r\n");
-            fw.write("wrap="+this.wrap+"\r\n");
-            fw.write("scroll="+this.scroll+"\r\n");
-            fw.write("\r\n");
-            fw.write("[Continents]\r\n");
-            fw.close();
-        }catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fw != null)fw.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+	public boolean saveToFile(String mapFileName) {
+		File outputFile = new File(mapFileName);
+		FileWriter fw = null;
+		try{
+			if (outputFile.exists()&&outputFile.isFile()) {
+				outputFile.delete();
+			}
+			outputFile.createNewFile();
+			fw = new FileWriter(outputFile.getAbsoluteFile(),false);
+			fw.write("[Map]\r\n");
+			fw.write("author="+this.author+"\r\n");
+			fw.write("warn="+this.warn+"\r\n");
+			fw.write("image="+this.image+"\r\n");
+			fw.write("wrap="+this.wrap+"\r\n");
+			fw.write("scroll="+this.scroll+"\r\n");
+			fw.write("\r\n");
+			fw.write("[Continents]\r\n");
+			for (Continent loopContinent : continents){
+				fw.write(loopContinent.continentName+"="+loopContinent.controlNum+"\r\n");
+			}
+			fw.write("\r\n");
+			fw.write("[Territories]\r\n");
+			for (Continent loopContinent : continents){
+				for (Country loopCountry : countries.get(loopContinent.continentID)){
+					ArrayList<Integer> neighbours = adjacencyList.get(loopCountry.countryID);
+					fw.write(loopCountry.countryName+","+loopCountry.coordinate[0]+","+loopCountry.coordinate[1]+","+loopContinent.continentName);
+					for (int neighbour : neighbours){
+						fw.write(","+findCountryByID(neighbour).countryName);
+					}
+					fw.write("\r\n");
+				}
+				fw.write("\r\n");
+			}	
+			fw.close();
+			this.riskMapName = (mapFileName.substring(mapFileName.lastIndexOf("\\")+1,mapFileName.lastIndexOf("."))); 
+			this.modified = false;
+		}catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (fw != null)fw.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
 
 }
