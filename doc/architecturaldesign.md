@@ -13,9 +13,7 @@ The GameElements folder includes all the elements about the risk game.
 
 File_Name  | Description
 ------------- | -------------
-ExchangeInteraction  | 
-Player  | 
-ReinforceArmy  | 
+Player  | The class is to describe attributes of players and calculate how many armies are given according to numbers of cards.
 RiskGame  | 
 
 ### 1.2 Map Editor
@@ -23,26 +21,30 @@ The MapEditor folder includes all the elements about editting map.
 
 File_Name  | Description
 ------------- | -------------
-MapEditor  | 
-TableRowHeader  | 
+MapEditor  | The class is used to create a window for player to edit maps of games.
+BasicInfoView  | The class is used to present the basic information of maps.
+UsefulRenders  | The class is used to render the map.
 
 ### 1.3 Map Elements
 The MapElements folder includes all the elements used in the map file.
 
 File_Name  | Description
 ------------- | -------------
-Continent  | 
-Country  | 
-RiskMap  | 
+Continent  | The class is to describe attributes of the continent.
+Country  | The class is to describe attributes of the country.
+RiskMap  | The class is to achieve the function of map editor.
+NodeRecord  | 
 
-### 1.4 Phases
-The Phase folder includes all the phases in the risk game
+### 1.4 Game Controller
+The GameController folder includes all the phases in the risk game
 
 File_Name  | Description
 ------------- | -------------
-FillTableContent  | Fill the table with countries' name and their armies
-FortificationPhase  | 
-ReinforcementPhase  | 
+StartupPhase  | Fill the table with countries' name and their armies
+FortificationPhase  | In this class, it contains all necessary actions in fortification phase. Player can move army from one country to another
+ReinforcementPhase  | In this class, it contains all necessary actions in reinforcement phase. Players place reinforcement armies on the map based on the calculation of correct reinforcement armies' number.
+RiskGameMain  | The class is used to create a window for player to edit maps for games.
+UsefulRenders  |	The class is used to render maps after phases.
 
 ### 1.5 Maps
 The folder is used to store map files.
