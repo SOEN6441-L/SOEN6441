@@ -4,7 +4,7 @@ The intention of this guide is to provide a set of conventions that encourage go
 
 In general, much of our style and conventions mirror the
 [Code Conventions for the Java Programming Language](http://www.oracle.com/technetwork/java/codeconvtoc-136057.html)
-and [Google's Java Style Guide](https://google.github.io/styleguide/javaguide.html).
+, [Google's Java Style Guide](https://google.github.io/styleguide/javaguide.html), and slides from Dr. Joey Paquet .
 
 ## Coding style
 
@@ -13,19 +13,19 @@ and [Google's Java Style Guide](https://google.github.io/styleguide/javaguide.ht
 #### Use line breaks wisely
 There are generally two reasons to insert a line break:
 
-1. Your statement exceeds the column limit.
+1. Our statement exceeds the column limit.
 
-2. You want to logically separate a thought.<br />
+2. We want to logically separate different thought and segment of code.<br />
 
 #### Indent style
 We use the "one true brace style".
 Indent size is 2 columns.
 
-    // Like this.
-    if (x < 0) {
-      negative(x);
-    } else {
-      nonnegative(x);
+    // For example.
+    if (this.player.ifForceExchange()){
+            //change card
+    }else{
+            //do not change
     }
 
 Continuation indent is 4 columns.  Nested continuations may add 4 columns or 2 at each level.
@@ -33,40 +33,34 @@ Continuation indent is 4 columns.  Nested continuations may add 4 columns or 2 a
     
     //   - Each component of the message is separate and self-contained.
     //   - Adding or removing a component of the message requires minimal reformatting.
-    throw new IllegalStateException("Failed to process"
-        + " request " + request.getId()
-        + " for user " + user.getId()
-        + " query: '" + query.getText() + "'");
+    public void changeCard(){
+        ExchangeInteraction ei = new ExchangeInteraction();
+        ei.GetAndSetCards(this.player.cards);
+        ei.SetButtonLabel();
+        this.player.exchangeTime = ei.count;
+        this.player.cards = ei.cards;
+        this.player.CalculateArmies();
+    }
 
-Don't break up a statement unnecessarily.
+We do not break up a statement unnecessarily.
     
     final String value = otherValue;
 
 Method declaration continuations.
 
     // Preferred for easy scanning and extra column space.
-    public String downloadAnInternet(
-        Internet internet,
-        Tubes tubes,
-        Blogosphere blogs,
-        Amount<Long, Data> bandwidth) {
+    //Using camel case
 
-      tubes.download(internet);
-      ...
+    public int getChangeCardTimes() {
+        return changeCardTimes;
     }
 
 ##### Chained method calls
   
     //   - Method calls are isolated to a line.
     //   - The proper location for a new method call is unambiguous.
-    Iterable<Module> modules = ImmutableList.<Module>builder()
-        .add(new LifecycleModule())
-        .add(new AppLauncherModule())
-        .addAll(application.getModules())
-        .build();
-
-#### No tabs
-We've found tab characters to cause more harm than good.
+    int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
+	int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 
 #### 100 column limit
 You should follow the convention set by the body of code you are working with.
@@ -77,6 +71,8 @@ fitting two editor tabs side-by-side on a reasonably-high resolution display.
 
 #### No trailing whitespace
 Trailing whitespace characters, while logically benign, add nothing to the program.
+
+    private String matrixDisplayMode = "prefered"; //prefered, same
 
 ### Field, class, and method declarations
 
@@ -94,33 +90,30 @@ ordering (sections
 
 #### Extremely short variable names should be reserved for instances like loop indices.
  
-    class User {
-      private final int ageInYears;
-      private final String maidenName;
-
-      ...
+    class Player {
+      private int armies;
+      private String name;
     }
 
 #### Include units in variable names
     
     //   - Unit is built in to the type.
     //   - The field is easily adaptable between units, readability is high.
-    Amount<Long, Time> pollInterval;
-    Amount<Integer, Data> fileSize;
+    public Map<Integer,ArrayList<Country>> countries;
+    public Map<Integer,ArrayList<Integer>> adjacencyList;
 
 #### Don't embed metadata in variable names
 A variable name should describe the variable's purpose.  Adding extra information like scope and
 type is generally a sign of a bad variable name.
 
 Avoid embedding the field type in the field name.
-
     
     // Bad.
-    Map<Integer, User> idToUserMap;
+    Map<Integer, Player> idToUserMap;
     String valueString;
 
     // Good.
-    Map<Integer, User> usersById;
+    Map<Integer, Player> usersById;
     String value;
 
 Also avoid embedding scope information in a variable.  Hierarchy-based naming suggests that a class
@@ -135,8 +128,6 @@ is too complex and should be broken apart.
     String value;
 
 ### Space pad operators and equals.
-
-    
 
     int foo = a + b + 1;
 
@@ -159,7 +150,7 @@ It's even good to be *really* obvious.
       ...
     }
 
-### Documentation
+### Javadoc
 
 The more visible a piece of code is (and by extension - the farther away consumers might be),
 the more documentation is needed.
@@ -188,30 +179,39 @@ blanks in the API, and make it easier to quickly and *correctly* use your API.
 A thorough class doc usually has a one sentence summary and, if necessary,
 a more detailed explanation.
 
-    
     /**
-     * An RPC equivalent of a unix pipe tee.  Any RPC sent to the tee input is guaranteed to have
-     * been sent to both tee outputs before the call returns.
-     *
-     * @param <T> The type of the tee'd service.
-     */
-    public class RpcTee<T> {
-      ...
-    }
+      * This class is the implementation of reinforcement phase in the Risk.
+      * <p> The ReinforcementPhase class will allow players add armies to their<br>
+      * to their country, based on the countries under control.</p>
+      * 
+      * @version alpha 0.1
+      * @see javax.swing.JFrame
+      *
+      */
+     public class ReinforcementPhase extends JFrame{
+        ...
+     }
 
 #### Documenting a method
 A method doc should tell what the method *does*.  Depending on the argument types, it may
 also be important to document input format.
 
     
-    //   - Covers yet another edge case.
     /**
-     * Splits a string on whitespace.  Repeated whitespace characters are collapsed.
-     *
-     * @param s The string to split.  An {@code null} string is treated as an empty string.
-     * @return A list of the whitespace-delimited parts of the input.
-     */
-    List<String> split(String s);
+	 * Function to find the Country according to the Country's name
+	 * @param countryName Country's name
+	 * @return Country that found
+	 */
+	public Country findCountry(String countryName) {
+		for (ArrayList<Country> loopList : countries.values()) {
+			for (Country loopCountry:loopList){
+				if (loopCountry.countryName.equals(countryName)){
+					return loopCountry;
+				}
+			}
+		}
+		return null;
+	}
 
 #### Be professional
 We've all encountered frustration when dealing with other libraries, but ranting about it doesn't
@@ -220,34 +220,9 @@ do you any favors.  Suppress the expletives and get to the point.
     
     // TODO(Jim): Tuck field validation away in a library.
     try {
-      userId = Integer.parseInt(xml.getField("id"));
+      playerId = Integer.parseInt(xml.getName("id"));
     } catch (NumberFormatException e) {
       ...
-    }
-
-#### Don't document overriding methods (usually)
-
-    
-    interface Database {
-      /**
-       * Gets the installed version of the database.
-       *
-       * @return The database version identifier.
-       */
-      String getVersion();
-    }
-
-    //   - The doc explains how it differs from or adds to the interface doc.
-    class TwitterDatabase implements Database {
-      /**
-       * Semantic version number.
-       *
-       * @return The database version in semver format.
-       */
-      @Override
-      public String getVersion() {
-        ...
-      }
     }
 
 #### Use javadoc features
@@ -286,21 +261,13 @@ class [fan-out](http://en.wikipedia.org/wiki/Coupling_(computer_programming)#Mod
 
     
     // Bad.
-    //   - Where did Foo come from?
-    import com.twitter.baz.foo.*;
-    import com.twitter.*;
-
-    interface Bar extends Foo {
-      ...
-    }
+    import java.awt.event.ActionEvent;
+    import java.awt.event.*;
 
     // Good.
-    import com.twitter.baz.foo.BazFoo;
-    import com.twitter.Foo;
+    import java.awt.event.ActionEvent;
+    import java.awt.event.ActionListener;
 
-    interface Bar extends Foo {
-      ...
-    }
 
 ### Use annotations wisely
 
