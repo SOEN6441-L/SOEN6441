@@ -5,6 +5,9 @@ import javax.swing.table.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.event.*;
 
+/**
+ *
+ */
 class RowHeaderTable extends JTable{  
 	private JTable refTable;  
 	/** 

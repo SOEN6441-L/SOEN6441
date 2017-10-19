@@ -10,8 +10,7 @@ import gamecontroller.StartupPhaseView;
 /**
  *   This class is to construct player;
  *   This class is to calculate how many armies are given according to numbers of cards.
- *   @Author Shirley / XUEYING LI
- *   @CreateTime 07.OCT.2017
+ *
  *   @param Name Name of player
  *   @param cards Store numbers of three cards, infantry, cavalry,artillery respectively
  *   @param changeCardTimes Store times of cards exchange
@@ -19,7 +18,10 @@ import gamecontroller.StartupPhaseView;
  *   @param totalArmies Total armies of player
  *   @param initialArmies Initial armies of player
  *   @param myColor colors of a player
- *   @
+ *   @param baseArmies basic numbers of armies
+ *   @param continents list of continents
+ *   @param totalReinforcement total number of total reinforcement
+ *   @param state state of the player
  */
 public class Player {
 	private String name;
@@ -35,6 +37,7 @@ public class Player {
     private int totalReinforcement;
     
     private int state;//0-not in game, 1- in game(have countries)
+
     /**
      *   This method is a class constructor.
      *
@@ -52,44 +55,83 @@ public class Player {
         setState(0);
      }
 
-    // get name of player
-    public String getName() {
+    /**
+     * get name of player
+     *
+     * @return name
+     */
+    public String getName()
+    {
         return name;
     }
 
+
+    /**
+     * To get cards
+     *
+     * @param myCards cards of player
+     */
     public void getCards(int[] myCards) {
         for(int i=0;i<3;i++) myCards[i] = cards[i];
     }
-    
+
+    /**
+     * Set cards
+     * @param myCards cards of player
+     */
     public void setCards(int[] myCards) {
         for(int i=0;i<3;i++) cards[i] = myCards[i];
     }
-    
+
+    /**
+     * To get string of cards number
+     * @return cards string
+     */
     public String getCardsString() {
         return String.valueOf(cards[0])+"+"+String.valueOf(cards[1])+"+"+String.valueOf(cards[2])+"="+String.valueOf(cards[0]+cards[1]+cards[2]);
-    }    
+    }
 
-    //get Change Card Times
+    /**
+     * get Change Card Times
+     *
+     * @return change cards time of exchange times
+     */
     public int getChangeCardTimes() {
         return changeCardTimes;
     }
 
-    //get countries of player
+    /**
+     * get countries of player
+     *
+     * @return number of countries of the player
+     */
     public ArrayList<Country> getCountries() {
         return countries;
     }
-    
-    //add a countries to player
+
+    /**
+     * add a countries to player
+     *
+     * @param newCountry number of new countries
+     */
     public void addCountrie(Country newCountry) {
     	this.countries.add(newCountry);
-    }   
-    
-    //remove a countries from player
+    }
+
+    /**
+     * remove a countries from player
+     *
+     * @param newCountry number of countries of removing
+     */
     public void removeCountrie(Country newCountry) {
     	this.countries.remove(newCountry);
-    }   
-    
-    //remove all countries from player
+    }
+
+    /**
+     * remove all countries from player
+     *
+     *
+     */
     public void removeAllCountrie() {
     	this.countries.clear();
     }   
@@ -119,7 +161,8 @@ public class Player {
     	return 5*(this.changeCardTimes+1);
     }
 
-	public Color getMyColor() {
+
+    public Color getMyColor() {
 		return myColor;
 	}
 
@@ -140,13 +183,25 @@ public class Player {
 	public void setState(int state) {
 		this.state = state;
 	}
-	
+
+    /**
+     * judge if  palyer win
+     * @param countryNum number of countries
+     * @return true if player win
+     */
+
 	public boolean winGame(int countryNum){
 		if (this.countries.size()==countryNum)
 			return true;
 		else return false;
 	}
-	
+
+	/**
+     * to judge if complete reinforcement phase
+     *
+     * @return 1 if complete
+     *
+	 */
 	public boolean reinforcementPhase(RiskGame myGame){
 		calculateArmyNumber(myGame.getGameMap());
 		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(this, myGame, totalReinforcement);
@@ -155,7 +210,11 @@ public class Player {
 		reinforcementPhase.dispose();
 		return (state == 1);
 	}
-	
+
+    /**
+     * To judge if complete fortification phase
+     * @return true if complete fortification phase
+     */
 	public boolean fortificationPhase(){
 		return true;
 	}
@@ -185,11 +244,21 @@ public class Player {
         }
     	if (ifForceExchange()) totalReinforcement+=this.CalExchangeArmies();
     }
-    
+
+    /**
+     * Judge if player can exchange cards
+     * @param myCards array of my cards
+     * @return true if can exchange
+     */
     public boolean canExchange(int[] myCards) {
     	return (Math.max(myCards[0], Math.max(myCards[1], myCards[2]))>=3
     			||Math.min(myCards[0], Math.min(myCards[1], myCards[2]))>=1);
     }
+
+    /**
+     * Increase of cards exchange times
+     *
+     */
 
     public void increaseChangeCardTimes() {
         changeCardTimes++;
