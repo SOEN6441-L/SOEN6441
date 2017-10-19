@@ -589,7 +589,7 @@ public class RiskGameMain extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			boolean retry = true;
 			while(retry){
-				String inputWord=JOptionPane.showInputDialog(null,"How many players do you want? \r\n(at least two players)");
+				String inputWord=JOptionPane.showInputDialog(null,"How many players do you want? \r\n(at least 2 players)");
 				if (inputWord!=null){
 					inputWord = inputWord.trim();
 					if (inputWord.isEmpty()){
