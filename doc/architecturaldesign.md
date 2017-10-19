@@ -45,6 +45,7 @@ FortificationPhase  | In this class, it contains all necessary actions in fortif
 ReinforcementPhase  | In this class, it contains all necessary actions in reinforcement phase. Players place reinforcement armies on the map based on the calculation of correct reinforcement armies' number.
 RiskGameMain  | The class is used to create a window for player to edit maps for games.
 UsefulRenders  |	The class is used to render maps after phases.
+ExchangeInteraction | This class is GUI for Exchange cards to armies.
 
 ### 1.5 Maps
 The folder is used to store map files.
