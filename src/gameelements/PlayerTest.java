@@ -1,6 +1,6 @@
 package gameelements;
 
-import static org.junit.Assert.*;
+/*import static org.junit.Assert.*;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -50,6 +50,4 @@ public class PlayerTest {
 		System.out.println("if test can exchange sucess");	
 	}
 	
-	
-
 }

@@ -10,18 +10,6 @@ import gamecontroller.StartupPhaseView;
 /**
  *   This class is to construct player;
  *   This class is to calculate how many armies are given according to numbers of cards.
- *
- *   @param Name Name of player
- *   @param cards Store numbers of three cards, infantry, cavalry,artillery respectively
- *   @param changeCardTimes Store times of cards exchange
- *   @param countries Store countries of the player
- *   @param totalArmies Total armies of player
- *   @param initialArmies Initial armies of player
- *   @param myColor colors of a player
- *   @param baseArmies basic numbers of armies
- *   @param continents list of continents
- *   @param totalReinforcement total number of total reinforcement
- *   @param state state of the player
  */
 public class Player {
 	private String name;
@@ -40,7 +28,7 @@ public class Player {
 
     /**
      *   This method is a class constructor.
-     *
+     *   @param newName The name of player
      */
     public Player(String newName,Color color){
         name = newName;
@@ -119,7 +107,7 @@ public class Player {
     }
 
     /**
-     * remove a countries from player
+     * The function of remove a countries from player
      *
      * @param newCountry number of countries of removing
      */
@@ -128,7 +116,7 @@ public class Player {
     }
 
     /**
-     * remove all countries from player
+     * The function of remove all countries from player
      *
      *
      */
@@ -142,7 +130,7 @@ public class Player {
     }
 
     /**
-     *  This method is to judge if player must exchange cards with armies.
+     *  This function is to judge if player must exchange cards with armies.
      *
      *  @return true if player is forced to exchange cards
      */
@@ -154,8 +142,8 @@ public class Player {
     }
 
     /**
-     *   To calculate how many armies after exchanging and change number of armies of player
-     *
+     *   The function calculate how many armies after exchanging and change number of armies of player
+     *   @return numbers of exchanged armies
      */
     public int CalExchangeArmies(){
     	return 5*(this.changeCardTimes+1);
@@ -185,7 +173,7 @@ public class Player {
 	}
 
     /**
-     * judge if  palyer win
+     * The function to judge if player win
      * @param countryNum number of countries
      * @return true if player win
      */
@@ -197,9 +185,9 @@ public class Player {
 	}
 
 	/**
-     * to judge if complete reinforcement phase
+     * The function to judge if complete reinforcement phase
      *
-     * @return 1 if complete
+     * @return if complete or not
      *
 	 */
 	public boolean reinforcementPhase(RiskGame myGame){
@@ -212,7 +200,7 @@ public class Player {
 	}
 
     /**
-     * To judge if complete fortification phase
+     * The function to judge if complete fortification phase
      * @return true if complete fortification phase
      */
 	public boolean fortificationPhase(){
@@ -230,7 +218,7 @@ public class Player {
 	
     /**
      * The function to calculate how many armies player get this turn
-     * @return the number of armies
+     * @param myMap The map that is been played
      */
     public void calculateArmyNumber(RiskMap myMap) {
     	this.baseArmies = Math.floorDiv(this.countries.size(), 3);
@@ -246,7 +234,7 @@ public class Player {
     }
 
     /**
-     * Judge if player can exchange cards
+     * The function to udge if player can exchange cards
      * @param myCards array of my cards
      * @return true if can exchange
      */
@@ -256,8 +244,7 @@ public class Player {
     }
 
     /**
-     * Increase of cards exchange times
-     *
+     * The function to increase cards exchange times
      */
 
     public void increaseChangeCardTimes() {
