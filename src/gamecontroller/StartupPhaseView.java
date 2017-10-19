@@ -279,8 +279,7 @@ public class StartupPhaseView extends JDialog{
 
 	/**
 	 * This is a cancel button implements the class ActionListener.
-	 * 
-	 * <p>Change the state of cancel button</p>
+	 * <p> create an invisible cancel button until the end of current phase</p>
 	 */
 	private class cancelBtnHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
@@ -291,8 +290,7 @@ public class StartupPhaseView extends JDialog{
 	
 	/**
 	 * This is a enter button implements the class ActionListener.
-	 * 
-	 * <p>Change the state of enter button</p>
+	 * <p> Create an invisible enter button until the end of current phase</p>
 	 */
 	private class enterBtnHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {

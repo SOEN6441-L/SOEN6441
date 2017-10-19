@@ -93,7 +93,10 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
 		return false;  
 	}  
 }  
-  
+
+/**
+ * This is header class used to fill the head of table.
+ */
 class RowHeaderTableModel extends AbstractTableModel{  
 	private int rowCount; 
 	public RowHeaderTableModel(int rowCount){  
@@ -113,6 +116,9 @@ class RowHeaderTableModel extends AbstractTableModel{
 	}  
 }    
 
+/**
+ * Render the matrix in table showing the relationship of countries.
+ */
 class MatrixRenderer implements TableCellRenderer{     
 	private int[] areaContinents;
 	
@@ -122,6 +128,15 @@ class MatrixRenderer implements TableCellRenderer{
 
 	public static final DefaultTableCellRenderer DEFAULT_RENDERER =new DefaultTableCellRenderer();     
 	
+	/**
+	 * This method is used to get unit in table and render every unit
+	 * @param table	Object of JTable
+	 * @param value	
+	 * @param isSelected	Status of components
+	 * @param hasFocus	Status of focus on table 
+	 * @param row	Row of table
+	 * @param column	Column of table
+	 */
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column){ 
 		
@@ -155,6 +170,9 @@ class MatrixRenderer implements TableCellRenderer{
 	}     
 }
 
+/**
+ * Render each continent node
+ */
 class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
 	ImageIcon rootIcon = new ImageIcon("src/images/map.png");
 	ImageIcon continentIcon = new ImageIcon("src/images/continent.png");
@@ -163,7 +181,16 @@ class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
 	public ContinentNodeRenderer(RiskMap map){
 		myMap = map;
 	}
-  
+	
+	/**
+	 * This method is used to get unit in table and render every unit
+	 * @param tree Object of JTree
+	 * @param value	
+	 * @param isSelected	Status of components
+	 * @param hasFocus	Status of focus on table 
+	 * @param row	Row of table
+	 * @param column	Column of table
+	 */
 	public  Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
 			boolean  leaf, int  row, boolean  hasFocus){   
 		super .getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus); 		
@@ -187,6 +214,9 @@ class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
    }
  } 
 
+/**
+ * Render the players' node
+ */
 class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
 	ImageIcon rootIcon = new ImageIcon("src/images/players.png");
 	ImageIcon playerIcon = new ImageIcon("src/images/player.png");
@@ -197,6 +227,15 @@ class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
 		myPlayer = player;
 	}
   
+	/**
+	 * This method is used to get unit in table and render every unit
+	 * @param tree	Object of JTree
+	 * @param value	
+	 * @param isSelected	Status of components
+	 * @param hasFocus	Status of focus on table 
+	 * @param row	Row of table
+	 * @param column	Column of table
+	 */
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
 			boolean  leaf, int  row, boolean  hasFocus){   
 		super .getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus); 		
@@ -225,6 +264,9 @@ class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
    }
  } 
 
+/**
+ * Render the node of countries
+ */
 class  CountryNodeRenderer  extends  DefaultTreeCellRenderer{
 	ImageIcon rootIcon = new ImageIcon("src/images/players.png");
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
@@ -233,6 +275,16 @@ class  CountryNodeRenderer  extends  DefaultTreeCellRenderer{
 	public CountryNodeRenderer(Color color){
 		this.myColor = color;
 	}
+	
+	/**
+	 * This method is used to get unit in table and render every unit
+	 * @param tree	Object of JTree
+	 * @param value	
+	 * @param isSelected	Status of components
+	 * @param hasFocus	Status of focus on table 
+	 * @param row	Row of table
+	 * @param column	Column of table
+	 */
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
 			boolean  leaf, int  row, boolean  hasFocus){   
 		super .getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus); 		

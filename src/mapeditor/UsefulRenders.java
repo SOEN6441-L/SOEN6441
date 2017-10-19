@@ -6,7 +6,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.event.*;
 
 /**
- *
+ * This class used to show the haeder in table.
+ * 
+ * @see JTable
  */
 class RowHeaderTable extends JTable{  
 	private JTable refTable;  
@@ -26,10 +28,25 @@ class RowHeaderTable extends JTable{
 	}  
 }  
 
+/**
+ * This is a render class that can refresh the content in table
+ * 
+ * @see JLabel
+ * @see TableCellRenderer
+ * @see ListSelectionListener
+ */
 class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectionListener{  
 	JTable reftable; 
 	JTable tableShow; 
 	Object [] columnTitle;
+	
+	/**
+	 * Constructor for the class
+	 * 
+	 * @param reftable	
+	 * @param tableShow
+	 * @param columns
+	 */
 	public RowHeaderRenderer(JTable reftable,JTable tableShow, Object[] columns){  
 		this.reftable = reftable;  
 		this.tableShow=tableShow;  
@@ -39,6 +56,9 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
 		listModel.addListSelectionListener(this);   
 	}  
 
+	/**
+	 * This method is used to get unit in table and render every unit
+	 */
 	public Component getTableCellRendererComponent(JTable table,Object obj,
 		boolean isSelected,boolean hasFocus,int row, int col){  
 		((RowHeaderTableModel)table.getModel()).setRowCount(reftable.getRowCount());  
@@ -70,6 +90,9 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
 	}  
 }  
   
+/**
+ * This is header class used to fill the head of table.
+ */
 class RowHeaderTableModel extends AbstractTableModel{  
 	private int rowCount; 
 	public RowHeaderTableModel(int rowCount){  
@@ -89,6 +112,9 @@ class RowHeaderTableModel extends AbstractTableModel{
 	}  
 }    
 
+/**
+ * Render the matrix in table showing the relationship of countries.
+ */
 class MatrixRenderer implements TableCellRenderer{     
 	private int[] areaContinents;
 	
@@ -98,6 +124,15 @@ class MatrixRenderer implements TableCellRenderer{
 
 	public static final DefaultTableCellRenderer DEFAULT_RENDERER =new DefaultTableCellRenderer();     
 	
+	/**
+	 * This method is used to get unit in table and render every unit
+	 * @param table	Object of JTable
+	 * @param value	
+	 * @param isSelected	Status of components
+	 * @param hasFocus	Status of focus on table 
+	 * @param row	Row of table
+	 * @param column	Column of table
+	 */
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column){ 
 		
@@ -131,11 +166,25 @@ class MatrixRenderer implements TableCellRenderer{
 	}     
 }
 
+/**
+ * Render the types of each node
+ */
 class  CategoryNodeRenderer  extends  DefaultTreeCellRenderer{
 	ImageIcon rootIcon = new ImageIcon("src/images/map.png");
 	ImageIcon continentIcon = new ImageIcon("src/images/continent.png");
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
   
+	/**
+	 * This method is used to get unit in tree and render every unit
+	 * @param tree	Object of JTree
+	 * @param value	
+	 * @param sel
+	 * @param expanded	Status of the tree
+	 * @param leaf	Status of leaf
+	 * @param hasFocus Status of focus on tree
+	 * @param row	Row of table
+	 * @param column	Column of table
+	 */
 	public  Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
 			boolean  leaf, int  row, boolean  hasFocus){   
 		super .getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus); 		

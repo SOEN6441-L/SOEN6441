@@ -250,7 +250,9 @@ public class BasicInfoView extends JDialog{
 		//setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 	}
 	
-	
+	/**
+	 * This is the method that continue current process
+	 */
 	private class proceedHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			if (authorTF.getText()==null||authorTF.getText().trim().isEmpty()){
@@ -275,6 +277,9 @@ public class BasicInfoView extends JDialog{
 		}
 	}
 	
+	/**
+	 * This is the method that cancel current process
+	 */
 	private class cancelHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			state = 0;
