@@ -176,7 +176,7 @@ public class RiskGame {
 
     /**
      * The function to start the game
-     * @return
+     * @return the which turn
      */
     public int startGame() {
         turn = 1;

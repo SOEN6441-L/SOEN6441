@@ -29,6 +29,7 @@ public class Player {
     /**
      *   This method is a class constructor.
      *   @param newName The name of player
+     *   @param color The player's color
      */
     public Player(String newName,Color color){
         name = newName;

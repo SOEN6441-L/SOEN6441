@@ -81,7 +81,7 @@ public class RiskMap {
 
     /**
      * Function to find the Country according to the Country's ID
-     * @param countryID
+     * @param countryID The ID of the country
      * @return Country that found
      */
 	public Country findCountryByID(int countryID) {
@@ -278,7 +278,7 @@ public class RiskMap {
 	 * The function to rename the Country
 	 * @param countryName The name of the Country want to rename
 	 * @param newName The new name for the Country
-	 * @return
+	 * @return succeed or not
 	 */
 	public boolean renameCountry(String countryName, String newName){
 		Country changeCountry = findCountry(countryName);
@@ -386,7 +386,7 @@ public class RiskMap {
 	 * The function to move the Country to a other Continent
 	 * @param toContinentName The name of the Continent want to move the Country to
 	 * @param countryName The name of the Country that need to be moved
-	 * @return
+	 * @return succeed or not
 	 */
 	public boolean moveContinentCountry(String toContinentName, String countryName) {
 		Country moveCountry = findCountry(countryName);
@@ -528,6 +528,7 @@ public class RiskMap {
     /**
      * Load Map File
      * @param mapFileName The name of map file
+	 * @param mode Enter mapEditor or RiskGame
      * @return succeed or not
      */
 	public boolean loadMapFile(String mapFileName, int mode) {//mode 1-mapEditor 2-RiskGame 
