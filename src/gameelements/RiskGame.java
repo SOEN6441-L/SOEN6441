@@ -9,6 +9,9 @@ import mapelements.Continent;
 import mapelements.Country;
 import mapelements.RiskMap;
 
+/**
+ * Class RiskGame
+ */
 public class RiskGame {
     private RiskMap gameMap;
     private Player[] players;

@@ -24,10 +24,9 @@ import mapelements.Country;
 import mapelements.NodeRecord;
 
 /**
- * Reinforcement is seen as an object, and all methods in this phases are seen as its actions.
- * In this class, it contains all necessary actions in reinforcement phase.
- *
- * @author Jingyu Lu
+ * This class is the implementation of reinforcement phase in the Risk.
+ * <p> The ReinforcementPhase class will allow players add armies to their<br>
+ * to their country, based on the countries under control.</p >
  *
  */
 public class ReinforcePhaseView extends JDialog{
@@ -58,6 +57,12 @@ public class ReinforcePhaseView extends JDialog{
 
     public int state=0; //0-Cancel, 1-confirm
 
+    /**
+     * Constructor of class ReinforcePhaseView to generate reinforce phase UI
+     * @param player The player that who is in turn
+     * @param game The game reinforce phase is in
+     * @param armies The number of armies this reinforce phase has
+     */
     public ReinforcePhaseView(Player player, RiskGame game, int armies){
         this.player = player;
         this.myGame = game;
@@ -206,6 +211,9 @@ public class ReinforcePhaseView extends JDialog{
         enterBtn.addActionListener(new enterBtnHandler());
     }
 
+    /**
+     * The method to refresh the UI
+     */
     public void reloadGUI(){
 
         exchangeBtn.setVisible(false);
@@ -267,6 +275,9 @@ public class ReinforcePhaseView extends JDialog{
         scrollPaneForCountry.getViewport().add(treeCountry);
     }
 
+    /**
+     * To add action listener to the cancel button
+     */
     private class cancelBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             state = 0;
@@ -274,6 +285,9 @@ public class ReinforcePhaseView extends JDialog{
         }
     }
 
+    /**
+     * To add action listener to the enter button
+     */
     private class enterBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (player.getState()==1){
@@ -290,6 +304,9 @@ public class ReinforcePhaseView extends JDialog{
         }
     }
 
+    /**
+     * To add action listener to the exchange card handler
+     */
     private class exchangeHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (cardExchanged) return;
