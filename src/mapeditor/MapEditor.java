@@ -27,14 +27,10 @@ import mapelements.RiskMap;
 
 /**
  * This is a class, which used to create a window for player to edit maps for games
- * 
  *
  */
 public class MapEditor extends JFrame {
-	/**
-	 * 
-	 */
-	//button in window
+
 	private JButton newMapBtn;
 	private JButton loadFromFileBtn;
 	private JButton newContinentBtn;
@@ -65,7 +61,10 @@ public class MapEditor extends JFrame {
 	private String selContinentName, selCountryName, lastUsedContinent="";
 	private String matrixDisplayMode = "preferred"; //preferred, same
 	private int matrixColumnWidth = 25, continentExpandMode = 1;
-    
+
+	/**
+	 * The constructor of class MapEditor to generate mapEditor's UI
+	 */
 	private MapEditor(){  
 		
 		newMap = new RiskMap("Untitled");
@@ -243,8 +242,11 @@ public class MapEditor extends JFrame {
 			}
 		}	
 		super.processWindowEvent(e);
-	}	
-	
+	}
+
+	/**
+	 * The function for loading the a new map
+	 */
 	private void loadNewMap(){  		
 		newMap = null;
 		newMap = new RiskMap("Untitled");
@@ -261,6 +263,12 @@ public class MapEditor extends JFrame {
 		reloadMatrix();		
 	}
 
+	/**
+	 * The function to expand the all tree structure for more detail information
+	 * @param tree The tree structure
+	 * @param parent The parent node
+	 * @param mode The serial number of the tree structure, to expand or not
+	 */
 	private void expandAll(JTree tree, TreePath parent, int mode) {
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
 		if (node.getChildCount() >= 0) {
@@ -273,7 +281,10 @@ public class MapEditor extends JFrame {
 		if (mode==1) tree.expandPath(parent);
 		else tree.collapsePath(parent);
 	}
-	
+
+	/**
+	 * The function to reload the continents of the map
+	 */
 	private void reloadContinents(){	
 		//configuration
 		labelContinent.setText("Continents ("+String.valueOf(newMap.continents.size())+"):");  
@@ -327,7 +338,12 @@ public class MapEditor extends JFrame {
 			}
 		}
 	}
-	
+
+	/**
+	 * The function to adjust the table's size
+	 * @param myTable The table want to adjust
+	 * @return the max width of the table
+	 */
 	public int FitTableColumns(JTable myTable) {
 		JTableHeader header = myTable.getTableHeader();
 		int rowCount = myTable.getRowCount();
@@ -352,7 +368,7 @@ public class MapEditor extends JFrame {
 		}
 		return maxWidth;
 	}
-	
+
 	public int FitTableColumns(JTable myTable, int setWidth) {
 		JTableHeader header = myTable.getTableHeader();
 		int rowCount = myTable.getRowCount();
@@ -376,8 +392,11 @@ public class MapEditor extends JFrame {
 			column.setWidth(setWidth + myTable.getIntercellSpacing().width);
 		}
 		return maxWidth;
-	}	
+	}
 
+	/**
+	 * The function to reload the matrix of the connection between countries
+	 */
 	private void reloadMatrix(){	
 
 		labelCountry.setText("Countries ("+String.valueOf(newMap.countryNum)+") and Adjacency Matrix:"); 
@@ -466,7 +485,10 @@ public class MapEditor extends JFrame {
 		setWidthBtn.setEnabled(newMap.countryNum>0);
 		colWidthEdit.setEnabled(newMap.countryNum>0);
 	}
-		
+
+	/**
+	 * Adding action listener to the new continent button
+	 */
 	private class newContinentHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			boolean retry = true;
@@ -487,7 +509,10 @@ public class MapEditor extends JFrame {
 			}	
 		}
 	}
-	
+
+	/**
+	 * Adding action listener to the new country button
+	 */
 	private class newCountryHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			//JOptionPane.showMessageDialog(null, "new country" );
@@ -532,7 +557,10 @@ public class MapEditor extends JFrame {
 			}	
 		}		
 	}   
-    
+
+	/**
+	 * Adding action listener to save map button
+	 */
 	private class saveToFileHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			//JOptionPane.showMessageDialog(null, "save to file" );
@@ -573,8 +601,11 @@ public class MapEditor extends JFrame {
 				}
 			}	
 		}
-	}      
-    
+	}
+
+	/**
+	 * Adding action listener to the new map button
+	 */
 	private class newMapHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			//JOptionPane.showMessageDialog(null, "new map" );
@@ -587,7 +618,10 @@ public class MapEditor extends JFrame {
 			loadNewMap();
 		}
 	}
-    
+
+	/**
+	 * Adding action listener to the load file button
+	 */
 	private class loadFromFileHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			//JOptionPane.showMessageDialog(null, "load from file" );
@@ -636,29 +670,41 @@ public class MapEditor extends JFrame {
 				}
 			}
 		}
-	} 
-	
+	}
+
+	/**
+	 * Adding action listener to the complete button
+	 */
 	private class completeHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			newMap.addCompletedConnection();
 			reloadMatrix();
 		}
 	}
-	
+
+	/**
+	 * Adding action listener to clear button
+	 */
 	private class clearHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			newMap.removeAllConnection();
 			reloadMatrix();
 		}
 	}
-	
+
+	/**
+	 * Adding action listener to adjust width
+	 */
 	private class adjustWidthHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			matrixDisplayMode = "preferred";
 			FitTableColumns(adjacencyMatrix);
 		}
-	}	
+	}
 
+	/**
+	 * Adding action listener to set width
+	 */
 	private class setWidthHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			Pattern pattern = Pattern.compile("[0-9]*");  
@@ -670,7 +716,10 @@ public class MapEditor extends JFrame {
 			FitTableColumns(adjacencyMatrix,matrixColumnWidth);	
 		}
 	}
-	
+
+	/**
+	 * Adding action listener to expand all tree structure
+	 */
 	class mExpandAllHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (treeContinent!=null){
@@ -679,8 +728,11 @@ public class MapEditor extends JFrame {
 				expandAll(treeContinent, new TreePath(root),1);
 			}	
 		}
-	}	
-	
+	}
+
+	/**
+	 * Adding action listener to collapse all tree structure
+	 */
 	class mCollapseAllHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (treeContinent!=null){
@@ -695,8 +747,11 @@ public class MapEditor extends JFrame {
 				}
 			}				
 		}
-	}		
-	
+	}
+
+	/**
+	 * Adding action listener to delete continent button
+	 */
 	class mDeleteContinentHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//JOptionPane.showMessageDialog(null,selContinentName);
@@ -705,7 +760,10 @@ public class MapEditor extends JFrame {
 			}
 		}
 	}
-	
+
+	/**
+	 * Adding action listener to delete country
+	 */
 	class mDeleteCountryHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (newMap.deleteCountry(selCountryName)){
@@ -713,8 +771,11 @@ public class MapEditor extends JFrame {
 				reloadMatrix();
 			}	
 		}
-	}	
-	
+	}
+
+	/**
+	 * Adding action listener to rename continent
+	 */
 	private class mRenameContinentHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			boolean retry=true;
@@ -734,8 +795,11 @@ public class MapEditor extends JFrame {
 				else retry = false;
 			}
 		}	
-	}	
-	
+	}
+
+	/**
+	 * Adding action listener to change continent control army number
+	 */
 	private class mChangeContinentControlHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			int oldControlNum = newMap.findContinent(selContinentName).controlNum;
@@ -760,8 +824,11 @@ public class MapEditor extends JFrame {
 				else retry = false;
 			}	
 		}
-	}	
-	
+	}
+
+	/**
+	 * Adding action listener to rename country
+	 */
 	private class mRenameCountryHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			boolean retry=true;
@@ -783,7 +850,10 @@ public class MapEditor extends JFrame {
 			}	
 		}
 	}
-	
+
+	/**
+	 * Adding action listener to move country to other continent action
+	 */
 	private class mMoveCountryHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			
@@ -816,8 +886,10 @@ public class MapEditor extends JFrame {
 				else retry = false;
 			}	
 		}
-	}	
-	
+	}
+	/**
+	 * Main method to init the map editor
+	 */
 	public static void main(String[] args) {  
 		MapEditor myMapEditor = new MapEditor(); 
 	}  

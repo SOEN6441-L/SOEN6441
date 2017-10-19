@@ -292,7 +292,10 @@ public class ReinforcePhaseView extends JDialog{
         public void actionPerformed(ActionEvent e) {
             if (player.getState()==1){
                 player.setTotalArmies(player.getTotalArmies()+totalArmies);
-                if (cardExchanged) player.setCards(myCards);
+                if (cardExchanged) {
+                    player.increaseChangeCardTimes();
+                    player.setCards(myCards);
+                }
                 if (localCountries!=null){
                     for (int j=0;j<localCountries.length;j++){
                         myGame.getGameMap().findCountryByID(localCountries[j].ID).armyNumber = localCountries[j].Number;
