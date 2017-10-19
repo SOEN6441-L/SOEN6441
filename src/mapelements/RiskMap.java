@@ -33,7 +33,7 @@ public class RiskMap {
 
 	/**
 	 * The constructor of class RiskMap
-	 * @param name of the Map that is editing
+	 * @param name the name of the Map that is editing
 	 */
 	public RiskMap(String name){
 		this.globalIndex = 1;
@@ -361,7 +361,7 @@ public class RiskMap {
 	/**
 	 * The function to delete the Continent
 	 * @param continentName The name of the Continent want to delete
-	 * @return succeed
+	 * @return succeed or not
 	 */
 	public boolean deleteContinent(String continentName){
 		Continent deleteContinent = findContinent(continentName);
