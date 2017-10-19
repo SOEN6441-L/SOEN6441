@@ -10,6 +10,11 @@ import mapelements.RiskMap;
 
 import javax.swing.event.*;
 
+/**
+ * This is a subclass extends from JTable.
+ * 
+ * <p> Fill the content of row in table</p>
+ */
 class RowHeaderTable extends JTable{  
 	private JTable refTable;  
 	/** 
@@ -28,10 +33,21 @@ class RowHeaderTable extends JTable{
 	}  
 }  
 
+/**
+ * This is a render class that can refresh the content in table
+ */
 class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectionListener{  
 	JTable reftable; 
 	JTable tableShow; 
 	Object [] columnTitle;
+	
+	/**
+	 * Constructor for the class
+	 * 
+	 * @param reftable	
+	 * @param tableShow
+	 * @param columns
+	 */
 	public RowHeaderRenderer(JTable reftable,JTable tableShow, Object[] columns){  
 		this.reftable = reftable;  
 		this.tableShow=tableShow;  

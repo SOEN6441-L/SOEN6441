@@ -24,7 +24,9 @@ import mapelements.RiskMap;
 
 /**
  * StartupPhase is the GUI for players to place one by one their initial given armies on 
- * their own countries.In round-robin fashion.
+ * their own countries.
+ * 
+ * <p> Player place armies in round-robin fashion.</p>
  */
 public class StartupPhaseView extends JDialog{
 
@@ -52,6 +54,10 @@ public class StartupPhaseView extends JDialog{
 	
 	public int state=0; //0-Cancel, 1-confirm
 	
+	/**
+	 * This is the Constructor for configuring this GUI.
+	 * @param myGame Object of class RiskGame
+	 */
 	public StartupPhaseView(RiskGame myGame){
 		this.gameMap = myGame.getGameMap();
 		this.players = myGame.getPlayers();
@@ -77,6 +83,7 @@ public class StartupPhaseView extends JDialog{
 		Dimension size;
 		totalInitialArmies=0;
 		totalPlayers = 0;
+		//Loop to initial armies belong to each player,and armies in country
 		for(int i=0;i<players.length;i++){
 			if (players[i].getState()==1){ 
 				totalInitialArmies+=players[i].getInitialArmies();
@@ -184,7 +191,8 @@ public class StartupPhaseView extends JDialog{
 		add(byComputerBtn);  	     
 		size = byComputerBtn.getPreferredSize();		
 		byComputerBtn.setBounds(cancelBtn.getBounds().x-size.width-10,484,size.width,size.height);
-		byComputerBtn.addActionListener(new byComputerHandler());*/
+		byComputerBtn.addActionListener(new byComputerHandler());
+		*/
 		
 		enterBtn = new JButton("Confirm");	
 		add(enterBtn);  	     
@@ -194,6 +202,9 @@ public class StartupPhaseView extends JDialog{
 		enterBtn.addActionListener(new enterBtnHandler());
 	}	
 	
+	/**
+	 * This is a method that can refresh the state of all components in current GUI
+	 */
 	public void reloadGUI(){
 
 		if (totalInitialArmies>0){
@@ -264,6 +275,11 @@ public class StartupPhaseView extends JDialog{
 		scrollPaneForCountry.getViewport().add(treeCountry);		
 	}
 
+	/**
+	 * This is a cancel button implements the class ActionListener.
+	 * 
+	 * <p>Change the state of cancel button</p>
+	 */
 	private class cancelBtnHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			state = 0;
@@ -271,6 +287,11 @@ public class StartupPhaseView extends JDialog{
 		}
 	}	
 	
+	/**
+	 * This is a enter button implements the class ActionListener.
+	 * 
+	 * <p>Change the state of enter button</p>
+	 */
 	private class enterBtnHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			for(int i=0;i<players.length;i++){
