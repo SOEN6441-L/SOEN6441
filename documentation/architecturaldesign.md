@@ -14,7 +14,7 @@ The map module includes all the basic elements of the game, like player etc..
 File_Name  | Description
 ------------- | -------------
 Player  | The class is to describe attributes of players and calculate how many armies are given according to numbers of cards.
-RiskGame  | 
+RiskGame  | The class is to describe the main part of the Risk game
 
 ### 1.2 MapEditor Module
 The MapEditor Module includes all the elements about editting map.
@@ -33,7 +33,6 @@ File_Name  | Description
 Continent  | The class is to describe attributes of the continent.
 Country  | The class is to describe attributes of the country.
 RiskMap  | The class is to achieve the function of map editor.
-NodeRecord  | 
 
 ### 1.4 RiskGame View Module
 The view module include all the GUIs of each phase, like startup phase etc..
