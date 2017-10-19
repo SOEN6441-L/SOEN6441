@@ -789,8 +789,12 @@ public class RiskGameMain extends JFrame {
 				}
 			}				
 		}
-	}		
-	
+	}
+
+	/**
+	 * The main method of the class RiskMain
+	 * @param args The array to storage the variables
+	 */
 	public static void main(String[] args) {  
 		RiskGameMain riskGame = new RiskGameMain(); 
 	}  

@@ -8,16 +8,16 @@ The Graph below is the modular organization diagram.
 
 ## Modules Description
 
-### 1.1 Game Elements
-The GameElements folder includes all the elements about the risk game.
+### 1.1 Game Module
+The map module includes all the basic elements of the game, like player etc..
 
 File_Name  | Description
 ------------- | -------------
 Player  | The class is to describe attributes of players and calculate how many armies are given according to numbers of cards.
-RiskGame  | 
+RiskGame  | The class is to describe the main part of the Risk game
 
-### 1.2 Map Editor
-The MapEditor folder includes all the elements about editting map.
+### 1.2 MapEditor Module
+The MapEditor Module includes all the elements about editting map.
 
 File_Name  | Description
 ------------- | -------------
@@ -25,18 +25,17 @@ MapEditor  | The class is used to create a window for player to edit maps of gam
 BasicInfoView  | The class is used to present the basic information of maps.
 UsefulRenders  | The class is used to render the map.
 
-### 1.3 Map Elements
-The MapElements folder includes all the elements used in the map file.
+### 1.3 Map Module
+The map module includes all the basic elements of maps, like continent, country etc..
 
 File_Name  | Description
 ------------- | -------------
 Continent  | The class is to describe attributes of the continent.
 Country  | The class is to describe attributes of the country.
 RiskMap  | The class is to achieve the function of map editor.
-NodeRecord  | 
 
-### 1.4 Game Controller
-The GameController folder includes all the phases in the risk game
+### 1.4 RiskGame View Module
+The view module include all the GUIs of each phase, like startup phase etc..
 
 File_Name  | Description
 ------------- | -------------
@@ -48,7 +47,13 @@ UsefulRenders  |	The class is used to render maps after phases.
 ExchangeInteraction | This class is GUI for Exchange cards to armies.
 
 ### 1.5 Maps
-The folder is used to store map files.
+The module is used to store map files.
 
 ### 1.6 Images
-The folder includes all the images used in the risk game.
+The module includes all resource files used in the risk game.
+
+### 1.7 JavaDoc
+The module includes JavaDoc generated from the project
+
+### 1.8 Documentation
+The module includes all the docments of the project

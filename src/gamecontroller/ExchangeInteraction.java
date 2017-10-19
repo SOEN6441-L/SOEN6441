@@ -6,8 +6,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 /**
  *   This class is GUI for Exchange cards to armies.
- *   @Author Shirley/XUEYING LI
- *   @CreateTime 08/10/2017
  */
 
 public class ExchangeInteraction extends JDialog{

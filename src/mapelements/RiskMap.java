@@ -33,7 +33,7 @@ public class RiskMap {
 
 	/**
 	 * The constructor of class RiskMap
-	 * @param name of the Map that is editing
+	 * @param name the name of the Map that is editing
 	 */
 	public RiskMap(String name){
 		this.globalIndex = 1;
@@ -81,7 +81,7 @@ public class RiskMap {
 
     /**
      * Function to find the Country according to the Country's ID
-     * @param countryID
+     * @param countryID The ID of the country
      * @return Country that found
      */
 	public Country findCountryByID(int countryID) {
@@ -278,7 +278,7 @@ public class RiskMap {
 	 * The function to rename the Country
 	 * @param countryName The name of the Country want to rename
 	 * @param newName The new name for the Country
-	 * @return
+	 * @return succeed or not
 	 */
 	public boolean renameCountry(String countryName, String newName){
 		Country changeCountry = findCountry(countryName);
@@ -361,7 +361,7 @@ public class RiskMap {
 	/**
 	 * The function to delete the Continent
 	 * @param continentName The name of the Continent want to delete
-	 * @return succeed
+	 * @return succeed or not
 	 */
 	public boolean deleteContinent(String continentName){
 		Continent deleteContinent = findContinent(continentName);
@@ -386,7 +386,7 @@ public class RiskMap {
 	 * The function to move the Country to a other Continent
 	 * @param toContinentName The name of the Continent want to move the Country to
 	 * @param countryName The name of the Country that need to be moved
-	 * @return
+	 * @return succeed or not
 	 */
 	public boolean moveContinentCountry(String toContinentName, String countryName) {
 		Country moveCountry = findCountry(countryName);
@@ -528,6 +528,7 @@ public class RiskMap {
     /**
      * Load Map File
      * @param mapFileName The name of map file
+	 * @param mode Enter mapEditor or RiskGame
      * @return succeed or not
      */
 	public boolean loadMapFile(String mapFileName, int mode) {//mode 1-mapEditor 2-RiskGame 
@@ -735,6 +736,15 @@ public class RiskMap {
 			}
 		}
 		return true;
+	}
+	public void findPath(Map<Integer,ArrayList<Integer>> localAdjacencyList,int sourceNode) {
+		if (localAdjacencyList.size()==0) return;
+		for (int loopCountry : localAdjacencyList.keySet()) {
+			findCountryByID(loopCountry).flagDFS = false;
+		}
+		findCountries = 0;
+		//findCountryByID(sourceNode).flagDFS = true;
+		DFS(localAdjacencyList,sourceNode);
 	}
 
 }

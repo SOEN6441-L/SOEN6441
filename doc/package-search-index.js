@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"gamecontroller","h":"","u":""},{"l":"gameelements","h":"","u":""},{"l":"mapeditor","h":"","u":""},{"l":"mapelements","h":"","u":""}]

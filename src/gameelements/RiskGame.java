@@ -176,7 +176,7 @@ public class RiskGame {
 
     /**
      * The function to start the game
-     * @return
+     * @return the which turn
      */
     public int startGame() {
         turn = 1;
@@ -206,7 +206,7 @@ public class RiskGame {
         }
         players[curPlayer].calculateArmyNumber(getGameMap());
         if (!players[curPlayer].reinforcementPhase(this)) return 2;
-        players[curPlayer].fortificationPhase();
+        players[curPlayer].fortificationPhase(this);
 
         int tempPlayer=(curPlayer+1)%players.length;
         if (tempPlayer<curPlayer) turn++;
