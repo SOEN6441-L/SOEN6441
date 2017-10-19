@@ -16,8 +16,10 @@ import gamecontroller.StartupPhaseView;
  *   @param cards Store numbers of three cards, infantry, cavalry,artillery respectively
  *   @param changeCardTimes Store times of cards exchange
  *   @param countries Store countries of the player
- *   @param armies Store how many armies player have
- *   @param exchangeTime Store exchange times of players
+ *   @param totalArmies Total armies of player
+ *   @param initialArmies Initial armies of player
+ *   @param myColor colors of a player
+ *   @
  */
 public class Player {
 	private String name;
@@ -187,6 +189,10 @@ public class Player {
     public boolean canExchange(int[] myCards) {
     	return (Math.max(myCards[0], Math.max(myCards[1], myCards[2]))>=3
     			||Math.min(myCards[0], Math.min(myCards[1], myCards[2]))>=1);
+    }
+
+    public void increaseChangeCardTimes() {
+        changeCardTimes++;
     }
     
 }
