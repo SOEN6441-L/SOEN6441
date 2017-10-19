@@ -2,14 +2,14 @@
 
 This document provides a comprehensive architectural overview of the project, to depict different aspects of the project.
 
-The Graph below is the architectural design diagram.
+The Graph below is the modular organization diagram.
 
 ![Project Architecture Design](images/architecturedesign.jpeg)
 
 ## Modules Description
 
 ### 1.1 Game Elements
-XXXXXXX
+The GameElements folder includes all the elements about the risk game.
 
 File_Name  | Description
 ------------- | -------------
@@ -19,7 +19,7 @@ ReinforceArmy  |
 RiskGame  | 
 
 ### 1.2 Map Editor
-XXXXXX
+The MapEditor folder includes all the elements about editting map.
 
 File_Name  | Description
 ------------- | -------------
@@ -27,7 +27,7 @@ MapEditor  |
 TableRowHeader  | 
 
 ### 1.3 Map Elements
-XXXXXX
+The MapElements folder includes all the elements used in the map file.
 
 File_Name  | Description
 ------------- | -------------
@@ -36,11 +36,11 @@ Country  |
 RiskMap  | 
 
 ### 1.4 Phases
-XXXXX
+The Phase folder includes all the phases in the risk game
 
 File_Name  | Description
 ------------- | -------------
-FillTableContent  | 
+FillTableContent  | Fill the table with countries' name and their armies
 FortificationPhase  | 
 ReinforcementPhase  | 
 
