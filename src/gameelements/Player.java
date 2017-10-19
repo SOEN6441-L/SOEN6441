@@ -204,9 +204,12 @@ public class Player {
      * The function to judge if complete fortification phase
      * @return true if complete fortification phase
      */
-	public boolean fortificationPhase(){
-		return true;
-	}
+    public void fortificationPhase(RiskGame myGame){
+        FortificationPhaseView fortiPhase = new FortificationPhaseView(this, myGame);
+        fortiPhase.setVisible(true);
+        int state = fortiPhase.state;
+        fortiPhase.dispose();
+    }
 
 	public int getInitialArmies() {
 		return initialArmies;
