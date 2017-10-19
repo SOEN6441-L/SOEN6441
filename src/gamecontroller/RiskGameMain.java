@@ -29,14 +29,11 @@ import mapelements.Country;
 import mapelements.RiskMap;
 
 /**
- * This is a class, which used to create a window for player to edit maps for games
- * 
+ * The class is used to create a window for player to edit maps of games
  *
  */
 public class RiskGameMain extends JFrame {
-	/**
-	 * 
-	 */
+
 	//button in window
 	private JButton loadFromFileBtn;
 	private JButton createPlayersBtn;
@@ -74,7 +71,10 @@ public class RiskGameMain extends JFrame {
 	private String matrixDisplayMode = "preferred"; //Preferred, same
 	private int matrixColumnWidth = 25;
 	private int continentExpandMode = 1, playerExpandMode = 2;//1-expand 2-collapse
-    
+
+	/**
+	 * It is the Constructor of RiskGameMain class.
+	 */
 	private RiskGameMain(){		
 		//configuration
 		myGame = new RiskGame();
@@ -254,8 +254,14 @@ public class RiskGameMain extends JFrame {
 				return;	
 		}	
 		super.processWindowEvent(e);
-	}	
-	
+	}
+
+	/**
+	 * It is used to expand the tree.
+	 * @param tree the tree structure
+	 * @param parent the node to expand or collapse its children
+	 * @param mode expand or collapse according current status
+	 */
 	private void expandAll(JTree tree, TreePath parent, int mode) {
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
 		if (node.getChildCount() >= 0) {
@@ -268,7 +274,10 @@ public class RiskGameMain extends JFrame {
 		if (mode==1) tree.expandPath(parent);
 		else tree.collapsePath(parent);
 	}
-	
+
+	/**
+	 * The method is to reload continents
+	 */
 	private void reloadContinents(){	
 		//configuration
 		DefaultMutableTreeNode myTreeRoot;
@@ -321,7 +330,10 @@ public class RiskGameMain extends JFrame {
 			}
 		}
 	}
-	
+
+	/**
+	 * The method is to reload players
+	 */
 	private void reloadPlayers(){	
 		//configuration
 		DefaultMutableTreeNode myTreeRoot;
@@ -374,8 +386,13 @@ public class RiskGameMain extends JFrame {
 				}
 			}
 		}
-	}	
-	
+	}
+
+	/**
+	 * To resize the table columns to fit the window.
+	 * @param myTable the table that needs resizing
+	 * @return maxWidth maximum width of table columns
+	 */
 	public int FitTableColumns(JTable myTable) {
 		JTableHeader header = myTable.getTableHeader();
 		int rowCount = myTable.getRowCount();
@@ -400,7 +417,13 @@ public class RiskGameMain extends JFrame {
 		}
 		return maxWidth;
 	}
-	
+
+	/**
+	 * To resize the table columns to fit the window according to the given width
+	 * @param myTable the table that needs resizing
+	 * @param setWidth the given width to set the table columns
+	 * @return maxWidth maximum width of table columns
+	 */
 	public int FitTableColumns(JTable myTable, int setWidth) {
 		JTableHeader header = myTable.getTableHeader();
 		int rowCount = myTable.getRowCount();
@@ -424,8 +447,11 @@ public class RiskGameMain extends JFrame {
 			column.setWidth(setWidth + myTable.getIntercellSpacing().width);
 		}
 		return maxWidth;
-	}	
+	}
 
+	/**
+	 * To reload the matrix after changes.
+	 */
 	private void reloadMatrix(){
 		DefaultTableModel matrixModel;
 		Object[][] newDataVector;
@@ -500,7 +526,10 @@ public class RiskGameMain extends JFrame {
 		setWidthBtn.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().countryNum>0);
 		colWidthEdit.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().countryNum>0);
 	}
-		
+
+	/**
+	 * Handler used to load files.
+	 */
 	private class loadFromFileHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			//JOptionPane.showMessageDialog(null, "load from file" );
@@ -542,8 +571,11 @@ public class RiskGameMain extends JFrame {
 				}
 			}
 		}
-	} 
-	
+	}
+
+	/**
+	 * Handler used to handling previous actions
+	 */
 	private class previousHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			if (myGame.getGameStage()==1){
@@ -583,8 +615,11 @@ public class RiskGameMain extends JFrame {
 				reloadPlayers();				
 			}
 		}
-	}	
-	
+	}
+
+	/**
+	 * Handler used to create players.
+	 */
 	private class createPlayersHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			boolean retry = true;
@@ -614,7 +649,10 @@ public class RiskGameMain extends JFrame {
 			}
 		}
 	}
-	
+
+	/**
+	 * Handler used to start a phase
+	 */
 	private class startupHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			if (myGame.startupPhase()){
@@ -626,8 +664,11 @@ public class RiskGameMain extends JFrame {
 				reloadPlayers();
 			}
 		}	
-	}	
-	
+	}
+
+	/**
+	 * Handler used to start the game
+	 */
 	private class startGameHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			int result = myGame.startGame();
@@ -650,7 +691,10 @@ public class RiskGameMain extends JFrame {
 			}	
 		}	
 	}
-	
+
+	/**
+	 * Handler for handling next player
+	 */
 	private class nextPlayerHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			if (myGame.playerTurn()==1){
@@ -664,15 +708,21 @@ public class RiskGameMain extends JFrame {
 				reloadPlayers();
 			}
 		}	
-	}	
-	
+	}
+
+	/**
+	 * Handler used to adjust width
+	 */
 	private class adjustWidthHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			matrixDisplayMode = "preferred";
 			FitTableColumns(adjacencyMatrix);
 		}
-	}	
+	}
 
+	/**
+	 * Handler used to set width
+	 */
 	private class setWidthHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			Pattern pattern = Pattern.compile("[0-9]*");  
@@ -684,7 +734,10 @@ public class RiskGameMain extends JFrame {
 			FitTableColumns(adjacencyMatrix,matrixColumnWidth);	
 		}
 	}
-	
+
+	/**
+	 * Handler for expanding action
+	 */
 	class mExpandAllHandler implements ActionListener {
 		private String treeName;
 		public mExpandAllHandler(String tree){
@@ -705,8 +758,11 @@ public class RiskGameMain extends JFrame {
 				expandAll(myTree, new TreePath(root),1);
 			}	
 		}
-	}	
-	
+	}
+
+	/**
+	 * Handler for collapsing action
+	 */
 	class mCollapseAllHandler implements ActionListener {
 		private String treeName;
 		public mCollapseAllHandler(String tree){
