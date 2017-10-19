@@ -14,6 +14,8 @@ import javax.swing.event.*;
  * This is a subclass extends from JTable.
  * 
  * <p> Fill the content of row in table</p>
+ * 
+ * @see JTable
  */
 class RowHeaderTable extends JTable{  
 	private JTable refTable;  
@@ -35,6 +37,10 @@ class RowHeaderTable extends JTable{
 
 /**
  * This is a render class that can refresh the content in table
+ * 
+ * @see JLabel
+ * @see TableCellRenderer
+ * @see ListSelectionListener
  */
 class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectionListener{  
 	JTable reftable; 

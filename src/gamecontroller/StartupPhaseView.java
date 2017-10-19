@@ -27,6 +27,8 @@ import mapelements.RiskMap;
  * their own countries.
  * 
  * <p> Player place armies in round-robin fashion.</p>
+ * 
+ * @see JDialog
  */
 public class StartupPhaseView extends JDialog{
 

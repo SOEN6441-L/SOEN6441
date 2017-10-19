@@ -2,6 +2,10 @@ package mapelements;
 
 import gameelements.Player;
 
+/**
+ * This is the class Country.
+ * <p> This class contain all information of a country</p>
+ */
 public class Country{
 
 	public int countryID;
@@ -12,6 +16,12 @@ public class Country{
 	public boolean flagDFS;
 	public int armyNumber;
 	
+	/**
+	 * Constructor of Country.
+	 * @param ID	ID of the country
+	 * @param name	Name of country
+	 * @param continent	Relationship with continent
+	 */
 	public Country(int ID, String name, Continent continent){
 		this.countryID = ID;
 		this.countryName = name;

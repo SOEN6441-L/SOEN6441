@@ -18,7 +18,15 @@ import javax.swing.JTextField;
 
 import mapelements.RiskMap;
 
+/**
+ * This is a view class to show basic information of game.
+ * <p> When player save their map in mapeditor, this is the basic information<br>
+ * of new map</p>
+ * @see JDialog
+ */
 public class BasicInfoView extends JDialog{
+	
+	//components
 	private RiskMap curMap;
 	private JButton proceedBtn;
 	private JButton cancelBtn;
@@ -47,6 +55,12 @@ public class BasicInfoView extends JDialog{
 	
 	public int state=0; //0-Cancel, 1-continue
 	
+	/**
+	 * Constructor of class.
+	 * <p> configuring GUI of the class</p>
+	 * @param map	Object of RiskMap
+	 * @param mode	Indicator, affect size of the GUI
+	 */
 	public BasicInfoView(RiskMap map, int mode){///mode 0-upon save, 1-upon load
 		//configuration
 		setTitle("Basic information");
@@ -235,6 +249,7 @@ public class BasicInfoView extends JDialog{
 		setModal(true);
 		//setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 	}
+	
 	
 	private class proceedHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
