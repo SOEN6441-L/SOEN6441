@@ -10,7 +10,7 @@ import mapelements.Country;
 import mapelements.RiskMap;
 
 /**
- * Class RiskGame
+ * Class RiskGame to set up the game
  */
 public class RiskGame {
     private RiskMap gameMap;
@@ -19,6 +19,9 @@ public class RiskGame {
     private Color[] colors;
     private int turn, curPlayer;
 
+    /**
+     * The constructor of class RiskGame to init the game settings
+     */
     public RiskGame(){
         gameStage = 0;
         colors = new Color[10];
@@ -35,18 +38,26 @@ public class RiskGame {
     }
 
 
+
     public RiskMap getGameMap() {
         return gameMap;
     }
 
+    /**
+     * The function to clear the game map
+     */
     public void clearGameMap() {
         gameMap = null;
     }
+
 
     public Player[] getPlayers() {
         return players;
     }
 
+    /**
+     * The function to clear current players
+     */
     public void clearPlayers() {
         for(int i=0;i<players.length;i++){
             for(Country loopCountry:players[i].getCountries()){
@@ -58,6 +69,9 @@ public class RiskGame {
         players = null;
     }
 
+    /**
+     * The function to reset player's information
+     */
     public void resetPlayersInfo() {
         for (int i=0;i<players.length;i++){
             if (players[i].getCountries().size()!=0){
@@ -78,6 +92,11 @@ public class RiskGame {
         this.gameStage = gameStage;
     }
 
+    /**
+     * The function to load the map file
+     * @param inputFileName The name of the map file
+     * @return succeed or not
+     */
     public boolean loadMapFile(String inputFileName){
         RiskMap existingMap = new RiskMap();
         if (existingMap.loadMapFile(inputFileName,2)){
@@ -90,6 +109,10 @@ public class RiskGame {
         else return false;
     };
 
+    /**
+     * The function to create numbers of players
+     * @param inputWord The number of players want to create
+     */
     public void createPlayers(String inputWord){
         players = new Player[Integer.parseInt(inputWord)];
         for (int i=0;i<players.length;i++)
@@ -135,6 +158,10 @@ public class RiskGame {
     }
 
 
+    /**
+     * The function to call startUp phase's UI
+     * @return succeed or not
+     */
     public boolean startupPhase() {
         StartupPhaseView startupPhase = new StartupPhaseView(this);
         startupPhase.setVisible(true);
@@ -147,6 +174,10 @@ public class RiskGame {
         else return false;
     }
 
+    /**
+     * The function to start the game
+     * @return
+     */
     public int startGame() {
         turn = 1;
         curPlayer = 0;
@@ -157,6 +188,11 @@ public class RiskGame {
         return result;
     }
 
+
+    /**
+     * The function to check the state of the current player's turn
+     * @return which state
+     */
     public int playerTurn(){ //0-succeed 1-winGame 2-user cancel in reinforcement
         this.checkContinentOwner();
         while (players[curPlayer].getState()!=1){
@@ -197,6 +233,9 @@ public class RiskGame {
         this.curPlayer = curPlayer;
     }
 
+    /**
+     * The function to check if the whole continent is owned by a player
+     */
     private void checkContinentOwner(){
         for (Continent loopCountinent:gameMap.continents){
             loopCountinent.checkOwner(gameMap);
