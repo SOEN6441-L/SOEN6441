@@ -200,7 +200,7 @@ public class Player {
 
     /**
      * The function to calculate how many armies player get this turn
-     * @param myMap The map that is been played
+     * @param continents the continent list to be checked
      */
     public void calculateArmyNumber(ArrayList<Continent> continents) {
     	this.totalReinforcement = Math.floorDiv(this.countries.size(), 3);;
