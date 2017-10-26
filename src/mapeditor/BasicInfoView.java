@@ -20,14 +20,13 @@ import mapelements.RiskMap;
 
 /**
  * This is a view class to show basic information of game.
- * <p> When player save their map in mapeditor, this is the basic information<br>
+ * <p> When player save their map in mapEditor, this is the basic information 
  * of new map</p>
  * @see JDialog
  */
 public class BasicInfoView extends JDialog{
 	
 	//components
-	private RiskMap curMap;
 	private JButton proceedBtn;
 	private JButton cancelBtn;
 
@@ -53,20 +52,23 @@ public class BasicInfoView extends JDialog{
 	private JLabel warnImage;
 	private JLabel warnScroll;
 	
-	public int state=0; //0-Cancel, 1-continue
+	private RiskMap curMap;	
+	private int state=0; //0-Cancel, 1-continue
 	
 	/**
 	 * Constructor of class.
 	 * <p> configuring GUI of the class</p>
 	 * @param map	Object of RiskMap
+	 * @param checkWarning return value of mapelements.RiskMap#checkWarnings(), to indicate warnings related to the 5 basic information
 	 * @param mode	Indicator, affect size of the GUI
+	 * @see mapelements.RiskMap#checkWarnings()
 	 */
-	public BasicInfoView(RiskMap map, int mode){///mode 0-upon save, 1-upon load
+	public BasicInfoView(RiskMap map, int checkWarning, int mode){///mode 0-upon save, 1-upon load
 		//configuration
 		setTitle("Basic information");
 		this.curMap = map;
 		int width;
-		if (mode==1) width = 730;
+		if (mode==1) width = 750;
 		else width = 430;
 		setSize(width,350);
 		int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
@@ -80,13 +82,14 @@ public class BasicInfoView extends JDialog{
 		setLayout(null); 
 		Dimension size;
 		
-		if (curMap.author==null||curMap.author.isEmpty()){
-			warnAuthor = new JLabel("Warning: Parameter 'author' can't be empty, set to default value 'somebody'");
+		int curWarning;
+		curWarning = checkWarning%2;
+		if (curWarning == 1){
+			warnAuthor = new JLabel("Warning: Parameter 'author' can't be empty, set to default value 'anonymous'");
 			warnAuthor.setForeground(Color.RED);
-			curMap.author = "somebody";
 		}	
 		else {
-			warnAuthor = new JLabel("Default value is 'somebody'");
+			warnAuthor = new JLabel("Default value is 'anonymous'");
 			warnAuthor.setForeground(Color.BLACK);
 		}
 		add(warnAuthor);  
@@ -98,19 +101,16 @@ public class BasicInfoView extends JDialog{
 		labelAuthor.setFont(new java.awt.Font("dialog",1,14));
 		size = labelAuthor.getPreferredSize();
 		labelAuthor.setBounds(15,25,size.width,size.height); 
-		authorTF = new JTextField(curMap.author);
+		authorTF = new JTextField(curMap.getAuthor());
 		authorTF.setFont(new java.awt.Font("dialog",1,13));
 		add(authorTF);
 		authorTF.setBounds(labelAuthor.getBounds().x+size.width+5,25,140,size.height);	
 		
-		Set<String> validValues = new HashSet<String>();
-		validValues.add("yes");
-		validValues.add("no");	
-		
-		if (curMap.warn==null||curMap.warn.isEmpty()||!validValues.contains(curMap.warn)){
+		checkWarning = checkWarning/2;
+		curWarning = checkWarning%2;
+		if (curWarning == 1){
 			warnWarn = new JLabel("Warning: Parameter 'warn' is invalid, set to default value 'yes'");
 			warnWarn.setForeground(Color.RED);
-			curMap.warn = "yes";
 		}
 		else{
 			warnWarn = new JLabel("Default value is 'yes'");
@@ -126,9 +126,9 @@ public class BasicInfoView extends JDialog{
 		size = labelWarn.getPreferredSize();
 		labelWarn.setBounds(15,62,size.width,size.height); 
 		warnYes = new JRadioButton("yes");
-		warnYes.setSelected(curMap.warn.equals("yes"));
+		warnYes.setSelected(curMap.getWarn().equals("yes"));
 		warnNo = new JRadioButton("no");
-		warnNo.setSelected(curMap.warn.equals("no"));
+		warnNo.setSelected(curMap.getWarn().equals("no"));
 		warnRadio = new ButtonGroup();		
 		warnRadio.add(warnYes);
 		warnRadio.add(warnNo);
@@ -136,11 +136,12 @@ public class BasicInfoView extends JDialog{
 		warnYes.setBounds(authorTF.getBounds().x-3, 65,50,15);
 		add(warnNo);
 		warnNo.setBounds(authorTF.getBounds().x+60, 65,40,15);
-		
-		if (curMap.image==null||curMap.image.isEmpty()){
+
+		checkWarning = checkWarning/2;
+		curWarning = checkWarning%2;		
+		if (curWarning == 1){
 			warnImage = new JLabel("Warning: Parameter 'image' can't be empty, set to default value 'none'");
 			warnImage.setForeground(Color.RED);
-			curMap.image = "none";
 		}	
 		else{
 			warnImage = new JLabel("Default value is 'none'");
@@ -155,15 +156,16 @@ public class BasicInfoView extends JDialog{
 		labelImage.setFont(new java.awt.Font("dialog",1,14));
 		size = labelImage.getPreferredSize();
 		labelImage.setBounds(15,99,size.width,size.height); 
-		imageTF = new JTextField(curMap.image);
+		imageTF = new JTextField(curMap.getImage());
 		imageTF.setFont(new java.awt.Font("dialog",1,13));
 		add(imageTF);
 		imageTF.setBounds(authorTF.getBounds().x,99,140,size.height);
-			
-		if (curMap.wrap==null||curMap.wrap.isEmpty()||!validValues.contains(curMap.wrap)){
+
+		checkWarning = checkWarning/2;
+		curWarning = checkWarning%2;
+		if (curWarning == 1){
 			warnWrap = new JLabel("Warning: Parameter 'wrap' is invalid, set to default value 'no'");
-			warnWrap.setForeground(Color.RED); 
-			curMap.wrap = "no";
+			warnWrap.setForeground(Color.RED);
 		}
 		else{
 			warnWrap = new JLabel("Default value is 'no'");
@@ -180,9 +182,9 @@ public class BasicInfoView extends JDialog{
 		size = labelWrap.getPreferredSize();
 		labelWrap.setBounds(15,136,size.width,size.height); 
 		wrapYes = new JRadioButton("yes");
-		wrapYes.setSelected(curMap.wrap.equals("yes"));
+		wrapYes.setSelected(curMap.getWrap().equals("yes"));
 		wrapNo = new JRadioButton("no");
-		wrapNo.setSelected(curMap.wrap.equals("no"));
+		wrapNo.setSelected(curMap.getWrap().equals("no"));
 		wrapRadio = new ButtonGroup();		
 		wrapRadio.add(wrapYes);
 		wrapRadio.add(wrapNo);
@@ -191,15 +193,11 @@ public class BasicInfoView extends JDialog{
 		add(wrapNo);
 		wrapNo.setBounds(authorTF.getBounds().x+60,139,40,15);	
 		
-		validValues.clear();
-		validValues.add("horizontal");
-		validValues.add("vertical");
-		validValues.add("none");		
-		
-		if (curMap.scroll==null||curMap.scroll.isEmpty()||!validValues.contains(curMap.scroll)){
+		checkWarning = checkWarning/2;
+		curWarning = checkWarning%2;
+		if (curWarning == 1){
 			warnScroll = new JLabel("Warning: Parameter 'scroll' is invalid, set to default value 'none'");
 			warnScroll.setForeground(Color.RED);
-			curMap.scroll = "none";
 		}
 		else{
 			warnScroll = new JLabel("Default value is 'none'");
@@ -215,11 +213,11 @@ public class BasicInfoView extends JDialog{
 		size = labelScroll.getPreferredSize();
 		labelScroll.setBounds(15,183,size.width,size.height); 
 		scrollHor = new JRadioButton("horizontal");
-		scrollHor.setSelected(curMap.scroll.equals("horizontal"));
+		scrollHor.setSelected(curMap.getScroll().equals("horizontal"));
 		scrollVer = new JRadioButton("vertical");
-		scrollVer.setSelected(curMap.scroll.equals("vertical"));
+		scrollVer.setSelected(curMap.getScroll().equals("vertical"));
 		scrollNone = new JRadioButton("none");
-		scrollNone.setSelected(curMap.scroll.equals("none"));
+		scrollNone.setSelected(curMap.getScroll().equals("none"));
 		
 		scrollRadio = new ButtonGroup();		
 		scrollRadio.add(scrollHor);
@@ -249,9 +247,17 @@ public class BasicInfoView extends JDialog{
 		setModal(true);
 		//setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 	}
-	
+
 	/**
-	 * This is the method that continue current process
+	 * Method to get dialog return value, 0 - user cancel, 1 - continue 
+	 * @return dialog return value
+	 */
+	public int getState() {
+		return state;
+	}
+
+	/**
+	 * Method to respond user choosing proceed button, which will continues to next step.
 	 */
 	private class proceedHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
@@ -267,18 +273,18 @@ public class BasicInfoView extends JDialog{
 				imageTF.requestFocus();
 				return;
 			}
-			curMap.author = authorTF.getText().trim();
-			curMap.warn = (warnYes.isSelected())?"yes":"no";
-			curMap.wrap = (wrapYes.isSelected())?"yes":"no";
-			curMap.image = imageTF.getText().trim();
-			curMap.scroll = (scrollHor.isSelected())?"horizontal":(scrollVer.isSelected())?"vertical":"none";
+			curMap.setAuthor(authorTF.getText().trim());
+			curMap.setWarn((warnYes.isSelected())?"yes":"no");
+			curMap.setWrap((wrapYes.isSelected())?"yes":"no");
+			curMap.setImage(imageTF.getText().trim());
+			curMap.setScroll((scrollHor.isSelected())?"horizontal":(scrollVer.isSelected())?"vertical":"none");
 			state = 1;
 			setVisible(false);
 		}
 	}
 	
 	/**
-	 * This is the method that cancel current process
+	 * Method to respond user cancel the process
 	 */
 	private class cancelHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {

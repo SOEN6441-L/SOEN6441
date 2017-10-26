@@ -1,4 +1,4 @@
-package gamecontroller;
+package gameelementstest;
 import static org.junit.Assert.*;
 
 import org.junit.Before;

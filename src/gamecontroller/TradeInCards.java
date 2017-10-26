@@ -8,7 +8,7 @@ import java.awt.event.MouseListener;
  *   This class is GUI for Exchange cards to armies.
  */
 
-public class ExchangeInteraction extends JDialog{
+public class TradeInCards extends JDialog{
     JPanel ContentPanel = new JPanel();
 
     //Four buttons
@@ -41,7 +41,7 @@ public class ExchangeInteraction extends JDialog{
      *  This method is to set layout if GUI
      *	@param cards player's cards
      */
-    public ExchangeInteraction(int[] cards){
+    public TradeInCards(int[] cards){
     	myCards = cards;
         ContentPanel.setLayout(null);
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -391,8 +391,8 @@ public class ExchangeInteraction extends JDialog{
 
     /**
      *   To check name of labels
-     *
-     *   @return number of labels
+     *	@param label JLabel object
+     *  @return number of labels
      */
     public int GetLabel(JLabel label){
         if (label.getText() == "infantry"){

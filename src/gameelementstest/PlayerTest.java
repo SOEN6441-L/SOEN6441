@@ -1,4 +1,4 @@
-package gameelements;
+package gameelementstest;
 
 /*import static org.junit.Assert.*;
 

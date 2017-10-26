@@ -4,12 +4,13 @@ import mapelements.*;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import gamecontroller.FortificationPhaseView;
 import gamecontroller.ReinforcePhaseView;
 import gamecontroller.StartupPhaseView;
 
 /**
- *   This class is to construct player;
- *   This class is to calculate how many armies are given according to numbers of cards.
+ *   This is class for defining player.
+ *   A player belongs to a RiskGame object, has amount of armies, can own several countries.
  */
 public class Player {
 	private String name;
@@ -20,16 +21,13 @@ public class Player {
     private int initialArmies;
     private Color myColor;
     
-    private int baseArmies;
-    private ArrayList<Continent> continents;
+    private String reinforcementStr;
     private int totalReinforcement;
-    
-    private int state;//0-not in game, 1- in game(have countries)
 
     /**
-     *   This method is a class constructor.
-     *   @param newName The name of player
-     *   @param color The player's color
+     * Constructor for Player class.
+     * @param newName the name of the new player
+     * @param color the player's color
      */
     public Player(String newName,Color color){
         name = newName;
@@ -37,99 +35,134 @@ public class Player {
         for (int i=0;i<3;i++) cards[i] = 0;
         countries = new ArrayList<Country>();
         myColor = color;
-        baseArmies = 0;
+        totalArmies = 0;
         totalReinforcement = 0;
-        continents = new ArrayList<Continent>();
         changeCardTimes=0;
-        setState(0);
-     }
+    }
 
     /**
-     * get name of player
-     *
-     * @return name
+     * Method to get the name of player.
+     * @return player's name
      */
     public String getName()
     {
         return name;
     }
-
-
+    
     /**
-     * To get cards
-     *
-     * @param myCards cards of player
+     * Method to get a copy of cards.
+     * @param myCards integer array to store the copy of cards
      */
     public void getCards(int[] myCards) {
         for(int i=0;i<3;i++) myCards[i] = cards[i];
     }
-
+    
     /**
-     * Set cards
-     * @param myCards cards of player
-     */
-    public void setCards(int[] myCards) {
-        for(int i=0;i<3;i++) cards[i] = myCards[i];
-    }
-
-    /**
-     * To get string of cards number
-     * @return cards string
+     * Method to get a description of cards.
+     * @return description of cards
      */
     public String getCardsString() {
         return String.valueOf(cards[0])+"+"+String.valueOf(cards[1])+"+"+String.valueOf(cards[2])+"="+String.valueOf(cards[0]+cards[1]+cards[2]);
     }
-
+    
     /**
-     * get Change Card Times
-     *
-     * @return change cards time of exchange times
+     * Method to set cards from a copy. The copy may have been modified by other method.
+     * @param myCards copy of cards
+     */
+    public void setCards(int[] myCards) {
+        for(int i=0;i<3;i++) cards[i] = myCards[i];
+    }
+    
+    /**
+     * Method to add one type of card.
+     * @param type card type
+     */
+    public void increaseCard(int type){
+        this.cards[type]++;
+    }
+    
+    /**
+     * Method to get exchange cards times.
+     * @return exchange cards times
      */
     public int getChangeCardTimes() {
         return changeCardTimes;
-    }
-
+    }    
+ 
     /**
-     * get countries of player
-     *
-     * @return number of countries of the player
+     * Method to increase exchange cards times by 1.
+     */
+    public void increaseChangeCardTimes() {
+        changeCardTimes++;
+    }
+   
+    /**
+     * Method to get country list of player.
+     * @return country list of the player
      */
     public ArrayList<Country> getCountries() {
         return countries;
     }
-
+    
     /**
-     * add a countries to player
-     *
-     * @param newCountry number of new countries
+     * Method to add a country to player.
+     * @param newCountry country object adding to this player
      */
-    public void addCountrie(Country newCountry) {
+    public void addCountry(Country newCountry) {
     	this.countries.add(newCountry);
     }
-
+    
     /**
-     * The function of remove a countries from player
-     *
-     * @param newCountry number of countries of removing
+     * Method to remove a country from player.
+     * @param country country object to be removed
      */
-    public void removeCountrie(Country newCountry) {
-    	this.countries.remove(newCountry);
+    public void removeCountrie(Country country) {
+    	this.countries.remove(country);
     }
 
     /**
-     * The function of remove all countries from player
-     *
-     *
+     * Method to remove all countries from player.
      */
     public void removeAllCountrie() {
     	this.countries.clear();
-    }   
-
-    //add cards
-    public void addCard(int type){
-        this.cards[type]++;
     }
+    
+    /**
+     * Method to get display color of player.
+     * @return player's color
+     */    
+    public Color getMyColor() {
+		return myColor;
+	}
+    
+    /**
+     * Method to check if player is still in game.
+     * @return player's in game state
+     */
+	public boolean getState() {
+		return countries.size()>0;
+	}
 
+    /**
+     * Method to get armies number of this player.
+     * @return total armies number of player
+     */
+	public int getTotalArmies() {
+		return totalArmies;
+	}
+
+	/**
+     * Method to set armies number of this player.
+     * @param totalArmies armies number of player
+     */
+	public void setTotalArmies(int totalArmies) {
+		this.totalArmies = totalArmies;
+	}
+	
+	public void addArmies(int initialArmies) {
+		this.totalArmies += initialArmies;
+	}	    
+	
     /**
      *  This function is to judge if player must exchange cards with armies.
      *
@@ -141,6 +174,7 @@ public class Player {
         else
             return false;
     }
+    
 
     /**
      *   The function calculate how many armies after exchanging and change number of armies of player
@@ -149,29 +183,43 @@ public class Player {
     public int CalExchangeArmies(){
     	return 5*(this.changeCardTimes+1);
     }
+	
+
+    /**
+     * The function to judge if player can exchange cards
+     * @param myCards array of my cards
+     * @return true if can exchange
+     */
+    public boolean canExchange(int[] myCards) {
+    	return (Math.max(myCards[0], Math.max(myCards[1], myCards[2]))>=3
+    			||Math.min(myCards[0], Math.min(myCards[1], myCards[2]))>=1);
+    }	
+    
+    
 
 
-    public Color getMyColor() {
-		return myColor;
-	}
-
-
-
-	public int getTotalArmies() {
-		return totalArmies;
-	}
-
-	public void setTotalArmies(int totalArmies) {
-		this.totalArmies = totalArmies;
-	}
-
-	public int getState() {
-		return state;
-	}
-
-	public void setState(int state) {
-		this.state = state;
-	}
+    /**
+     * The function to calculate how many armies player get this turn
+     * @param myMap The map that is been played
+     */
+    public void calculateArmyNumber(ArrayList<Continent> continents) {
+    	this.totalReinforcement = Math.floorDiv(this.countries.size(), 3);;
+    	for (Continent loopContinent:continents){
+        	if (loopContinent.getOwner()!=null&&loopContinent.getOwner().getName().equals(this.name)){
+        		totalReinforcement+=loopContinent.getControlNum();
+        	}
+        }
+    	if (ifForceExchange()) totalReinforcement+=this.CalExchangeArmies();
+    }	
+	
+	/**
+     * get the number of reinforcement armies of player
+     * @return name
+     */
+    public int getTotalReinforcement()
+    {
+        return totalReinforcement;
+    }    
 
     /**
      * The function to judge if player win
@@ -187,12 +235,12 @@ public class Player {
 
 	/**
      * The function to judge if complete reinforcement phase
-     *
+     * @param myGame the current RiskGame object
      * @return if complete or not
      *
 	 */
 	public boolean reinforcementPhase(RiskGame myGame){
-		calculateArmyNumber(myGame.getGameMap());
+		calculateArmyNumber(myGame.getGameMap().getContinents());
 		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(this, myGame, totalReinforcement);
 		reinforcementPhase.setVisible(true);
 		int state = reinforcementPhase.state;
@@ -202,7 +250,7 @@ public class Player {
 
     /**
      * The function to judge if complete fortification phase
-     * @return true if complete fortification phase
+     * @param myGame the current RiskGame object
      */
     public void fortificationPhase(RiskGame myGame){
         FortificationPhaseView fortiPhase = new FortificationPhaseView(this, myGame);
@@ -210,50 +258,5 @@ public class Player {
         int state = fortiPhase.state;
         fortiPhase.dispose();
     }
-
-	public int getInitialArmies() {
-		return initialArmies;
-	}
-
-	public void setInitialArmies(int initialArmies) {
-		this.initialArmies = initialArmies;
-		this.totalArmies += initialArmies;
-	}	
-	
-    /**
-     * The function to calculate how many armies player get this turn
-     * @param myMap The map that is been played
-     */
-    public void calculateArmyNumber(RiskMap myMap) {
-    	this.baseArmies = Math.floorDiv(this.countries.size(), 3);
-    	this.totalReinforcement = baseArmies;
-    	continents.clear();
-    	for (Continent loopContinent:myMap.continents){
-        	if (loopContinent.owner!=null&&loopContinent.owner.getName().equals(this.name)){
-        		totalReinforcement+=loopContinent.controlNum;
-        		continents.add(loopContinent);
-        	}
-        }
-    	if (ifForceExchange()) totalReinforcement+=this.CalExchangeArmies();
-    }
-
-    /**
-     * The function to udge if player can exchange cards
-     * @param myCards array of my cards
-     * @return true if can exchange
-     */
-    public boolean canExchange(int[] myCards) {
-    	return (Math.max(myCards[0], Math.max(myCards[1], myCards[2]))>=3
-    			||Math.min(myCards[0], Math.min(myCards[1], myCards[2]))>=1);
-    }
-
-    /**
-     * The function to increase cards exchange times
-     */
-
-    public void increaseChangeCardTimes() {
-        changeCardTimes++;
-    }
-    
 }
 

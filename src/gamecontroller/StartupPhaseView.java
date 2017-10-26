@@ -15,10 +15,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import gameelements.NodeRecord;
 import gameelements.Player;
 import gameelements.RiskGame;
 import mapelements.Country;
-import mapelements.NodeRecord;
 import mapelements.RiskMap;
 
 
@@ -87,14 +88,14 @@ public class StartupPhaseView extends JDialog{
 		totalPlayers = 0;
 		//Loop to initial armies belong to each player,and armies in country
 		for(int i=0;i<players.length;i++){
-			if (players[i].getState()==1){ 
-				totalInitialArmies+=players[i].getInitialArmies();
+			if (players[i].getState()){ 
+				totalInitialArmies+=myGame.getInitialArmies();
 				totalPlayers++;
-				leftArmies[i] = players[i].getInitialArmies();
+				leftArmies[i] = myGame.getInitialArmies();
 				localCountries[i] = new NodeRecord[players[i].getCountries().size()];
 				int j = 0;
 				for (Country loopCountry:players[i].getCountries()){
-					localCountries[i][j++] = new NodeRecord(loopCountry.countryID, loopCountry.armyNumber);
+					localCountries[i][j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
 				}
 			}	
 		}
@@ -111,7 +112,7 @@ public class StartupPhaseView extends JDialog{
 		turnLabel.setBounds(15,15,size.width,size.height); 
 		
 		if (totalInitialArmies>0){
-			while (players[curPlayer].getState()!=1||leftArmies[curPlayer]==0){
+			while (!players[curPlayer].getState()||leftArmies[curPlayer]==0){
 				int tempPlayer=(curPlayer+1)%players.length;
 				if (tempPlayer<curPlayer) curTurn++;
 				curPlayer = tempPlayer;			
@@ -139,9 +140,9 @@ public class StartupPhaseView extends JDialog{
         
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
 		for (int i=0;i<localCountries[curPlayer].length;i++) { 
-			Country loopCountry = gameMap.findCountryByID(localCountries[curPlayer][i].ID);
-			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.countryName
-					+" (In "+loopCountry.belongToContinent.continentName+", "+localCountries[curPlayer][i].Number+" armies)"));
+			Country loopCountry = gameMap.findCountry(localCountries[curPlayer][i].name);
+			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
+					+" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[curPlayer][i].Number+" armies)"));
 		}
 		treeCountry= new JTree(myTreeRoot);
 		treeCountry.addMouseListener( new  MouseAdapter(){
@@ -210,7 +211,7 @@ public class StartupPhaseView extends JDialog{
 	public void reloadGUI(){
 
 		if (totalInitialArmies>0){
-			while (players[curPlayer].getState()!=1||leftArmies[curPlayer]==0){
+			while (!players[curPlayer].getState()||leftArmies[curPlayer]==0){
 				int tempPlayer=(curPlayer+1)%players.length;
 				if (tempPlayer<curPlayer) curTurn++;
 				curPlayer = tempPlayer;			
@@ -243,9 +244,9 @@ public class StartupPhaseView extends JDialog{
         
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
 		for (int i=0;i<localCountries[curPlayer].length;i++) { 
-			Country loopCountry = gameMap.findCountryByID(localCountries[curPlayer][i].ID);
-			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.countryName
-					+" (In "+loopCountry.belongToContinent.continentName+", "+localCountries[curPlayer][i].Number+" armies)"));
+			Country loopCountry = gameMap.findCountry(localCountries[curPlayer][i].name);
+			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
+					+" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[curPlayer][i].Number+" armies)"));
 		}
 		treeCountry = null;
 		treeCountry= new JTree(myTreeRoot);
@@ -295,11 +296,10 @@ public class StartupPhaseView extends JDialog{
 	private class enterBtnHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			for(int i=0;i<players.length;i++){
-				if (players[i].getState()==1){ 
-					players[i].setInitialArmies(0);
+				if (players[i].getState()){ 
 					if (localCountries[i]!=null){
 						for (int j=0;j<localCountries[i].length;j++){
-							gameMap.findCountryByID(localCountries[i][j].ID).armyNumber = localCountries[i][j].Number;
+							gameMap.findCountry(localCountries[i][j].name).setArmyNumber(localCountries[i][j].Number);
 						}
 					}
 				}

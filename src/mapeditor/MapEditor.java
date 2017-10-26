@@ -23,14 +23,14 @@ import javax.swing.tree.TreePath;
 
 import mapelements.Continent;
 import mapelements.Country;
+import mapelements.ErrorMsg;
 import mapelements.RiskMap;
 
 /**
- * This is a class, which used to create a window for player to edit maps for games
- *
+ * This is a class, which used to create a window for designers to edit maps for games
+ * @see JFrame
  */
 public class MapEditor extends JFrame {
-
 	private JButton newMapBtn;
 	private JButton loadFromFileBtn;
 	private JButton newContinentBtn;
@@ -42,7 +42,6 @@ public class MapEditor extends JFrame {
 	private JButton adjustWidthBtn;	
 	private JTextField colWidthEdit;
     
-	//label show info
 	private JLabel labelContinent;
 	private JLabel labelCountry;
 	
@@ -56,31 +55,30 @@ public class MapEditor extends JFrame {
 	private JTable adjacencyMatrix;
 	private JScrollPane scrollPaneForMatrix;
 	
-	private RiskMap newMap;
+	private RiskMap myMap;
 	
-	private String selContinentName, selCountryName, lastUsedContinent="";
+	private String selContinentName, selCountryName, lastUsedContinent = "";
 	private String matrixDisplayMode = "preferred"; //preferred, same
 	private int matrixColumnWidth = 25, continentExpandMode = 1;
 
 	/**
-	 * The constructor of class MapEditor to generate mapEditor's UI
+	 * The constructor of class MapEditor to generate mapEditor's GUI.
 	 */
 	private MapEditor(){  
 		
-		newMap = new RiskMap("Untitled");
-		//configuration
-		setTitle("Map Editor - Untitled by "+newMap.author);  
+		myMap = new RiskMap("Untitled");
+		//general configurations
+		setTitle("Map Editor - Untitled by "+myMap.getAuthor());  
 		setSize(1280,700);
 		int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
 		int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-		setLocation((screenWidth-1280)/2, (screenHeight-700)/2-30);  
-		//set exit program when close the window  
-		setDefaultCloseOperation(3);  
-		//not capable adjust windows size  
-		setResizable(false);  
-		setLayout(null);  
+		setLocation((screenWidth-1280)/2, (screenHeight-700)/2-30); 
+		setResizable(false);
+		setLayout(null); 
+		this.enableEvents(AWTEvent.WINDOW_EVENT_MASK); //handle windows events	
+		setDefaultCloseOperation(3); //set exit program when close the window   
 		
-        //Tree for continents and countries
+        //Label and TreeView for continents and countries
 		labelContinent = new javax.swing.JLabel("Continents (0):");  
 		add(labelContinent);  
 		labelContinent.setFont(new java.awt.Font("dialog",1,15));
@@ -96,12 +94,12 @@ public class MapEditor extends JFrame {
 		scrollPaneForContinent.setBounds(15,35,300,580);	
 
 	    continentMenu = new JPopupMenu();	
-	    mDeleteContinent = new JMenuItem("Delete     ",KeyEvent.VK_D);
-	    mDeleteContinent.addActionListener(new mDeleteContinentHandler());
-	    mRenameContinent = new JMenuItem("Rename     ",KeyEvent.VK_R);
-	    mRenameContinent.addActionListener(new mRenameContinentHandler());	
-	    mChangeContinentControl = new JMenuItem("Control Number     ",KeyEvent.VK_C);
-	    mChangeContinentControl.addActionListener(new mChangeContinentControlHandler());
+	    mDeleteContinent = new JMenuItem("Delete ",KeyEvent.VK_D);
+	    mDeleteContinent.addActionListener(new buttonHandler());
+	    mRenameContinent = new JMenuItem("Rename ",KeyEvent.VK_R);
+	    mRenameContinent.addActionListener(new buttonHandler());	
+	    mChangeContinentControl = new JMenuItem("Control Number",KeyEvent.VK_C);
+	    mChangeContinentControl.addActionListener(new buttonHandler());
 	    
 	    continentMenu.add(mDeleteContinent);
 	    continentMenu.addSeparator();
@@ -109,12 +107,12 @@ public class MapEditor extends JFrame {
 	    continentMenu.add(mChangeContinentControl);
 	    
 	    countryMenu = new JPopupMenu();	
-	    mDeleteCountry = new JMenuItem("Delete     ",KeyEvent.VK_D);
-	    mDeleteCountry.addActionListener(new mDeleteCountryHandler());
-	    mRenameCountry = new JMenuItem("Rename     ",KeyEvent.VK_R);
-	    mRenameCountry.addActionListener(new mRenameCountryHandler());	    
+	    mDeleteCountry = new JMenuItem("Delete",KeyEvent.VK_D);
+	    mDeleteCountry.addActionListener(new buttonHandler());
+	    mRenameCountry = new JMenuItem("Rename",KeyEvent.VK_R);
+	    mRenameCountry.addActionListener(new buttonHandler());	    
 	    mMoveCountry = new JMenuItem("Move to another continent",KeyEvent.VK_M);
-	    mMoveCountry.addActionListener(new mMoveCountryHandler());	    
+	    mMoveCountry.addActionListener(new buttonHandler());	    
 
 	    countryMenu.add(mDeleteCountry);
 	    countryMenu.addSeparator();
@@ -122,16 +120,16 @@ public class MapEditor extends JFrame {
 	    countryMenu.add(mMoveCountry);
 	    
 	    mapMenu = new JPopupMenu();
-	    mExpandAll = new JMenuItem("Exapnd All  ",KeyEvent.VK_E);
-	    mExpandAll.addActionListener(new mExpandAllHandler());	    
-	    mCollapseAll = new JMenuItem("Collapse All  ",KeyEvent.VK_C);
-	    mCollapseAll.addActionListener(new mCollapseAllHandler());
+	    mExpandAll = new JMenuItem("Exapnd All",KeyEvent.VK_E);
+	    mExpandAll.addActionListener(new buttonHandler());	    
+	    mCollapseAll = new JMenuItem("Collapse All",KeyEvent.VK_C);
+	    mCollapseAll.addActionListener(new buttonHandler());
 	    
 	    mapMenu.add(mExpandAll);
 	    mapMenu.addSeparator();
 	    mapMenu.add(mCollapseAll);
 	    		
-		//Matrix for countries and connections
+		//Labels and Matrix for countries and connections
 		labelCountry = new javax.swing.JLabel("Countries (0) and Adjacency Matrix:");  
 		add(labelCountry);  
 		labelCountry.setFont(new java.awt.Font("dialog",1,15));
@@ -158,35 +156,35 @@ public class MapEditor extends JFrame {
 		size.width+=20;
 		size.height+=2;
 		saveToFileBtn.setBounds(scrollPaneForMatrix.getBounds().x+scrollPaneForMatrix.getWidth()-size.width,625,size.width-1,size.height);
-		saveToFileBtn.addActionListener(new saveToFileHandler());
+		saveToFileBtn.addActionListener(new buttonHandler());
 
 		newCountryBtn = new javax.swing.JButton("New Country");
 		newCountryBtn.setMnemonic('c');
 		newCountryBtn.setDisplayedMnemonicIndex(4);
 		add(newCountryBtn);  	     
 		newCountryBtn.setBounds(saveToFileBtn.getBounds().x-size.width-10,625,size.width,size.height);
-		newCountryBtn.addActionListener(new newCountryHandler());
+		newCountryBtn.addActionListener(new buttonHandler());
 		
 		newContinentBtn = new javax.swing.JButton("New Continent");
 		newContinentBtn.setMnemonic('n');
 		newContinentBtn.setDisplayedMnemonicIndex(0);
 		add(newContinentBtn);  	     
 		newContinentBtn.setBounds(newCountryBtn.getBounds().x-size.width-10,625,size.width,size.height);	        
-		newContinentBtn.addActionListener(new newContinentHandler());		
+		newContinentBtn.addActionListener(new buttonHandler());		
 		
 		newMapBtn = new javax.swing.JButton("New Map");
 		newMapBtn.setMnemonic('m');
 		newMapBtn.setDisplayedMnemonicIndex(4);
 		add(newMapBtn);  	     
 		newMapBtn.setBounds(15,625,size.width,size.height);
-		newMapBtn.addActionListener(new newMapHandler());
+		newMapBtn.addActionListener(new buttonHandler());
         
 		loadFromFileBtn = new javax.swing.JButton("Load Exiting Map");
 		loadFromFileBtn.setMnemonic('l');
 		loadFromFileBtn.setDisplayedMnemonicIndex(0);
 		add(loadFromFileBtn);  	     
 		loadFromFileBtn.setBounds(newMapBtn.getBounds().x+size.width+10,625,size.width+10,size.height);  
-		loadFromFileBtn.addActionListener(new loadFromFileHandler());
+		loadFromFileBtn.addActionListener(new buttonHandler());
 		
 		completeBtn = new javax.swing.JButton("Complete");
 		completeBtn.setMnemonic('e');
@@ -196,7 +194,7 @@ public class MapEditor extends JFrame {
 		size.height-=4;
 		completeBtn.setBounds(scrollPaneForMatrix.getBounds().x+scrollPaneForMatrix.getWidth()-size.width-1,7,size.width,size.height);
 		completeBtn.setEnabled(false);
-		completeBtn.addActionListener(new completeHandler());
+		completeBtn.addActionListener(new buttonHandler());
 		
 		clearBtn = new javax.swing.JButton("Clear");
 		clearBtn.setMnemonic('r');
@@ -204,7 +202,7 @@ public class MapEditor extends JFrame {
 		add(clearBtn);  	     
 		clearBtn.setBounds(completeBtn.getBounds().x-size.width-10,7,size.width,size.height);
 		clearBtn.setEnabled(false);
-		clearBtn.addActionListener(new clearHandler());
+		clearBtn.addActionListener(new buttonHandler());
 		
 		adjustWidthBtn = new javax.swing.JButton("Full width");
 		adjustWidthBtn.setMnemonic('f');
@@ -212,29 +210,31 @@ public class MapEditor extends JFrame {
 		add(adjustWidthBtn);  	     
 		adjustWidthBtn.setBounds(clearBtn.getBounds().x-size.width-30,7,size.width,size.height);
 		adjustWidthBtn.setEnabled(false);
-		adjustWidthBtn.addActionListener(new adjustWidthHandler());	
+		adjustWidthBtn.addActionListener(new buttonHandler());	
 		
 		setWidthBtn = new javax.swing.JButton("Set");
 		add(setWidthBtn);  	     
 		setWidthBtn.setBounds(adjustWidthBtn.getBounds().x-size.width+25,7,size.width-30,size.height);
 		setWidthBtn.setEnabled(false);
-		setWidthBtn.addActionListener(new setWidthHandler());
+		setWidthBtn.addActionListener(new buttonHandler());
 		
 		colWidthEdit = new javax.swing.JTextField();
 		colWidthEdit.setText(String.valueOf(matrixColumnWidth));
 		add(colWidthEdit);  	     
 		colWidthEdit.setBounds(setWidthBtn.getBounds().x-size.width+19,7,size.width-20,size.height);
 		colWidthEdit.setEnabled(false);		
-		
-		this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);   
-        
+		      
 		setVisible(true);          
 	}
-	
+
+	/**
+	 * Method to handle windows event, add a prompt if there is an unsaved map upon exiting the program.
+	 * @param e event that invoke this method
+	 */
 	@Override
 	protected void processWindowEvent(WindowEvent e){
 		if (e.getID() == WindowEvent.WINDOW_CLOSING){
-			if (newMap.modified){
+			if (myMap.isModified()){
 				if (JOptionPane.showConfirmDialog(null,
 						"This will discard any modification since last save, do you want to proceed?",
 						"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
@@ -245,29 +245,10 @@ public class MapEditor extends JFrame {
 	}
 
 	/**
-	 * The function for loading the a new map
-	 */
-	private void loadNewMap(){  		
-		newMap = null;
-		newMap = new RiskMap("Untitled");
-		
-		setTitle("Map Editor - Untitled by "+newMap.author);   
-		
-		labelContinent.setText("Continents (0):");
-		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled ");
-		JTree treeContinent= new JTree(myTreeRoot);
-		treeContinent.setCellRenderer(new CategoryNodeRenderer());
-		scrollPaneForContinent.getViewport().removeAll();
-		scrollPaneForContinent.getViewport().add(treeContinent);
-		
-		reloadMatrix();		
-	}
-
-	/**
-	 * The function to expand the all tree structure for more detail information
-	 * @param tree The tree structure
-	 * @param parent The parent node
-	 * @param mode The serial number of the tree structure, to expand or not
+	 * Method to expand or collapse all tree structure.
+	 * @param tree the tree object
+	 * @param parent the parent node
+	 * @param mode 1 - expand, other number - collapse
 	 */
 	private void expandAll(JTree tree, TreePath parent, int mode) {
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
@@ -283,18 +264,18 @@ public class MapEditor extends JFrame {
 	}
 
 	/**
-	 * The function to reload the continents of the map
+	 * Method to refresh the tree view of continents and countries upon modifications.
 	 */
 	private void reloadContinents(){	
 		//configuration
-		labelContinent.setText("Continents ("+String.valueOf(newMap.continents.size())+"):");  
+		labelContinent.setText("Continents ("+String.valueOf(myMap.getContinents().size())+"):");  
         
-		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - "+newMap.riskMapName+" ");
-		for (Continent loopContinent : newMap.continents) { 
-			ArrayList<Country> loopCountriesList = newMap.countries.get(loopContinent.continentID);
-			DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.continentName+" ("+loopContinent.controlNum+") ("+loopCountriesList.size()+" countries) "); 
+		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - "+myMap.getRiskMapName()+" ");
+		for (Continent loopContinent : myMap.getContinents()) { 
+			ArrayList<Country> loopCountriesList = loopContinent.getCountryList();
+			DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
 			for (Country loopCountry:loopCountriesList){
-				loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.countryName+" "));
+				loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" "));
 			}
 			myTreeRoot.add(loopContinentNode);
 		}	
@@ -340,11 +321,11 @@ public class MapEditor extends JFrame {
 	}
 
 	/**
-	 * The function to adjust the table's size
-	 * @param myTable The table want to adjust
-	 * @return the max width of the table
+	 * Method to adjust the table's column size to preferred width.
+	 * @param myTable table want to adjust
+	 * @return max width of all columns
 	 */
-	public int FitTableColumns(JTable myTable) {
+	public int fitTableColumns(JTable myTable) {
 		JTableHeader header = myTable.getTableHeader();
 		int rowCount = myTable.getRowCount();
 
@@ -357,10 +338,10 @@ public class MapEditor extends JFrame {
 					.getTableCellRendererComponent(myTable, column.getIdentifier(), false, false, -1, col)
 					.getPreferredSize().getWidth();
 			for (int row = 0; row < rowCount; row++) {
-				int preferedWidth = (int) myTable.getCellRenderer(row, col)
+				int preferredWidth = (int) myTable.getCellRenderer(row, col)
 						.getTableCellRendererComponent(myTable, myTable.getValueAt(row, col), false, false, row, col)
 						.getPreferredSize().getWidth();
-				width = Math.max(width, preferedWidth);
+				width = Math.max(width, preferredWidth);
 				if (width>maxWidth) maxWidth = width;
 			}
 			header.setResizingColumn(column);
@@ -369,7 +350,13 @@ public class MapEditor extends JFrame {
 		return maxWidth;
 	}
 
-	public int FitTableColumns(JTable myTable, int setWidth) {
+	/**
+	 * Method to adjust the table's column size as the parameter setWidth.
+	 * @param myTable table want to adjust
+	 * @param setWidth the column size want to adjust
+	 * @return max width of all columns
+	 */
+	public int fitTableColumns(JTable myTable, int setWidth) {
 		JTableHeader header = myTable.getTableHeader();
 		int rowCount = myTable.getRowCount();
 
@@ -382,10 +369,10 @@ public class MapEditor extends JFrame {
 					.getTableCellRendererComponent(myTable, column.getIdentifier(), false, false, -1, col)
 					.getPreferredSize().getWidth();
 			for (int row = 0; row < rowCount; row++) {
-				int preferedWidth = (int) myTable.getCellRenderer(row, col)
+				int preferredWidth = (int) myTable.getCellRenderer(row, col)
 						.getTableCellRendererComponent(myTable, myTable.getValueAt(row, col), false, false, row, col)
 						.getPreferredSize().getWidth();
-				width = Math.max(width, preferedWidth);
+				width = Math.max(width, preferredWidth);
 				if (width>maxWidth) maxWidth = width;
 			}
 			header.setResizingColumn(column);
@@ -395,34 +382,33 @@ public class MapEditor extends JFrame {
 	}
 
 	/**
-	 * The function to reload the matrix of the connection between countries
+	 * Method to refresh the adjacency matrix view of the connection between countries.
 	 */
 	private void reloadMatrix(){	
-
-		labelCountry.setText("Countries ("+String.valueOf(newMap.countryNum)+") and Adjacency Matrix:"); 
-		DefaultTableModel matrixModel = new DefaultTableModel(newMap.countryNum,newMap.countryNum);
+		labelCountry.setText("Countries ("+String.valueOf(myMap.getCountryNum())+") and Adjacency Matrix:"); 
+		DefaultTableModel matrixModel = new DefaultTableModel(myMap.getCountryNum(),myMap.getCountryNum());
 		
-		Object[][] newDataVector = new String[newMap.countryNum][newMap.countryNum];
-		Object[] newIdentifiers = new String[newMap.countryNum];
+		Object[][] dataVector = new String[myMap.getCountryNum()][myMap.getCountryNum()];
+		Object[] identifiers = new String[myMap.getCountryNum()];
 		int i =0;
-		for (Continent loopContinent : newMap.continents) { 
-			ArrayList<Country> loopCountriesList = newMap.countries.get(loopContinent.continentID);
+		for (Continent loopContinent : myMap.getContinents()) { 
+			ArrayList<Country> loopCountriesList = loopContinent.getCountryList();
 			for (Country loopCountry:loopCountriesList){
-				newIdentifiers[i++] = loopCountry.countryName;
+				identifiers[i++] = loopCountry.getName();
 			}
 		}
-		for (i=0;i<newMap.countryNum;i++){
-			ArrayList<Integer> adjacentCountryList = newMap.adjacencyList.get(newMap.findCountry((String)newIdentifiers[i]).countryID);
-			for (int j=0;j<newMap.countryNum;j++){
-				if (adjacentCountryList.contains(newMap.findCountry((String)newIdentifiers[j]).countryID)){
-					newDataVector[i][j] = "X";
+		for (i=0;i<myMap.getCountryNum();i++){
+			ArrayList<Country> adjacentCountryList = myMap.getAdjacencyList().get(myMap.findCountry((String)identifiers[i]));
+			for (int j=0;j<myMap.getCountryNum();j++){
+				if (adjacentCountryList.contains(myMap.findCountry((String)identifiers[j]))){
+					dataVector[i][j] = "X";
 				}
 				else{
-					newDataVector[i][j] = "";
+					dataVector[i][j] = "";
 				}
 			}
 		}
-		matrixModel.setDataVector(newDataVector, newIdentifiers);
+		matrixModel.setDataVector(dataVector, identifiers);
 		
 		adjacencyMatrix = new JTable(matrixModel){
 			public boolean isCellEditable(int row, int column){
@@ -433,23 +419,26 @@ public class MapEditor extends JFrame {
 		adjacencyMatrix.setCellSelectionEnabled(true);
 		//adjacencyMatrix.setRowSelectionAllowed(false);
 		adjacencyMatrix.addMouseListener(new MouseAdapter(){
-				public void mouseClicked(MouseEvent e) {
+				public void mouseClicked(MouseEvent e) {					
 					if (e.getClickCount() == 2) {
+						ErrorMsg errorMsg;
 						int row = ((JTable) e.getSource()).rowAtPoint(e.getPoint());
 						int col = ((JTable) e.getSource()).columnAtPoint(e.getPoint());
 						if (row!=col){
 							String cellValue = (String) (matrixModel.getValueAt(row, col));
 							if (cellValue.isEmpty()) {
-								if (newMap.addConnection((String)newIdentifiers[row],(String)newIdentifiers[col])){
+								if ((errorMsg = myMap.addConnection((String)identifiers[row],(String)identifiers[col])).isResult()){
 									matrixModel.setValueAt("X", row, col);
 									matrixModel.setValueAt("X", col, row);									
 								}
+								else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
 							}	
 							else {
-								if (newMap.removeConnection((String)newIdentifiers[row],(String)newIdentifiers[col])){
+								if ((errorMsg=myMap.removeConnection((String)identifiers[row],(String)identifiers[col])).isResult()){
 									matrixModel.setValueAt("", row, col);
 									matrixModel.setValueAt("", col, row);
 								}
+								else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
 							}
 						}	
 					}
@@ -458,12 +447,12 @@ public class MapEditor extends JFrame {
 		
 		adjacencyMatrix.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		adjacencyMatrix.getTableHeader().setReorderingAllowed(false);
-		if (newMap.countryNum>0) adjacencyMatrix.setRowHeight(adjacencyMatrix.getTableHeader().getPreferredSize().height);
-		int continentNum = newMap.continents.size();
+		if (myMap.getCountryNum()>0) adjacencyMatrix.setRowHeight(adjacencyMatrix.getTableHeader().getPreferredSize().height);
+		int continentNum = myMap.getContinents().size();
 		int[] areaContinents = new int[continentNum+1];
 		areaContinents[0] = 0;
 		for (i=0;i<continentNum;i++){
-			areaContinents[i+1] = areaContinents[i]+newMap.countries.get(newMap.continents.get(i).continentID).size();
+			areaContinents[i+1] = areaContinents[i]+myMap.getContinents().get(i).getCountryList().size();
 		}
 		adjacencyMatrix.setDefaultRenderer(Object.class,new MatrixRenderer(areaContinents));
 		
@@ -472,170 +461,116 @@ public class MapEditor extends JFrame {
 		//adjacencyMatrix.getTableHeader().setDefaultRenderer(new AdjacencyMatrixHeaderRenderer(adjacencyMatrix));
 		int maxWidth;
 		if (matrixDisplayMode.equals("preferred"))
-			maxWidth = FitTableColumns(adjacencyMatrix);
-		else maxWidth = FitTableColumns(adjacencyMatrix,matrixColumnWidth); 
+			maxWidth = fitTableColumns(adjacencyMatrix);
+		else maxWidth = fitTableColumns(adjacencyMatrix,matrixColumnWidth); 
 		
 		scrollPaneForMatrix.getViewport().removeAll();
 		scrollPaneForMatrix.getViewport().add(adjacencyMatrix);
-		scrollPaneForMatrix.setRowHeaderView(new RowHeaderTable(adjacencyMatrix,Math.max(70,maxWidth+10),newIdentifiers));
+		scrollPaneForMatrix.setRowHeaderView(new RowHeaderTable(adjacencyMatrix,Math.max(50,maxWidth+10),identifiers));
 		
-		completeBtn.setEnabled(newMap.countryNum>1);
-		clearBtn.setEnabled(newMap.countryNum>1);
-		adjustWidthBtn.setEnabled(newMap.countryNum>0);
-		setWidthBtn.setEnabled(newMap.countryNum>0);
-		colWidthEdit.setEnabled(newMap.countryNum>0);
+		completeBtn.setEnabled(myMap.getCountryNum()>1);
+		clearBtn.setEnabled(myMap.getCountryNum()>1);
+		adjustWidthBtn.setEnabled(myMap.getCountryNum()>0);
+		setWidthBtn.setEnabled(myMap.getCountryNum()>0);
+		colWidthEdit.setEnabled(myMap.getCountryNum()>0);
+	}
+	
+	/**
+	 * Method to implement response to newContinentBtn, provide GUI to input new continent's name, 
+	 * then call mapelements.RiskMap#addContinent to really add a continent (controlNum initialize to 0).
+	 * @see mapelements.RiskMap#addContinent(String, int)
+	 */
+	public void newContinent(){
+		boolean retry = true;
+		while (retry){
+			String inputWord=JOptionPane.showInputDialog(null,"Input the continent name: ");
+			if (inputWord!=null){
+				if ((inputWord = inputWord.trim()).isEmpty()){
+					JOptionPane.showMessageDialog(null,"Continnet name can't be empty");
+				}
+				else {
+					ErrorMsg errorMsg;
+					if ((errorMsg = myMap.addContinent(inputWord,0)).isResult()) {
+						reloadContinents();
+						retry = false;
+					}
+					else JOptionPane.showMessageDialog(null,errorMsg.getMsg());
+				}
+			}
+			else retry = false;
+		}	
 	}
 
 	/**
-	 * Adding action listener to the new continent button
+	 * Method to implement response to newCountryBtn, provide GUI to input new country's name 
+	 * and choose continent belongs to, then call mapelements.RiskMap#addCountry to really add a country.
+	 * @see mapelements.RiskMap#addCountry(String, String, int, int)
 	 */
-	private class newContinentHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
+	public void newCountry(){
+		if (myMap.getContinents().size()==0)
+			JOptionPane.showMessageDialog(null,"Country must belong to a continent, create at least one continent.");
+		else{
+			//Configure the ConfirmDialog
+			JTextField countryInput = new JTextField();
+			String continents[]= new String[myMap.getContinents().size()];
+			int loopcount = 0, defaultIndex = 0;
+			for (Continent loopContinent : myMap.getContinents()) {
+				continents[loopcount++]=loopContinent.getName();
+				if (loopContinent.getName().equals(lastUsedContinent)) defaultIndex = loopcount-1; 
+			}
+			JComboBox<Object> continentInput = new JComboBox<Object>(continents);
+			Object[] message = {
+					"Input country Name:", countryInput,
+					"Choose Continent Name:", continentInput
+			};  
+			continentInput.setSelectedIndex(defaultIndex);
 			boolean retry = true;
 			while (retry){
-				String inputWord=JOptionPane.showInputDialog(null,"Input the continent name: ");
-				if (inputWord!=null){
-					if (inputWord.trim().isEmpty()){
-						JOptionPane.showMessageDialog(null,"Continnet name can't be empty");
+				int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
+				if (option == JOptionPane.OK_OPTION) {
+					if (countryInput.getText()==null||countryInput.getText().trim().isEmpty()){
+						JOptionPane.showMessageDialog(null,"Country name can't be empty");
+					}
+					else if (continentInput.getSelectedIndex()==-1){
+						JOptionPane.showMessageDialog(null,"Country must belong to a continent, choose one exiting continent or create a new one.");
 					}
 					else {
-						if (newMap.addContinent(inputWord.trim())){
+						ErrorMsg errorMsg;
+						lastUsedContinent = (String)continentInput.getItemAt(continentInput.getSelectedIndex());
+						if ((errorMsg = myMap.addCountry(countryInput.getText().trim(), lastUsedContinent, 0, 0)).isResult()){
 							reloadContinents();
+							reloadMatrix();
 							retry = false;
 						}
+						else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
+
 					}
 				}
 				else retry = false;
 			}	
-		}
+		}	
 	}
 
 	/**
-	 * Adding action listener to the new country button
+	 * Method to implement response to saveToFileBtn, check data validity, provide GUI to input file's name,  
+	 * then call mapelements.RiskMap#saveToFile to really save map to the file.
+	 * @see mapelements.RiskMap#saveToFile(String)
+	 * @see mapelements.RiskMap#checkErrors()
+	 * @see mapelements.RiskMap#checkWarnings()
 	 */
-	private class newCountryHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			//JOptionPane.showMessageDialog(null, "new country" );
-			if (newMap.continents.size()==0)
-				JOptionPane.showMessageDialog(null,"Country must belong to a continent, create at least one continent.");
-			else{
-				//Configure the ConfirmDialog
-				JTextField countryInput = new JTextField();
-				String continents[]= new String[newMap.continents.size()];
-				int loopcount = 0, defaultIndex = 0;
-				for (Continent loopContinent : newMap.continents) {
-					continents[loopcount++]=loopContinent.continentName;
-					if (loopContinent.continentName.equals(lastUsedContinent)) defaultIndex = loopcount-1; 
-				}
-				JComboBox<Object> continentInput = new JComboBox<Object>(continents);
-				Object[] message = {
-						"Input country Name:", countryInput,
-						"Choose Continent Name:", continentInput
-				};  
-				continentInput.setSelectedIndex(defaultIndex);
-				boolean retry = true;
-				while (retry){
-					int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
-					if (option == JOptionPane.OK_OPTION) {
-						if (countryInput.getText()==null||countryInput.getText().trim().isEmpty()){
-							JOptionPane.showMessageDialog(null,"Country name can't be empty");
-						}
-						else if (continentInput.getSelectedIndex()==-1){
-							JOptionPane.showMessageDialog(null,"Country must belong to a continent, choose one exiting continent or create a new one.");
-						}
-						else {
-							lastUsedContinent = (String)continentInput.getItemAt(continentInput.getSelectedIndex());
-							if (newMap.addCountry(countryInput.getText().trim(), lastUsedContinent)){
-								reloadContinents();
-								reloadMatrix();
-								retry = false;
-							}
-						}
-					}
-					else retry = false;
-				}	
-			}	
-		}		
-	}   
-
-	/**
-	 * Adding action listener to save map button
-	 */
-	private class saveToFileHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			//JOptionPane.showMessageDialog(null, "save to file" );
-			if (newMap.checkValid(0)){
-				String outputFileName;
-				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(new java.io.File("./src/map"));
-				chooser.setDialogTitle("Save map file");
-				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				chooser.setAcceptAllFileFilterUsed(false);
-				chooser.setFileFilter(new FileFilter(){
-					@Override
-					public boolean accept(File f){
-						if(f.getName().endsWith(".map")||f.isDirectory())
-							return true;
-						else return false;
-					}
-					public String getDescription(){
-						return "Map files(*.map)";
-					}
-				});				
-				if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
-					return;
-				}	
-				outputFileName = chooser.getSelectedFile().getAbsolutePath().trim();
-				if (outputFileName.isEmpty()){
-					JOptionPane.showMessageDialog(null,"Map file name invalid");
-				}
-				else{
-					if (outputFileName.indexOf(".map")==-1){
-						outputFileName+=".map";
-					}
-					if (newMap.saveToFile(outputFileName)){
-						JOptionPane.showMessageDialog(null,"Successfully save the file.");
-						setTitle("Map Editor - "+newMap.riskMapName+" by "+newMap.author);
-						reloadContinents();
-					}
-				}
-			}	
-		}
-	}
-
-	/**
-	 * Adding action listener to the new map button
-	 */
-	private class newMapHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			//JOptionPane.showMessageDialog(null, "new map" );
-			if (newMap.modified){
-				if (JOptionPane.showConfirmDialog(null,
-						"This will discard any modification since last save, do you want to proceed?",
-						"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
-					return;	
-			}
-			loadNewMap();
-		}
-	}
-
-	/**
-	 * Adding action listener to the load file button
-	 */
-	private class loadFromFileHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			//JOptionPane.showMessageDialog(null, "load from file" );
-			if (newMap.modified){
-				if (JOptionPane.showConfirmDialog(null,
-						"This will discard any modification since last save, do you want to proceed?",
-						"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
-					return;	
-			}
-			String inputFileName;
-			JFileChooser chooser;
-			chooser = new JFileChooser();
+	public void saveToFile(){
+		ErrorMsg errorMsg;
+		if ((errorMsg = myMap.checkErrors()).isResult()){
+			BasicInfoView basicInfo = new BasicInfoView(myMap,myMap.checkWarnings(),0); //mode = 0 save file
+			basicInfo.setVisible(true);
+			int state = basicInfo.getState();
+			basicInfo.dispose();
+			if (state==0) return;
+			
+			String outputFileName;
+			JFileChooser chooser = new JFileChooser();
 			chooser.setCurrentDirectory(new java.io.File("./src/map"));
-			chooser.setDialogTitle("Choose map file");
+			chooser.setDialogTitle("Save map file");
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			chooser.setAcceptAllFileFilterUsed(false);
 			chooser.setFileFilter(new FileFilter(){
@@ -648,250 +583,364 @@ public class MapEditor extends JFrame {
 				public String getDescription(){
 					return "Map files(*.map)";
 				}
-			});
-			if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			});				
+			if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
 				return;
-			}			
-			inputFileName = chooser.getSelectedFile().getAbsolutePath();
-			if (inputFileName.trim().isEmpty()){
+			}	
+			outputFileName = chooser.getSelectedFile().getAbsolutePath().trim();
+			if (outputFileName.isEmpty()){
 				JOptionPane.showMessageDialog(null,"Map file name invalid");
 			}
 			else{
-				RiskMap existingMap = new RiskMap();
-				if (existingMap.loadMapFile(inputFileName.trim(),1)){
-					newMap = null;
-					newMap = existingMap;	
-					newMap.modified = false;
-        		
-					setTitle("Map Editor - "+newMap.riskMapName+" by "+newMap.author);   
-        		
+				if (outputFileName.indexOf(".map")==-1){
+					outputFileName+=".map";
+				}
+				if ((errorMsg = myMap.saveToFile(outputFileName)).isResult()){
+					JOptionPane.showMessageDialog(null,"Successfully save the file.");
+					setTitle("Map Editor - "+myMap.getRiskMapName()+" by "+myMap.getAuthor());
+					reloadContinents();
+				}
+				else JOptionPane.showMessageDialog(null,  errorMsg.getMsg());
+			}
+		}
+		else JOptionPane.showMessageDialog(null,  errorMsg.getMsg());
+	}
+
+	/**
+	 * Method to implement response to newMapBtn, create a new map object to edit.
+	 */
+	public void newMap(){
+		if (myMap.isModified()){
+			if (JOptionPane.showConfirmDialog(null,
+					"This will discard any modification since last save, do you want to proceed?",
+					"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
+				return;	
+		}
+		myMap = null;
+		myMap = new RiskMap("Untitled");
+		
+		setTitle("Map Editor - Untitled by "+myMap.getAuthor());   
+		
+		labelContinent.setText("Continents (0):");
+		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled ");
+		JTree treeContinent= new JTree(myTreeRoot);
+		treeContinent.setCellRenderer(new CategoryNodeRenderer());
+		scrollPaneForContinent.getViewport().removeAll();
+		scrollPaneForContinent.getViewport().add(treeContinent);
+		
+		reloadMatrix();			
+	}
+
+	/**
+	 * Method to implement response to loadFromFileBtn, provide GUI to input file's name, call 
+	 * mapelements.RiskMap#loadMapFile to load data into data structure, 
+	 * call checkErrors,checkWarnings to validate data, 
+	 * then refresh the main GUI.
+	 * @see mapelements.RiskMap#loadMapFile(String)
+	 * @see mapelements.RiskMap#checkErrors()
+	 * @see mapelements.RiskMap#checkWarnings()
+	 */
+	private void loadFromFile(){
+		ErrorMsg errorMsg;
+		if (myMap.isModified()){
+			if (JOptionPane.showConfirmDialog(null,
+					"This will discard any modification since last save, do you want to proceed?",
+					"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
+				return;	
+		}
+		String inputFileName;
+		JFileChooser chooser;
+		chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File("./src/map"));
+		chooser.setDialogTitle("Choose map file");
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setFileFilter(new FileFilter(){
+			@Override
+			public boolean accept(File f){
+				if(f.getName().endsWith(".map")||f.isDirectory())
+					return true;
+				else return false;
+			}
+			public String getDescription(){
+				return "Map files(*.map)";
+			}
+		});
+		if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			return;
+		}			
+		inputFileName = chooser.getSelectedFile().getAbsolutePath().trim();//
+		if (inputFileName.isEmpty()){
+			JOptionPane.showMessageDialog(null,"Map file name invalid");
+		}
+		else{
+			RiskMap existingMap = new RiskMap();
+			if ((errorMsg = existingMap.loadMapFile(inputFileName)).isResult()){//succeed load file data into our data structure
+				if ((errorMsg = existingMap.checkErrors()).isResult()
+						||JOptionPane.showConfirmDialog(null,errorMsg.getMsg()
+								+"Do you still want to open the map and correct these errors?",
+								"Confirm", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){//succeed check the errors
+					int checkWarning = existingMap.checkWarnings();
+					if (checkWarning>0) {
+						BasicInfoView basicInfo = new BasicInfoView(existingMap,checkWarning,1); //mode = 1 load file
+						basicInfo.setVisible(true);
+						int state = basicInfo.getState();
+						basicInfo.dispose();
+						if (state==0) return;
+					}
+					myMap = null;
+					myMap = existingMap;	
+					myMap.setModified(false);
+    		
+					setTitle("Map Editor - "+myMap.getRiskMapName()+" by "+myMap.getAuthor());   
+    		
 					reloadContinents();		
-					reloadMatrix();	
+					reloadMatrix();
 				}
+				else JOptionPane.showMessageDialog(null,errorMsg.getMsg());
 			}
+			else JOptionPane.showMessageDialog(null,errorMsg.getMsg());
 		}
 	}
 
 	/**
-	 * Adding action listener to the complete button
+	 * Method to define action performed according to different users' action.
 	 */
-	private class completeHandler implements ActionListener { 
+	private class buttonHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
-			newMap.addCompletedConnection();
-			reloadMatrix();
-		}
-	}
-
-	/**
-	 * Adding action listener to clear button
-	 */
-	private class clearHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			newMap.removeAllConnection();
-			reloadMatrix();
-		}
-	}
-
-	/**
-	 * Adding action listener to adjust width
-	 */
-	private class adjustWidthHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			matrixDisplayMode = "preferred";
-			FitTableColumns(adjacencyMatrix);
-		}
-	}
-
-	/**
-	 * Adding action listener to set width
-	 */
-	private class setWidthHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			Pattern pattern = Pattern.compile("[0-9]*");  
-			String width = colWidthEdit.getText().trim();
-			if (pattern.matcher(width).matches())
-				matrixColumnWidth = Integer.parseInt(width);			
-			else colWidthEdit.setText(String.valueOf(matrixColumnWidth));
-			matrixDisplayMode = "same";
-			FitTableColumns(adjacencyMatrix,matrixColumnWidth);	
-		}
-	}
-
-	/**
-	 * Adding action listener to expand all tree structure
-	 */
-	class mExpandAllHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			if (treeContinent!=null){
-				TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
-				continentExpandMode = 1;
-				expandAll(treeContinent, new TreePath(root),1);
-			}	
-		}
-	}
-
-	/**
-	 * Adding action listener to collapse all tree structure
-	 */
-	class mCollapseAllHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			if (treeContinent!=null){
-				TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
-				continentExpandMode=2;
-				if (root.getChildCount() >= 0) {
-					for (Enumeration eu = root.children(); eu.hasMoreElements();) {
-						TreeNode n = (TreeNode) eu.nextElement();
-						TreePath path = new TreePath(root).pathByAddingChild(n);
-						expandAll(treeContinent, path, 2);
-					}
-				}
-			}				
-		}
-	}
-
-	/**
-	 * Adding action listener to delete continent button
-	 */
-	class mDeleteContinentHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			//JOptionPane.showMessageDialog(null,selContinentName);
-			if (newMap.deleteContinent(selContinentName)){
-				reloadContinents();
-			}
-		}
-	}
-
-	/**
-	 * Adding action listener to delete country
-	 */
-	class mDeleteCountryHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			if (newMap.deleteCountry(selCountryName)){
-				reloadContinents();
+			String buttonName = e.getActionCommand();
+			switch (buttonName){
+			case "New Map":
+				newMap();
+				break;				
+			case "Load Exiting Map":
+				loadFromFile();
+				break;
+			case "New Continent":
+				newContinent();
+				break;
+			case "New Country":
+				newCountry();
+				break;
+			case "Save To File":
+				saveToFile();
+				break;
+			case "Delete ":
+				deleteContinent();
+				break;
+			case "Rename ":
+				renameContinent();
+				break;
+			case "Control Number":
+				changeContinentControl();
+				break;
+			case "Delete":
+				deleteCountry();
+				break;
+			case "Rename":
+				renameCountry();
+				break;
+			case "Move to another continent":
+				moveCountry();
+				break;
+			case "Complete":
+				myMap.addCompletedConnection();
+				reloadMatrix();	
+				break;
+			case "Clear":
+				myMap.removeAllConnection();
 				reloadMatrix();
-			}	
+				break;				
+			case "Full width":
+				matrixDisplayMode = "preferred";
+				fitTableColumns(adjacencyMatrix);
+				break;
+			case "Set":
+				Pattern pattern = Pattern.compile("[0-9]*");  
+				String width = colWidthEdit.getText().trim();
+				if (pattern.matcher(width).matches())
+					matrixColumnWidth = Integer.parseInt(width);			
+				else colWidthEdit.setText(String.valueOf(matrixColumnWidth));
+				matrixDisplayMode = "same";
+				fitTableColumns(adjacencyMatrix,matrixColumnWidth);	
+				break;
+			case "Expand All":
+				if (treeContinent!=null){
+					TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
+					continentExpandMode = 1;
+					expandAll(treeContinent, new TreePath(root),1);
+				}				
+				break;
+			case "Collapse All":
+				if (treeContinent!=null){
+					TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
+					continentExpandMode=2;
+					if (root.getChildCount() >= 0) {
+						for (Enumeration eu = root.children(); eu.hasMoreElements();) {
+							TreeNode n = (TreeNode) eu.nextElement();
+							TreePath path = new TreePath(root).pathByAddingChild(n);
+							expandAll(treeContinent, path, 2);
+						}
+					}
+				}				
+				break;				
+			}
 		}
+	}	
+	
+	/**
+	 * Method to implement response to mDeleteContinentMenu, call 
+	 * mapelements.RiskMap#deleteContinent to really delete a continent.
+	 * @see mapelements.RiskMap#deleteContinent(String)
+	 */
+	private void deleteContinent() {
+		ErrorMsg errorMsg;
+		if ((errorMsg=myMap.deleteContinent(selContinentName)).isResult()){
+			reloadContinents();
+		}
+		else JOptionPane.showMessageDialog(null,errorMsg.getMsg());
 	}
 
 	/**
-	 * Adding action listener to rename continent
+	 * Method to implement response to mDeleteCountryMenu, call 
+	 * mapelements.RiskMap#deleteCountry to really delete a country.
+	 * @see mapelements.RiskMap#deleteCountry(String)
 	 */
-	private class mRenameContinentHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			boolean retry=true;
-			while (retry){			
-				String inputWord=JOptionPane.showInputDialog(null,"Input the new name for continent <"+selContinentName+">:",selContinentName);
-				if (inputWord!=null){
-					if (inputWord.trim().isEmpty()){
-						JOptionPane.showMessageDialog(null,"Continnet name can't be empty");
+	private void deleteCountry() {
+		myMap.deleteCountry(selCountryName);
+		reloadContinents();
+		reloadMatrix();
+	}
+
+	/**
+	 * Method to implement response to mRenameContinentMenu, provide GUI to input new name for a continent, then call
+	 * mapelements.RiskMap#renameContinent to really rename the continent.
+	 * @see mapelements.RiskMap#renameContinent(String, String)
+	 */
+	private void renameContinent() {
+		boolean retry=true;
+		while (retry){			
+			String inputWord=JOptionPane.showInputDialog(null,"Input the new name for continent <"+selContinentName+">:",selContinentName);
+			if (inputWord!=null){
+				if (inputWord.trim().isEmpty()){
+					JOptionPane.showMessageDialog(null,"Continnet name can't be empty");
+				}
+				else if (!inputWord.trim().equals(selContinentName)) {
+					ErrorMsg errorMsg;
+					if ((errorMsg=myMap.renameContinent(selContinentName,inputWord.trim())).isResult()){
+						reloadContinents();
+						retry = false;
 					}
-					else if (!inputWord.trim().equals(selContinentName)) {					
-						if (newMap.renameContinent(selContinentName,inputWord.trim())){
+					else JOptionPane.showMessageDialog(null,errorMsg.getMsg());
+				}
+			}
+			else retry = false;
+		}
+	}	
+
+	/**
+	 * Method to implement response to mChangeContinentControl menu, provide GUI to input new control number for a continent, 
+	 * then call mapelements.RiskMap#changeControlNum to really change a continent's control number.
+	 * @see mapelements.RiskMap#changeControlNum(String, int)
+	 */
+	private void changeContinentControl() {
+		int oldControlNum = myMap.findContinent(selContinentName).getControlNum();
+		boolean retry = true;
+		while(retry){
+			String inputWord=JOptionPane.showInputDialog(null,"Input the new control number for continent <"+selContinentName+">:",oldControlNum);
+			if (inputWord!=null){
+				inputWord = inputWord.trim();
+				if (inputWord.isEmpty()){
+					JOptionPane.showMessageDialog(null,"Control number can't be empty");
+				}
+				else{
+					Pattern pattern = Pattern.compile("[0-9]*");  
+					if (pattern.matcher(inputWord).matches()){ 
+						ErrorMsg errorMsg;
+						if ((errorMsg = myMap.changeControlNum(selContinentName, Integer.parseInt(inputWord))).isResult()){
 							reloadContinents();
 							retry = false;
 						}
+						else JOptionPane.showMessageDialog(null, errorMsg.getMsg());								
 					}
+					else JOptionPane.showMessageDialog(null,"Control number must be integer");
 				}
-				else retry = false;
 			}
+			else retry = false;
 		}	
 	}
 
 	/**
-	 * Adding action listener to change continent control army number
+	 * Method to implement response to mRenameCountry menu, provide GUI to input new name for a country, 
+	 * then call mapelements.RiskMap#renameCountry to really rename the country.
+	 * @see mapelements.RiskMap#renameCountry(String, String)
 	 */
-	private class mChangeContinentControlHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			int oldControlNum = newMap.findContinent(selContinentName).controlNum;
-			boolean retry = true;
-			while(retry){
-				String inputWord=JOptionPane.showInputDialog(null,"Input the new control number for continent <"+selContinentName+">:",oldControlNum);
-				if (inputWord!=null){
-					inputWord = inputWord.trim();
-					if (inputWord.isEmpty()){
-						JOptionPane.showMessageDialog(null,"Control number can't be empty");
-					}
-					else{
-						Pattern pattern = Pattern.compile("[0-9]*");  
-						if (pattern.matcher(inputWord).matches()){ 
-							if (newMap.changeContinentControl(selContinentName, Integer.parseInt(inputWord)))
-								reloadContinents();
-								retry = false;
-						}
-						else JOptionPane.showMessageDialog(null,"Control number must be integer");
-					}
+	private void renameCountry() {
+		boolean retry=true;
+		while (retry){
+			String inputWord=JOptionPane.showInputDialog(null,"Input the new name for country <"+selCountryName+">:",selCountryName);
+			if (inputWord!=null){
+				if (inputWord.trim().isEmpty()){
+					JOptionPane.showMessageDialog(null,"Country name can't be empty");
 				}
-				else retry = false;
-			}	
-		}
-	}
-
-	/**
-	 * Adding action listener to rename country
-	 */
-	private class mRenameCountryHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			boolean retry=true;
-			while (retry){
-				String inputWord=JOptionPane.showInputDialog(null,"Input the new name for country <"+selCountryName+">:",selCountryName);
-				if (inputWord!=null){
-					if (inputWord.trim().isEmpty()){
-						JOptionPane.showMessageDialog(null,"Country name can't be empty");
-					}
-					else if (!inputWord.trim().equals(selCountryName)) {					
-						if (newMap.renameCountry(selCountryName,inputWord.trim())){
-							reloadContinents();
-							reloadMatrix();
-							retry = false;
-						}
-					}
-				}
-				else retry = false;
-			}	
-		}
-	}
-
-	/**
-	 * Adding action listener to move country to other continent action
-	 */
-	private class mMoveCountryHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			
-			if (newMap.continents.size()<=1){
-				JOptionPane.showMessageDialog(null,"No other continents.");
-				return;
-			}				
-			Continent oldContinent = newMap.findCountry(selCountryName).belongToContinent;
-			String continents[]= new String[newMap.continents.size()-1];
-			int loopcount = 0;
-			for (Continent loopContinent : newMap.continents) {
-				if (!loopContinent.continentName.equals(oldContinent.continentName)){
-					continents[loopcount++]=loopContinent.continentName;
-				}	
-			}
-			JComboBox<Object> continentInput = new JComboBox<Object>(continents);
-			Object[] message = {
-				"Move country <"+selCountryName+"> from <"+oldContinent.continentName+"> to:  ", continentInput
-			};    	
-			boolean retry = true;
-			while (retry){
-				int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
-				if (option == JOptionPane.OK_OPTION) {
-					if (newMap.moveContinentCountry((String)continentInput.getItemAt(continentInput.getSelectedIndex()), selCountryName)){
+				else if (!inputWord.trim().equals(selCountryName)) {	
+					ErrorMsg errorMsg;
+					if ((errorMsg=myMap.renameCountry(selCountryName,inputWord.trim())).isResult()){
 						reloadContinents();
 						reloadMatrix();
 						retry = false;
-					}	
+					}
+					else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
 				}
-				else retry = false;
+			}
+			else retry = false;
+		}	
+	}
+
+	/**
+	 * Method to implement response to mMoveCountry menu, provide GUI to choose a new continent for a country to move in, 
+	 * then call mapelements.RiskMap#moveCountry to really move the country.
+	 * @see mapelements.RiskMap#moveCountry(String, String)
+	 */
+	private void moveCountry() {
+		if (myMap.getContinents().size()<=1){
+			JOptionPane.showMessageDialog(null,"No other continents.");
+			return;
+		}				
+		Continent oldContinent = myMap.findCountry(selCountryName).getBelongTo();
+		String continents[]= new String[myMap.getContinents().size()-1];
+		int loopcount = 0;
+		for (Continent loopContinent : myMap.getContinents()) {
+			if (!loopContinent.getName().equals(oldContinent.getName())){
+				continents[loopcount++]=loopContinent.getName();
 			}	
 		}
+		JComboBox<Object> continentInput = new JComboBox<Object>(continents);
+		Object[] message = {
+			"Move country <"+selCountryName+"> from <"+oldContinent.getName()+"> to:  ", continentInput
+		};    	
+		boolean retry = true;
+		while (retry){
+			int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
+			if (option == JOptionPane.OK_OPTION) {
+				ErrorMsg errorMsg;
+				if ((errorMsg=myMap.moveCountry((String)continentInput.getItemAt(continentInput.getSelectedIndex()), selCountryName)).isResult()){
+					reloadContinents();
+					reloadMatrix();
+					retry = false;
+				}	
+				else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
+			}
+			else retry = false;
+		}	
 	}
+
 	/**
-	 * Main method to init the map editor
+	 * Main method to startup the map editor.
+	 * @param args command line parameters
 	 */
 	public static void main(String[] args) {  
-		MapEditor myMapEditor = new MapEditor(); 
+		new MapEditor(); 
 	}  
 }
     
