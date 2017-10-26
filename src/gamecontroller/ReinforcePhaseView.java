@@ -17,11 +17,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import gameelements.NodeRecord;
 import gameelements.Player;
 import gameelements.RiskGame;
 import mapelements.Continent;
 import mapelements.Country;
-import mapelements.NodeRecord;
 
 /**
  * This class is the implementation of reinforcement phase in the Risk.
@@ -75,7 +76,7 @@ public class ReinforcePhaseView extends JDialog{
             while (!cardExchanged){
                 JOptionPane.showMessageDialog(null, "You has 5 cards, so you have to exchange 3 card for armies!  "
                         + "\r\nThis is your "+(player.getChangeCardTimes()+1)+" time to exhange, can get "+player.CalExchangeArmies()+" armies.");
-                ExchangeInteraction exchangeView = new ExchangeInteraction(myCards);
+                TradeInCards exchangeView = new TradeInCards(myCards);
                 exchangeView.setVisible(true);
                 cardExchanged = exchangeView.state;
                 if (cardExchanged) exchangeArmies = player.CalExchangeArmies();
@@ -106,7 +107,7 @@ public class ReinforcePhaseView extends JDialog{
         localCountries = new NodeRecord[player.getCountries().size()];
         int j = 0;
         for (Country loopCountry:player.getCountries()){
-            localCountries[j++] = new NodeRecord(loopCountry.countryID, loopCountry.armyNumber);
+            localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
         }
 
         turnLabel = new JLabel("TURN "+myGame.getTurn()+": ");
@@ -147,9 +148,9 @@ public class ReinforcePhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            Country loopCountry = myGame.getGameMap().findCountryByID(localCountries[i].ID);
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.countryName
-                    +" (In "+loopCountry.belongToContinent.continentName+", "+localCountries[i].Number+" armies)"));
+            Country loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
+                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
         }
         treeCountry= new JTree(myTreeRoot);
         treeCountry.addMouseListener( new  MouseAdapter(){
@@ -245,9 +246,9 @@ public class ReinforcePhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            Country loopCountry = myGame.getGameMap().findCountryByID(localCountries[i].ID);
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.countryName
-                    +" (In "+loopCountry.belongToContinent.continentName+", "+localCountries[i].Number+" armies)"));
+            Country loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
+                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
         }
         treeCountry = null;
         treeCountry= new JTree(myTreeRoot);
@@ -290,15 +291,15 @@ public class ReinforcePhaseView extends JDialog{
      */
     private class enterBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (player.getState()==1){
-                player.setTotalArmies(player.getTotalArmies()+totalArmies);
+            if (player.getState()){
+                player.addArmies(totalArmies);
                 if (cardExchanged) {
                     player.increaseChangeCardTimes();
                     player.setCards(myCards);
                 }
                 if (localCountries!=null){
                     for (int j=0;j<localCountries.length;j++){
-                        myGame.getGameMap().findCountryByID(localCountries[j].ID).armyNumber = localCountries[j].Number;
+                        myGame.getGameMap().findCountry(localCountries[j].name).setArmyNumber(localCountries[j].Number);
                     }
                 }
             }
@@ -314,7 +315,7 @@ public class ReinforcePhaseView extends JDialog{
         public void actionPerformed(ActionEvent e) {
             if (cardExchanged) return;
             JOptionPane.showMessageDialog(null, "This is your "+(player.getChangeCardTimes()+1)+" time to exhange, can get "+player.CalExchangeArmies()+" armies.");
-            ExchangeInteraction exchangeView = new ExchangeInteraction(myCards);
+            TradeInCards exchangeView = new TradeInCards(myCards);
             exchangeView.setVisible(true);
             cardExchanged = exchangeView.state;
             if (cardExchanged) {

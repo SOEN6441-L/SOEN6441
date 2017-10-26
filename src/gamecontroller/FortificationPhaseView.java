@@ -21,11 +21,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import gameelements.NodeRecord;
 import gameelements.Player;
 import gameelements.RiskGame;
 import mapelements.Continent;
 import mapelements.Country;
-import mapelements.NodeRecord;
 
 /**
  * This class is the implementation of reinforcement phase in the Risk.
@@ -57,7 +58,7 @@ public class FortificationPhaseView extends JDialog{
     private RiskGame myGame;
 
     private NodeRecord[] localCountries;
-    private Map<Integer,ArrayList<Integer>> localAdjacencyList;
+    private Map<Country,ArrayList<Country>> localAdjacencyList;
 
 
     public int state=0; //0-Cancel, 1-confirm
@@ -91,15 +92,15 @@ public class FortificationPhaseView extends JDialog{
         localCountries = new NodeRecord[player.getCountries().size()];
         int j = 0;
         for (Country loopCountry:player.getCountries()){
-            localCountries[j++] = new NodeRecord(loopCountry.countryID, loopCountry.armyNumber);
+            localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
         }
         
-		localAdjacencyList = new HashMap<Integer,ArrayList<Integer>>();
+		localAdjacencyList = new HashMap<Country,ArrayList<Country>>();
 		for (Country loopCountry: player.getCountries()){
-			localAdjacencyList.put(loopCountry.countryID, new ArrayList<Integer>());
-			for (Integer neighbour: myGame.getGameMap().adjacencyList.get(loopCountry.countryID)){
-				if (myGame.getGameMap().findCountryByID(neighbour).belongToPlayer.getName().equals(player.getName())){
-					localAdjacencyList.get(loopCountry.countryID).add(neighbour);
+			localAdjacencyList.put(loopCountry, new ArrayList<Country>());
+			for (Country neighbour: myGame.getGameMap().getAdjacencyList().get(loopCountry)){
+				if (neighbour.getOwner().getName().equals(player.getName())){
+					localAdjacencyList.get(loopCountry).add(neighbour);
 				}
 			}
 		}
@@ -132,9 +133,9 @@ public class FortificationPhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            Country loopCountry = myGame.getGameMap().findCountryByID(localCountries[i].ID);
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.countryName
-                    +" (In "+loopCountry.belongToContinent.continentName+", "+localCountries[i].Number+" armies)"));
+            Country loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
+                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
         }
         treeCountryFrom = new JTree(myTreeRoot);
         treeCountryFrom.addMouseListener( new  MouseAdapter(){
@@ -147,7 +148,7 @@ public class FortificationPhaseView extends JDialog{
         				if (selPath.getParentPath().getParentPath()==null){//continents
            					selCountryNameFrom = selPath.getLastPathComponent().toString().trim();
            					selCountryNameFrom = selCountryNameFrom.substring(0, selCountryNameFrom.indexOf("(")-1);
-           					myGame.getGameMap().findPath(localAdjacencyList,myGame.getGameMap().findCountry(selCountryNameFrom).countryID);
+           					myGame.getGameMap().findPath(localAdjacencyList,myGame.getGameMap().findCountry(selCountryNameFrom));
            					reloadGUI();
         				}
         			}
@@ -219,10 +220,10 @@ public class FortificationPhaseView extends JDialog{
 
         Country curCountry = myGame.getGameMap().findCountry(selCountryNameFrom);
     	armyNumberCombo.removeAllItems();
-        for (int i=1;i<curCountry.armyNumber;i++) {
+        for (int i=1;i<curCountry.getArmyNumber();i++) {
             armyNumberCombo.addItem(i);
         }
-        armyNumberCombo.setSelectedIndex(curCountry.armyNumber-2);
+        armyNumberCombo.setSelectedIndex(curCountry.getArmyNumber()-2);
  
 
         
@@ -230,10 +231,10 @@ public class FortificationPhaseView extends JDialog{
         DefaultMutableTreeNode myTreeRootTo = new DefaultMutableTreeNode("Countries");
         int countriesAvailable = 0;
         for (Country loopCountry : player.getCountries()){
-        	if (loopCountry.flagDFS&&loopCountry.countryID!=curCountry.countryID){
+        	if (loopCountry.isFlagDFS()&&loopCountry!=curCountry){
         		countriesAvailable++;
-        		myTreeRootTo.add(new DefaultMutableTreeNode(loopCountry.countryName
-                        +" (In "+loopCountry.belongToContinent.continentName+", "+loopCountry.armyNumber+" armies)"));
+        		myTreeRootTo.add(new DefaultMutableTreeNode(loopCountry.getName()
+                        +" (In "+loopCountry.getBelongTo().getName()+", "+loopCountry.getArmyNumber()+" armies)"));
         	}
         }
         countryLabelTo.setText("Territories have a path ("+countriesAvailable+"):");
@@ -254,8 +255,8 @@ public class FortificationPhaseView extends JDialog{
            					selCountryNameTo = selPath.getLastPathComponent().toString().trim();
            					selCountryNameTo = selCountryNameTo.substring(0, selCountryNameTo.indexOf("(")-1); 
            					if (armyNumberCombo.getSelectedIndex()!=-1){
-           						myGame.getGameMap().findCountry(selCountryNameFrom).armyNumber-=(armyNumberCombo.getSelectedIndex()+1);
-           						myGame.getGameMap().findCountry(selCountryNameTo).armyNumber+=(armyNumberCombo.getSelectedIndex()+1);
+           						myGame.getGameMap().findCountry(selCountryNameFrom).setArmyNumber(myGame.getGameMap().findCountry(selCountryNameFrom).getArmyNumber() - (armyNumberCombo.getSelectedIndex()+1));
+           						myGame.getGameMap().findCountry(selCountryNameTo).setArmyNumber(myGame.getGameMap().findCountry(selCountryNameTo).getArmyNumber() + (armyNumberCombo.getSelectedIndex()+1));
            						state=1;
            						setVisible(false);
            					}

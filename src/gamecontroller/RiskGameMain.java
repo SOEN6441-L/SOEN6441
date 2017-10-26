@@ -24,6 +24,7 @@ import javax.swing.tree.TreePath;
 import gameelements.Player;
 import gameelements.RiskGame;
 import mapeditor.BasicInfoView;
+import mapeditor.RowHeaderTable;
 import mapelements.Continent;
 import mapelements.Country;
 import mapelements.RiskMap;
@@ -207,7 +208,7 @@ public class RiskGameMain extends JFrame {
 		newGameBtn.setEnabled(false);
 		add(newGameBtn);	
 		newGameBtn.setBounds(loadFromFileBtn.getBounds().x,625,size.width+10,size.height);  
-		//newGameBtn.addActionListener(new nextPlayerHandler());
+		newGameBtn.addActionListener(new newGameHandler());
 		
 		previousBtn = new javax.swing.JButton("<< Previous");
 		previousBtn.setMnemonic('p');
@@ -286,16 +287,16 @@ public class RiskGameMain extends JFrame {
 			myTreeRoot = new DefaultMutableTreeNode("Map - Untitled ");		
 		}
 		else{
-			labelContinent.setText("Continents ("+String.valueOf(myGame.getGameMap().continents.size())+"):");
-			myTreeRoot = new DefaultMutableTreeNode("Map - "+myGame.getGameMap().riskMapName+" ");
+			labelContinent.setText("Continents ("+String.valueOf(myGame.getGameMap().getContinents().size())+"):");
+			myTreeRoot = new DefaultMutableTreeNode("Map - "+myGame.getGameMap().getRiskMapName()+" ");
 
-			for (Continent loopContinent : myGame.getGameMap().continents) { 
-				ArrayList<Country> loopCountriesList = myGame.getGameMap().countries.get(loopContinent.continentID);
-				DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.continentName+" ("+loopContinent.controlNum+") ("+loopCountriesList.size()+" countries) "); 
+			for (Continent loopContinent : myGame.getGameMap().getContinents()) { 
+				ArrayList<Country> loopCountriesList = loopContinent.getCountryList();
+				DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
 				for (Country loopCountry:loopCountriesList){
-					if (loopCountry.belongToPlayer!=null)
-						loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.countryName+" ("+loopCountry.belongToPlayer.getName()+", "+loopCountry.armyNumber+" armies) "));						
-					else loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.countryName+" ("+loopCountry.armyNumber+" armies) "));
+					if (loopCountry.getOwner()!=null)
+						loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" ("+loopCountry.getOwner().getName()+", "+loopCountry.getArmyNumber()+" armies) "));						
+					else loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" ("+loopCountry.getArmyNumber()+" armies) "));
 				}
 				myTreeRoot.add(loopContinentNode);
 			}
@@ -349,7 +350,7 @@ public class RiskGameMain extends JFrame {
 				DefaultMutableTreeNode loopPlayerNode =  new DefaultMutableTreeNode(myGame.getPlayers()[i].getName()+" ("+myGame.getPlayers()[i].getCountries().size()
 						+" Countries, "+myGame.getPlayers()[i].getTotalArmies()+" armies, "+myGame.getPlayers()[i].getCardsString()+" cards) "); 
 				for (Country loopCountry:myGame.getPlayers()[i].getCountries()){
-					loopPlayerNode.add(new DefaultMutableTreeNode(loopCountry.countryName+" (In "+loopCountry.belongToContinent.continentName+", "+loopCountry.armyNumber+" armies) "));						
+					loopPlayerNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" (In "+loopCountry.getBelongTo().getName()+", "+loopCountry.getArmyNumber()+" armies) "));						
 				}
 				myTreeRoot.add(loopPlayerNode);
 			}
@@ -466,22 +467,22 @@ public class RiskGameMain extends JFrame {
 			};
 		}
 		else{
-			labelCountry.setText("Countries ("+String.valueOf(myGame.getGameMap().countryNum)+") and Adjacency Matrix:"); 
-			matrixModel = new DefaultTableModel(myGame.getGameMap().countryNum,myGame.getGameMap().countryNum);
+			labelCountry.setText("Countries ("+String.valueOf(myGame.getGameMap().getCountryNum())+") and Adjacency Matrix:"); 
+			matrixModel = new DefaultTableModel(myGame.getGameMap().getCountryNum(),myGame.getGameMap().getCountryNum());
 		
-			newDataVector = new String[myGame.getGameMap().countryNum][myGame.getGameMap().countryNum];
-			newIdentifiers = new String[myGame.getGameMap().countryNum];
+			newDataVector = new String[myGame.getGameMap().getCountryNum()][myGame.getGameMap().getCountryNum()];
+			newIdentifiers = new String[myGame.getGameMap().getCountryNum()];
 			int i =0;
-			for (Continent loopContinent : myGame.getGameMap().continents) { 
-				ArrayList<Country> loopCountriesList = myGame.getGameMap().countries.get(loopContinent.continentID);
+			for (Continent loopContinent : myGame.getGameMap().getContinents()) { 
+				ArrayList<Country> loopCountriesList = loopContinent.getCountryList();
 				for (Country loopCountry:loopCountriesList){
-					newIdentifiers[i++] = loopCountry.countryName;
+					newIdentifiers[i++] = loopCountry.getName();
 				}
 			}
-			for (i=0;i<myGame.getGameMap().countryNum;i++){
-				ArrayList<Integer> adjacentCountryList = myGame.getGameMap().adjacencyList.get(myGame.getGameMap().findCountry((String)newIdentifiers[i]).countryID);
-				for (int j=0;j<myGame.getGameMap().countryNum;j++){
-					if (adjacentCountryList.contains(myGame.getGameMap().findCountry((String)newIdentifiers[j]).countryID)){
+			for (i=0;i<myGame.getGameMap().getCountryNum();i++){
+				ArrayList<Country> adjacentCountryList = myGame.getGameMap().getAdjacencyList().get(myGame.getGameMap().findCountry((String)newIdentifiers[i]));
+				for (int j=0;j<myGame.getGameMap().getCountryNum();j++){
+					if (adjacentCountryList.contains(myGame.getGameMap().findCountry((String)newIdentifiers[j]))){
 						newDataVector[i][j] = "X";
 					}
 					else{
@@ -495,12 +496,12 @@ public class RiskGameMain extends JFrame {
 					return false;
 				}//table not allow to be modified
 			};
-			if (myGame.getGameMap().countryNum>0) adjacencyMatrix.setRowHeight(adjacencyMatrix.getTableHeader().getPreferredSize().height);
-			int continentNum = myGame.getGameMap().continents.size();
+			if (myGame.getGameMap().getCountryNum()>0) adjacencyMatrix.setRowHeight(adjacencyMatrix.getTableHeader().getPreferredSize().height);
+			int continentNum = myGame.getGameMap().getContinents().size();
 			int[] areaContinents = new int[continentNum+1];
 			areaContinents[0] = 0;
 			for (i=0;i<continentNum;i++){
-				areaContinents[i+1] = areaContinents[i]+myGame.getGameMap().countries.get(myGame.getGameMap().continents.get(i).continentID).size();
+				areaContinents[i+1] = areaContinents[i]+myGame.getGameMap().getContinents().get(i).getCountryList().size();
 			}
 			adjacencyMatrix.setDefaultRenderer(Object.class,new MatrixRenderer(areaContinents));
 		}
@@ -522,9 +523,9 @@ public class RiskGameMain extends JFrame {
 		scrollPaneForMatrix.getViewport().add(adjacencyMatrix);
 		scrollPaneForMatrix.setRowHeaderView(new RowHeaderTable(adjacencyMatrix,Math.max(70,maxWidth+10),newIdentifiers));
 		
-		adjustWidthBtn.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().countryNum>0);
-		setWidthBtn.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().countryNum>0);
-		colWidthEdit.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().countryNum>0);
+		adjustWidthBtn.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().getCountryNum()>0);
+		setWidthBtn.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().getCountryNum()>0);
+		colWidthEdit.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().getCountryNum()>0);
 	}
 
 	/**
@@ -623,26 +624,31 @@ public class RiskGameMain extends JFrame {
 	private class createPlayersHandler implements ActionListener { 
 		public void actionPerformed(ActionEvent e) {
 			boolean retry = true;
+			String[] players = new String[5];
+			for (int i=2;i<=6;i++) {
+				players[i-2] = i+" players";
+			}
+			JComboBox<Object> playerInput = new JComboBox<Object>(players);
+			Object[] message = {
+					"Choose how many players you want (2-6):    ", playerInput
+			};  
+			playerInput.setSelectedIndex(0);
+
 			while(retry){
-				String inputWord=JOptionPane.showInputDialog(null,"How many players do you want? \r\n(at least 2 players)");
-				if (inputWord!=null){
-					inputWord = inputWord.trim();
-					if (inputWord.isEmpty()){
-						JOptionPane.showMessageDialog(null,"Players number can't be empty.");
+				int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
+				if (option == JOptionPane.OK_OPTION) {
+					if (playerInput.getSelectedIndex()==-1){
+						JOptionPane.showMessageDialog(null,"There must be 2-6 players.");
 					}
 					else{
-						Pattern pattern = Pattern.compile("[0-9]*");  
-						if (pattern.matcher(inputWord).matches()&&Integer.parseInt(inputWord)>=2){ 
-							myGame.createPlayers(inputWord);
-							reloadContinents();
-							reloadPlayers();
-							startupBtn.setVisible(true);
-							startupBtn.setEnabled(true);
-							createPlayersBtn.setVisible(false);
-							createPlayersBtn.setEnabled(false);
-							retry = false;
-						}
-						else JOptionPane.showMessageDialog(null,"Players number must be integer and >=2");
+						myGame.createPlayers(playerInput.getSelectedIndex()+2);
+						reloadContinents();
+						reloadPlayers();
+						startupBtn.setVisible(true);
+						startupBtn.setEnabled(true);
+						createPlayersBtn.setVisible(false);
+						createPlayersBtn.setEnabled(false);
+						retry = false;
 					}
 				}
 				else retry = false;
@@ -692,6 +698,23 @@ public class RiskGameMain extends JFrame {
 		}	
 	}
 
+	/**
+	 * Handler used to start a new game
+	 */
+	private class newGameHandler implements ActionListener { 
+		public void actionPerformed(ActionEvent e) {
+			myGame = null;
+			myGame = new RiskGame();
+			loadFromFileBtn.setEnabled(true);
+			loadFromFileBtn.setVisible(true);
+			newGameBtn.setEnabled(false);
+			newGameBtn.setVisible(false);
+			reloadContinents();
+			reloadPlayers();
+			reloadMatrix();
+		}	
+	}
+	
 	/**
 	 * Handler for handling next player
 	 */
