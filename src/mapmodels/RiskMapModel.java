@@ -1,4 +1,4 @@
-package mapelements;
+package mapmodels;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,30 +9,47 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * This is class RiskMap to represent a map in Risk Game.
+ * This is class RiskMap module to represent a map in Risk Game.
  */
-public class RiskMap {
+public class RiskMapModel extends Observable{
 	/**indicate if the map has been changed since last save*/
 	private boolean modified;
     private String riskMapName; 
     /**basic info needed by map file*/
     private String author, warn, image, wrap, scroll;
     /**all the continents on this map*/
-    private ArrayList<Continent> continents; 
+    private ArrayList<ContinentModel> continents; 
     /**how many countries on this map*/
     private int countryNum; 
     /**store all the connections*/
-    private Map<Country,ArrayList<Country>> adjacencyList;
+    private Map<CountryModel,ArrayList<CountryModel>> adjacencyList;
+
+    /**
+     * The constructor of class RiskMap.
+     */
+    public RiskMapModel(){
+    	this.setAuthor("");
+		this.setWarn("");
+		this.setWrap("");
+		this.setImage("");
+		this.setScroll("");   
+		
+    	this.setModified(false);
+    	this.continents = new ArrayList<ContinentModel>();
+    	this.countryNum = 0;
+    	this.adjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
+    }
 
 	/**
-	 * The constructor of class RiskMap with an initial name, is used to create map from scratch.
-	 * @param name the name of the new map
+	 * Method to initialize map object.
+	 * @param name the name of map
 	 */
-	public RiskMap(String name){
+    public void initMapModel(String name) {
 		this.riskMapName = name;
 		this.setAuthor("Invincible Team Four");
 		this.setWarn("yes");
@@ -41,27 +58,14 @@ public class RiskMap {
 		this.setScroll("none");
 		
 		this.setModified(false);
-		this.continents = new ArrayList<Continent>();
+		this.continents.clear();;
 		this.countryNum = 0;
-		this.adjacencyList = new HashMap<Country,ArrayList<Country>>();
-	}
-
-    /**
-     * The constructor of class RiskMap without initial name, is used to load a map from file.
-     */
-    public RiskMap(){
-    	this.setAuthor("");
-		this.setWarn("");
-		this.setWrap("");
-		this.setImage("");
-		this.setScroll("");   
+		this.adjacencyList.clear();
 		
-    	this.setModified(false);
-    	this.continents = new ArrayList<Continent>();
-    	this.countryNum = 0;
-    	this.adjacencyList = new HashMap<Country,ArrayList<Country>>();
+		setChanged();
+		notifyObservers(4);
     }
-
+    
 	/**
 	 * Method to get map's name.
 	 * @return map's name
@@ -178,7 +182,7 @@ public class RiskMap {
 	 * Method to get map's continent list.
 	 * @return continent list
 	 */
-	public ArrayList<Continent> getContinents() {
+	public ArrayList<ContinentModel> getContinents() {
 		return continents;
 	}
 	
@@ -186,7 +190,7 @@ public class RiskMap {
 	 * Method to get map's Adjacency List.
 	 * @return Adjacency List
 	 */
-	public Map<Country,ArrayList<Country>> getAdjacencyList() {
+	public Map<CountryModel,ArrayList<CountryModel>> getAdjacencyList() {
 		return adjacencyList;
 	}
 	
@@ -195,9 +199,9 @@ public class RiskMap {
 	 * @param countryName country's name
 	 * @return country that found or null if not exits
 	 */
-	public Country findCountry(String countryName) {
-		Country country = null;
-		for (Continent loopContinent : getContinents()) {
+	public CountryModel findCountry(String countryName) {
+		CountryModel country = null;
+		for (ContinentModel loopContinent : getContinents()) {
 			country = loopContinent.findCountry(countryName);
 			if (country!=null) return country; 
 		}
@@ -209,8 +213,8 @@ public class RiskMap {
 	 * @param continentName continent's name
 	 * @return continent that found or null if not exits
 	 */
-	public Continent findContinent(String continentName) {
-		for (Continent loopContinent:getContinents()){
+	public ContinentModel findContinent(String continentName) {
+		for (ContinentModel loopContinent:getContinents()){
 			if (loopContinent.getName().equals(continentName)){
 				return loopContinent;
 			}
@@ -228,10 +232,12 @@ public class RiskMap {
     	if (findContinent(continentName)!=null) {
     		return new ErrorMsg(1, "Continnet <"+continentName+"> already exists");
     	}
-    	Continent newContinent = new Continent(continentName);
+    	ContinentModel newContinent = new ContinentModel(continentName);
     	newContinent.setControlNum(controlNum);
     	getContinents().add(newContinent);
     	this.setModified(true);
+    	setChanged();
+    	notifyObservers(0);
 		return new ErrorMsg(0, null);
     }
 	
@@ -242,7 +248,7 @@ public class RiskMap {
 	 * @return succeed or failed with an error message
 	 */
 	public ErrorMsg renameContinent(String continentName, String newName){
-		Continent changeContinent = findContinent(continentName);
+		ContinentModel changeContinent = findContinent(continentName);
 		if(changeContinent == null){
 			return new ErrorMsg(1, "Continent  '"+continentName+"'  you want to change does not exists");
 		}
@@ -252,6 +258,8 @@ public class RiskMap {
 		
 		changeContinent.setName(newName);
 		this.setModified(true);
+		setChanged();
+		notifyObservers(0);
 		return new ErrorMsg(0, null);
 	}
 
@@ -262,13 +270,15 @@ public class RiskMap {
 	 * @return succeed or failed with an error message
 	 */
 	public ErrorMsg changeControlNum(String continentName, int controlNum){
-		Continent changeContinent = findContinent(continentName);
+		ContinentModel changeContinent = findContinent(continentName);
 		if(changeContinent == null){
 			return new ErrorMsg(1, "Continent  '"+continentName+"'  you want to change does not exists");
 		}
 		
 		changeContinent.setControlNum(controlNum);
 		this.setModified(true);
+		setChanged();
+		notifyObservers(0);
 		return new ErrorMsg(0, null);
 	}
 
@@ -278,7 +288,7 @@ public class RiskMap {
 	 * @return succeed or failed with an error message
 	 */
 	public ErrorMsg deleteContinent(String continentName){
-		Continent deleteContinent = findContinent(continentName);
+		ContinentModel deleteContinent = findContinent(continentName);
 		if(deleteContinent != null){
 			if(deleteContinent.getCountryList().size()>0){
 				return new ErrorMsg(1, "Continent '"+continentName+"' is not empty, you need to delete/move all the countries in it.");
@@ -286,6 +296,8 @@ public class RiskMap {
 			getContinents().remove(deleteContinent);
 			deleteContinent = null;
 			this.setModified(true);
+			setChanged();
+			notifyObservers(0);
 		}
 		return new ErrorMsg(0, null);
 	}
@@ -299,7 +311,7 @@ public class RiskMap {
      * @return succeed or failed with an error message
      */
 	public ErrorMsg addCountry(String countryName,String continentName,int coordinateX, int coordinateY){		
-    	Continent targetContinent = findContinent(continentName);
+    	ContinentModel targetContinent = findContinent(continentName);
     	if (targetContinent==null) {
     		return new ErrorMsg(1, "Continnet <"+continentName+"> does not exists");
     	}
@@ -308,14 +320,16 @@ public class RiskMap {
     		return new ErrorMsg(2,"Country <"+countryName+"> already exists");
     	}
 
-    	Country newCountry = new Country(countryName,targetContinent);
+    	CountryModel newCountry = new CountryModel(countryName,targetContinent);
     	newCountry.setCoordinate(coordinateX, coordinateY);
     	
     	targetContinent.addCountry(newCountry);
-    	getAdjacencyList().put(newCountry, new ArrayList<Country>());
+    	getAdjacencyList().put(newCountry, new ArrayList<CountryModel>());
     	
     	countryNum ++;
     	this.setModified(true);
+    	setChanged();
+    	notifyObservers(2);
     	return new ErrorMsg(0, null);
     }
 	
@@ -326,7 +340,7 @@ public class RiskMap {
 	 * @return succeed or failed with an error message
 	 */
 	public ErrorMsg renameCountry(String countryName, String newName){
-		Country changeCountry = findCountry(countryName);
+		CountryModel changeCountry = findCountry(countryName);
 		if(changeCountry == null){
 			return new ErrorMsg(1,"Country  '"+countryName+"' you want to change does not exists");
 		}
@@ -337,6 +351,8 @@ public class RiskMap {
 		
 		changeCountry.setName(newName);
 		this.setModified(true);
+    	setChanged();
+    	notifyObservers(2);
 		return new ErrorMsg(0, null);
 	}
 
@@ -347,12 +363,12 @@ public class RiskMap {
 	 * @return succeed or failed with an error message
 	 */
 	public ErrorMsg moveCountry(String toContinentName, String countryName) {
-		Country moveCountry = findCountry(countryName);
+		CountryModel moveCountry = findCountry(countryName);
 		if(moveCountry == null){
 			return new ErrorMsg(1, "Country  '"+moveCountry+"' you want to move does not exists");
 		}
 		
-		Continent toContinent = findContinent(toContinentName);
+		ContinentModel toContinent = findContinent(toContinentName);
 		if(toContinent == null){
 			return new ErrorMsg(2, "Continent  '"+toContinentName+"'  you want move to does not exists");
 		}
@@ -362,6 +378,8 @@ public class RiskMap {
 			toContinent.getCountryList().add(moveCountry);
 			moveCountry.setBelongTo(toContinent);
 			this.setModified(true);
+	    	setChanged();
+	    	notifyObservers(2);
 		}	
 		return new ErrorMsg(0, null);
 	}
@@ -372,20 +390,22 @@ public class RiskMap {
 	 * @return succeed or failed
 	 */
 	public boolean deleteCountry(String countryName){
-		Country deleteCountry = findCountry(countryName);
+		CountryModel deleteCountry = findCountry(countryName);
 		if(deleteCountry == null) return false;
 		
 		deleteCountry.getBelongTo().deleteCountry(deleteCountry);
 
 		//delete relative connections
-		ArrayList<Country> neighbours = getAdjacencyList().get(deleteCountry);
-		for(Country neighbour: neighbours){
+		ArrayList<CountryModel> neighbours = getAdjacencyList().get(deleteCountry);
+		for(CountryModel neighbour: neighbours){
 			getAdjacencyList().get(neighbour).remove(deleteCountry);
 		}
 		getAdjacencyList().remove(deleteCountry);
 		countryNum --;
 		deleteCountry = null;
 		this.setModified(true);
+		setChanged();
+		notifyObservers(2);
 		return true;
 	}
 	
@@ -399,12 +419,12 @@ public class RiskMap {
 		if (countryNameFrom.equals(countryNameTo)){
 			return new ErrorMsg(2, "Country  '"+countryNameFrom+"' can not have self-connection");			
 		}
-		Country fromCountry = findCountry(countryNameFrom);
+		CountryModel fromCountry = findCountry(countryNameFrom);
 		if (fromCountry==null){
 			return new ErrorMsg(1, "Country  '"+countryNameFrom+"' does not exists");
 		}
 		
-		Country toCountry = findCountry(countryNameTo);
+		CountryModel toCountry = findCountry(countryNameTo);
 		if (toCountry==null){
 			return new ErrorMsg(1, "Country  '"+countryNameTo+"' does not exists");
 		}
@@ -427,15 +447,17 @@ public class RiskMap {
 	 * Method to add completed connections.
 	 */
 	public void addCompletedConnection(){
-		for (Country loopCountry:getAdjacencyList().keySet()){
-			ArrayList<Country> loopCountryList = getAdjacencyList().get(loopCountry);
+		for (CountryModel loopCountry:getAdjacencyList().keySet()){
+			ArrayList<CountryModel> loopCountryList = getAdjacencyList().get(loopCountry);
 			loopCountryList.clear();
-			for (Country candidateCountry:getAdjacencyList().keySet()){
+			for (CountryModel candidateCountry:getAdjacencyList().keySet()){
 				if (candidateCountry!=loopCountry){
 					loopCountryList.add(candidateCountry);
 				}
 			}
 		}
+		setChanged();
+		notifyObservers(1);
 		this.setModified(true);
 	}
 
@@ -446,12 +468,12 @@ public class RiskMap {
 	 * @return succeed or failed with an error message
 	 */
 	public ErrorMsg removeConnection(String countryNameFrom,String countryNameTo){
-		Country fromCountry = findCountry(countryNameFrom);
+		CountryModel fromCountry = findCountry(countryNameFrom);
 		if (fromCountry==null){
 			return new ErrorMsg(1, "Country  '"+countryNameFrom+"' does not exists");
 		}
 		
-		Country toCountry = findCountry(countryNameTo);
+		CountryModel toCountry = findCountry(countryNameTo);
 		if (toCountry==null){
 			return new ErrorMsg(1, "Country  '"+countryNameTo+"' does not exists");
 		}
@@ -470,9 +492,11 @@ public class RiskMap {
 	 * Method to remove all connections.
 	 */
 	public void removeAllConnection(){
-		for (ArrayList<Country> loopCountryList:getAdjacencyList().values()){
+		for (ArrayList<CountryModel> loopCountryList:getAdjacencyList().values()){
 			loopCountryList.clear();
 		}
+		setChanged();
+		notifyObservers(1);
 		this.setModified(true);
 	}
 
@@ -481,7 +505,7 @@ public class RiskMap {
      * @param localAdjacencyList adjacency list to be checked
      * @return connected or not
      */
-	public boolean checkConnection(Map<Country,ArrayList<Country>> localAdjacencyList) {
+	public boolean checkConnection(Map<CountryModel,ArrayList<CountryModel>> localAdjacencyList) {
 		return (findPath(localAdjacencyList, null)==localAdjacencyList.size());
 	}
 	
@@ -491,9 +515,9 @@ public class RiskMap {
      * @param sourceNode node from which to start DFS search 
      * @return the number of nodes can be reached from sourceNode
      */	
-	public int findPath(Map<Country,ArrayList<Country>> localAdjacencyList,Country sourceNode) {
+	public int findPath(Map<CountryModel,ArrayList<CountryModel>> localAdjacencyList,CountryModel sourceNode) {
 		if (localAdjacencyList.size()==0) return 0;
-		for (Country loopCountry : localAdjacencyList.keySet()) {
+		for (CountryModel loopCountry : localAdjacencyList.keySet()) {
 			loopCountry.setFlagDFS(false);
 			if (sourceNode==null) sourceNode = loopCountry;
 		}		
@@ -507,10 +531,10 @@ public class RiskMap {
      * @param findCountries the number of nodes already visited before this step 
      * @return the number of nodes already visited after this step
      */
-	public int DFS(Map<Country,ArrayList<Country>> localAdjacencyList, Country sourceNode, int findCountries) {
+	public int DFS(Map<CountryModel,ArrayList<CountryModel>> localAdjacencyList, CountryModel sourceNode, int findCountries) {
 		sourceNode.setFlagDFS(true);
 		findCountries++;
-		for (Country targetNode : localAdjacencyList.get(sourceNode)){
+		for (CountryModel targetNode : localAdjacencyList.get(sourceNode)){
 			if (!targetNode.isFlagDFS()){
 				findCountries = DFS(localAdjacencyList,targetNode,findCountries);
 			}
@@ -535,7 +559,7 @@ public class RiskMap {
 			//Check map connectivity
 			if (!checkConnection(getAdjacencyList())) errorMessage="Error: The whole map is not a connected graph.\n";
 			//Check continents connectivity
-			for (Continent loopContinent: getContinents()){
+			for (ContinentModel loopContinent: getContinents()){
 				if (loopContinent.getCountryList().size()==0){
 					if (errorMessage == null)
 						errorMessage = "Error: The continent <"+loopContinent.getName()+"> has no country in it.\n";
@@ -543,10 +567,10 @@ public class RiskMap {
 						errorMessage += "Error: The continent <"+loopContinent.getName()+"> has no country in it.\n";
 					continue;
 				}
-				Map<Country,ArrayList<Country>> loopAdjacencyList = new HashMap<Country,ArrayList<Country>>();
-				for (Country loopCountry: loopContinent.getCountryList()){
-					loopAdjacencyList.put(loopCountry, new ArrayList<Country>());
-					for (Country neighbour: getAdjacencyList().get(loopCountry)){
+				Map<CountryModel,ArrayList<CountryModel>> loopAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
+				for (CountryModel loopCountry: loopContinent.getCountryList()){
+					loopAdjacencyList.put(loopCountry, new ArrayList<CountryModel>());
+					for (CountryModel neighbour: getAdjacencyList().get(loopCountry)){
 						if (neighbour.getBelongTo()==loopContinent){
 							loopAdjacencyList.get(loopCountry).add(neighbour);
 						}
@@ -633,16 +657,16 @@ public class RiskMap {
 			fw.write("scroll="+this.scroll+"\r\n");
 			fw.write("\r\n");
 			fw.write("[Continents]\r\n");
-			for (Continent loopContinent : getContinents()){
+			for (ContinentModel loopContinent : getContinents()){
 				fw.write(loopContinent.getName()+"="+loopContinent.getControlNum()+"\r\n");
 			}
 			fw.write("\r\n");
 			fw.write("[Territories]\r\n");
-			for (Continent loopContinent : getContinents()){
-				for (Country loopCountry : loopContinent.getCountryList()){
-					ArrayList<Country> neighbours = getAdjacencyList().get(loopCountry);
+			for (ContinentModel loopContinent : getContinents()){
+				for (CountryModel loopCountry : loopContinent.getCountryList()){
+					ArrayList<CountryModel> neighbours = getAdjacencyList().get(loopCountry);
 					fw.write(loopCountry.getName()+","+loopCountry.getCoordinate()[0]+","+loopCountry.getCoordinate()[1]+","+loopContinent.getName());
-					for (Country neighbour : neighbours){
+					for (CountryModel neighbour : neighbours){
 						fw.write(","+neighbour.getName());
 					}
 					fw.write("\r\n");
@@ -662,6 +686,8 @@ public class RiskMap {
 				//ex.printStackTrace();
 			}
 		}
+		setChanged();
+		notifyObservers(0);
 		return new ErrorMsg(0, null);
 	}
 	
@@ -682,6 +708,7 @@ public class RiskMap {
 		int rowNumber = 0;
 		String dateArea = "none";//none, Map, Continents, Territories;
 		Map<String,ArrayList<String>> countriesList = new HashMap<String,ArrayList<String>>();
+		//begin to handle file line by line, check format errors, duplicate continent or country error
 		try{
 			br = new BufferedReader(new FileReader(mapFileName));
 			if (mapFileName.lastIndexOf("\\")+1>=mapFileName.lastIndexOf("."))
@@ -693,6 +720,7 @@ public class RiskMap {
 				inputLine = inputLine.trim();
 				int index;
 				if (!inputLine.isEmpty()){
+					//first level: distinguish data section
 					switch (inputLine){
 					case "[Map]":
 						dateArea = "Map";
@@ -705,7 +733,7 @@ public class RiskMap {
 						break;
 					default:
 						switch (dateArea){
-						case "Map":
+						case "Map"://for [map] section
 							index = inputLine.indexOf("=");
 							if (index!=-1){
 								String keyword = inputLine.substring(0,index).trim().toLowerCase();
@@ -737,7 +765,7 @@ public class RiskMap {
 							}
 							break;
 							
-						case "Continents":
+						case "Continents"://for [continent] section
 							index = inputLine.indexOf("=");
 							if (index!=-1){
 								String continentName = inputLine.substring(0,index).trim();
@@ -758,7 +786,7 @@ public class RiskMap {
 							}							
 							break;
 
-						case "Territories":
+						case "Territories"://for [territories] section
 							String[] countryInfo = inputLine.split(",");
 							if (countryInfo.length>=4){
 								String countryName = countryInfo[0].trim();
@@ -785,7 +813,7 @@ public class RiskMap {
 							}
 							break;
 							
-						default:
+						default://others
 							return new ErrorMsg(1,"Fatal error in line "+rowNumber+": Invalid format.");	
 						}
 					}
@@ -801,7 +829,7 @@ public class RiskMap {
 				//ex.printStackTrace();
 			}
 		}   
-
+		//check other fatal errors
 		for (String loopCountry : countriesList.keySet()) {
 			ArrayList<String> neighbours = countriesList.get(loopCountry);
 			for (String loopNeighbour:neighbours){
@@ -816,5 +844,10 @@ public class RiskMap {
 		}
 
 		return new ErrorMsg(0,null);
+	}
+	
+	public void generateNotify() {
+		setChanged();
+		notifyObservers(2);
 	}
 }
