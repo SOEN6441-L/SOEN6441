@@ -3,17 +3,15 @@ package mapviews;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import mapcontrollers.BasicInfoController;
 import mapmodels.RiskMapModel;
 
 /**
@@ -234,14 +232,12 @@ public class BasicInfoView extends JDialog{
 		add(proceedBtn);  	     
 		size = proceedBtn.getPreferredSize();
 		proceedBtn.setBounds(width/2-size.width-39,250,size.width+29,size.height+10);
-		proceedBtn.addActionListener(new proceedHandler());
 		
 		cancelBtn = new JButton("Cancel");		
 		cancelBtn.setMnemonic('c');
 		cancelBtn.setDisplayedMnemonicIndex(0);
 		add(cancelBtn);  	     
 		cancelBtn.setBounds(width/2+10,250,size.width+29,size.height+10);
-		cancelBtn.addActionListener(new cancelHandler());		
 		setModal(true);
 		//setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 	}
@@ -255,39 +251,85 @@ public class BasicInfoView extends JDialog{
 	}
 
 	/**
-	 * Method to respond user choosing proceed button, which will continues to next step.
+	 * Method to set dialog return value, 0 - user cancel, 1 - continue 
+	 * @param state dialog return value
 	 */
-	private class proceedHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			if (authorTF.getText()==null||authorTF.getText().trim().isEmpty()){
-				JOptionPane.showMessageDialog(null,"Parameter author can't be empty.");
-				authorTF.setText("somebody");
-				authorTF.requestFocus();
-				return;
-			}
-			if (imageTF.getText()==null||imageTF.getText().trim().isEmpty()){
-				JOptionPane.showMessageDialog(null,"Parameter image can't be empty.");
-				imageTF.setText("none");
-				imageTF.requestFocus();
-				return;
-			}
-			curMap.setAuthor(authorTF.getText().trim());
-			curMap.setWarn((warnYes.isSelected())?"yes":"no");
-			curMap.setWrap((wrapYes.isSelected())?"yes":"no");
-			curMap.setImage(imageTF.getText().trim());
-			curMap.setScroll((scrollHor.isSelected())?"horizontal":(scrollVer.isSelected())?"vertical":"none");
-			state = 1;
-			setVisible(false);
-		}
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	/**
+	 * Method to get author value 
+	 * @return author value
+	 */
+	public String getAuthor(){
+		return authorTF.getText();
 	}
 	
 	/**
-	 * Method to respond user cancel the process
-	 */
-	private class cancelHandler implements ActionListener { 
-		public void actionPerformed(ActionEvent e) {
-			state = 0;
-			setVisible(false);
-		}
+	 * Method to set author value 
+	 * @param author author value
+	 */	
+	public void setAuthor(String author){
+		authorTF.setText(author);
+		authorTF.requestFocus();
 	}	
+
+	/**
+	 * Method to get image value 
+	 * @return image value
+	 */
+	public String getImage(){
+		return imageTF.getText();
+	}
+	
+	/**
+	 * Method to set image value 
+	 * @param image image value
+	 */		
+	public void setImage(String image){
+		imageTF.setText(image);
+		imageTF.requestFocus();
+	}	
+
+	/**
+	 * Method to get warn value 
+	 * @return warn value
+	 */
+	public Boolean getWarnYes(){
+		return warnYes.isSelected();
+	}
+	
+	/**
+	 * Method to get wrap value 
+	 * @return wrap value
+	 */	
+	public Boolean getWrapYes(){
+		return wrapYes.isSelected();
+	}
+	
+	/**
+	 * Method to get ScrollHor value 
+	 * @return ScrollHor value
+	 */	
+	public Boolean getScrollHor(){
+		return scrollHor.isSelected();
+	}
+
+	/**
+	 * Method to get ScrollVer value 
+	 * @return ScrollVer value
+	 */
+	public Boolean getScrollVer(){
+		return scrollVer.isSelected();
+	}	
+	
+	/**
+	 * Method to add controller to relative components.
+	 * @param controller the new controller
+	 */
+	public void addController(BasicInfoController controller){
+		proceedBtn.addActionListener(controller);
+		cancelBtn.addActionListener(controller);
+	}		
 }
