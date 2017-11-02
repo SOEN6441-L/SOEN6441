@@ -18,7 +18,9 @@ import mapviews.BasicInfoView;
 import mapviews.MapEditorView;
 	
 /**
- * Class acting as the controller, to define action performed according to different users' action.
+ * Class acting as the MapEditorView's controller, 
+ * to define action performed according to different users' action.
+ * It will use method getSelectedObj() to get user's selection from the view.
  */
 public class MapEditorController implements ActionListener { 
 	private RiskMapModel myMapModel;
@@ -178,10 +180,14 @@ public class MapEditorController implements ActionListener {
 	private void saveToFile(){
 		ErrorMsg errorMsg;
 		if ((errorMsg = myMapModel.checkErrors()).isResult()){
-			BasicInfoView basicInfo = new BasicInfoView(myMapModel,myMapModel.checkWarnings(),0); //mode = 0 save file
-			basicInfo.setVisible(true);
-			int state = basicInfo.getState();
-			basicInfo.dispose();
+			BasicInfoView basicInfoView = new BasicInfoView(myMapModel,myMapModel.checkWarnings(),0); //mode = 0 save file
+			BasicInfoController basicInfoController = new BasicInfoController();
+			basicInfoController.addModel(myMapModel);
+			basicInfoController.addView(basicInfoView);
+			basicInfoView.addController(basicInfoController);
+			basicInfoView.setVisible(true);
+			int state = basicInfoView.getState();
+			basicInfoView.dispose();
 			if (state==0) return;
 			
 			String outputFileName;
@@ -288,17 +294,18 @@ public class MapEditorController implements ActionListener {
 								"Confirm", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){//succeed check the errors
 					int checkWarning = existingMap.checkWarnings();
 					if (checkWarning>0) {
-						BasicInfoView basicInfo = new BasicInfoView(existingMap,checkWarning,1); //mode = 1 load file
-						basicInfo.setVisible(true);
-						int state = basicInfo.getState();
-						basicInfo.dispose();
+						BasicInfoView basicInfoView = new BasicInfoView(myMapModel,myMapModel.checkWarnings(),0); //mode = 0 save file
+						BasicInfoController basicInfoController = new BasicInfoController();
+						basicInfoController.addModel(myMapModel);
+						basicInfoController.addView(basicInfoView);
+						basicInfoView.addController(basicInfoController);
+						basicInfoView.setVisible(true);
+						int state = basicInfoView.getState();
+						basicInfoView.dispose();
 						if (state==0) return;
 					}
 					myMapModel = existingMap;
 					myEditorView.changeMapModel(existingMap);
-    		
-					//setTitle("Map Editor - "+myMapModel.getRiskMapName()+" by "+myMapModel.getAuthor());   
-    		
 					//reloadContinents();		
 					//reloadMatrix();
 				}
