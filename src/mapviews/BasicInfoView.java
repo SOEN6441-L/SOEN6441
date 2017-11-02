@@ -1,12 +1,10 @@
-package mapeditor;
+package mapviews;
 
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -16,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import mapelements.RiskMap;
+import mapmodels.RiskMapModel;
 
 /**
  * This is a view class to show basic information of game.
@@ -25,7 +23,7 @@ import mapelements.RiskMap;
  * @see JDialog
  */
 public class BasicInfoView extends JDialog{
-	
+	private static final long serialVersionUID = 1L;
 	//components
 	private JButton proceedBtn;
 	private JButton cancelBtn;
@@ -52,7 +50,7 @@ public class BasicInfoView extends JDialog{
 	private JLabel warnImage;
 	private JLabel warnScroll;
 	
-	private RiskMap curMap;	
+	private RiskMapModel curMap;	
 	private int state=0; //0-Cancel, 1-continue
 	
 	/**
@@ -61,9 +59,9 @@ public class BasicInfoView extends JDialog{
 	 * @param map	Object of RiskMap
 	 * @param checkWarning return value of mapelements.RiskMap#checkWarnings(), to indicate warnings related to the 5 basic information
 	 * @param mode	Indicator, affect size of the GUI
-	 * @see mapelements.RiskMap#checkWarnings()
+	 * @see mapmodels.RiskMapModel#checkWarnings()
 	 */
-	public BasicInfoView(RiskMap map, int checkWarning, int mode){///mode 0-upon save, 1-upon load
+	public BasicInfoView(RiskMapModel map, int checkWarning, int mode){///mode 0-upon save, 1-upon load
 		//configuration
 		setTitle("Basic information");
 		this.curMap = map;

@@ -1,41 +1,41 @@
-package mapelementstest;
+package mapmodelstest;
 
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import mapelements.Continent;
-import mapelements.Country;
-import mapelements.ErrorMsg;
-import mapelements.RiskMap;
+import mapmodels.ContinentModel;
+import mapmodels.CountryModel;
+import mapmodels.ErrorMsg;
+import mapmodels.RiskMapModel;
 
 /**
- * Test Class to test all methods defined in class RiskMap
+ * Test Class to test all methods defined in class RiskMap.
+ * Including 19 methods and 91 test cases.
  */
 public class RsikMapTest {
-	private RiskMap newMap, existingMap;
+	private RiskMapModel newMap, existingMap;
 
 	/**
 	 * Set test environment before each test.
 	 */
 	@Before
 	public void setEnvironment(){
-		newMap = new RiskMap("testMap");
+		newMap = new RiskMapModel();
+		newMap.initMapModel("testMap");
 	}
 	
 	/**
-	 * Test constructor(String), getAuthor(), getWarn(), getWrap(), getImage(), getScroll(), isModified()
+	 * Test constructor, initMapModel(String), getAuthor(), getWarn(), getWrap(), getImage(), getScroll(), isModified()
 	 * , getContinent(), getCountryNum(), getAdjacencyList().<br>
 	 * case 1: check all variables of the RiskMap object created with a name in @before step.<br>
-	 * case 2: create another RiskMap object with random name, check all variables again.
+	 * case 2: create another RiskMap object with random name, check all variables again.<br>
+	 * case 3: create a new RiskMap object without a name, check all variables again.
 	 */
 	@Test
 	public void constructorWithNameTest() {
@@ -52,7 +52,8 @@ public class RsikMapTest {
 		assertEquals(0,newMap.getAdjacencyList().size());
 		//case 2:
 		String name = "testMap"+(int)(Math.random()*10);
-		newMap = new RiskMap(name);
+		newMap = new RiskMapModel();
+		newMap.initMapModel(name);
 		assertEquals(name, newMap.getRiskMapName());
 		assertEquals("Invincible Team Four",newMap.getAuthor());
 		assertEquals("yes",newMap.getWarn());
@@ -66,16 +67,8 @@ public class RsikMapTest {
 		System.out.println("RiskMap Test: constructor with name, getAuthor(),"
 				+ " getWarn(), getWrap(), getImage(), getScroll(), isModified(),"
 				+ " getContinent(), getCountryNum(), getAdjacencyList()finished.");
-	}
-	
-	/**
-	 * Test constructor().<br>
-	 * case 1: check all variables of the RiskMap object created without name in @before step.
-	 */
-	@Test
-	public void constructorWithoutNameTest() {
-		//case 1:
-		existingMap = new RiskMap();
+		//case 3:
+		existingMap = new RiskMapModel();
 		assertEquals(null,existingMap.getRiskMapName());
 		assertTrue(existingMap.getAuthor().isEmpty());
 		assertTrue(existingMap.getWarn().isEmpty());
@@ -87,8 +80,8 @@ public class RsikMapTest {
 		assertEquals(0,existingMap.getCountryNum());
 		assertEquals(0,existingMap.getAdjacencyList().size());
 		System.out.println("RiskMap Test: constructor without name finished.");
-	}	
-
+	}
+	
 	/**
 	 * Test findCountry(String).<br>
 	 * case 1: add two continents each has one country in it, call findCountry(String) 
@@ -103,11 +96,11 @@ public class RsikMapTest {
 		newMap.addContinent("testContinent2", 10);
 		newMap.addCountry("testCountry2","testContinent2",30,40);
 		
-		Continent firstContinent =  newMap.getContinents().get(0);
-		Continent secondContinent =  newMap.getContinents().get(1);
+		ContinentModel firstContinent =  newMap.getContinents().get(0);
+		ContinentModel secondContinent =  newMap.getContinents().get(1);
 		
-		Country firstCountry = firstContinent.getCountryList().get(0);
-		Country secondCountry = secondContinent.getCountryList().get(0);		
+		CountryModel firstCountry = firstContinent.getCountryList().get(0);
+		CountryModel secondCountry = secondContinent.getCountryList().get(0);		
 		
 		assertEquals(2,newMap.getContinents().size());
 		assertEquals(2,newMap.getCountryNum());
@@ -118,7 +111,7 @@ public class RsikMapTest {
 		assertEquals(secondCountry,newMap.findCountry(secondCountry.getName()));
 		assertEquals(secondContinent,newMap.findCountry(secondCountry.getName()).getBelongTo());
 		//case 2:
-		Country thirdCountry = new Country("testCountry3",firstContinent);
+		CountryModel thirdCountry = new CountryModel("testCountry3",firstContinent);
 		assertEquals(null,newMap.findCountry(thirdCountry.getName()));
 		System.out.println("RiskMap Test: findCountry(String) finished.");
 	}
@@ -134,8 +127,8 @@ public class RsikMapTest {
 		newMap.addContinent("testContinent", 12);
 		newMap.addContinent("testContinent2", 10);
 		
-		Continent continent1 = newMap.getContinents().get(0);
-		Continent continent2 = newMap.getContinents().get(1);
+		ContinentModel continent1 = newMap.getContinents().get(0);
+		ContinentModel continent2 = newMap.getContinents().get(1);
 		
 		assertEquals(2,newMap.getContinents().size());
 		assertEquals(0,newMap.getCountryNum());
@@ -144,7 +137,7 @@ public class RsikMapTest {
 		assertEquals(continent1,newMap.findContinent(continent1.getName()));
 		assertEquals(continent2,newMap.findContinent(continent2.getName()));
 		//case 2:
-		Continent continent3 = new Continent("testContinent3");
+		ContinentModel continent3 = new ContinentModel("testContinent3");
 		assertEquals(null,newMap.findContinent(continent3.getName()));		
 		System.out.println("RiskMap Test: findContinent(String) finished.");
 	}
@@ -165,7 +158,7 @@ public class RsikMapTest {
 		assertTrue(newMap.addContinent("testContinent", 12).isResult());
 		assertTrue(newMap.isModified());
 		assertEquals(1,newMap.getContinents().size());
-		Continent continent = newMap.getContinents().get(0);
+		ContinentModel continent = newMap.getContinents().get(0);
 		assertEquals(continent, newMap.findContinent(continent.getName()));
 		//case 2:
 		newMap.setModified(false);
@@ -177,7 +170,7 @@ public class RsikMapTest {
 		assertTrue(newMap.addContinent("testContinent2", 12).isResult());
 		assertTrue(newMap.isModified());
 		assertEquals(2,newMap.getContinents().size());
-		Continent continent2 = newMap.getContinents().get(1);
+		ContinentModel continent2 = newMap.getContinents().get(1);
 		assertEquals(continent2, newMap.findContinent(continent2.getName()));	
 		assertEquals(0,newMap.getCountryNum());
 		assertEquals(0,newMap.getAdjacencyList().size());
@@ -302,7 +295,7 @@ public class RsikMapTest {
 		assertTrue(newMap.isModified());
 		assertEquals(1,newMap.getCountryNum());
 		assertEquals(1,newMap.getAdjacencyList().size());
-		Country country = newMap.getContinents().get(0).getCountryList().get(0);
+		CountryModel country = newMap.getContinents().get(0).getCountryList().get(0);
 		assertEquals(country, newMap.findCountry(country.getName()));
 		//case 2:
 		newMap.setModified(false);
@@ -329,7 +322,7 @@ public class RsikMapTest {
 		assertTrue(newMap.isModified());
 		assertEquals(2,newMap.getCountryNum());
 		assertEquals(2,newMap.getAdjacencyList().size());
-		Country country2 = newMap.getContinents().get(1).getCountryList().get(0);
+		CountryModel country2 = newMap.getContinents().get(1).getCountryList().get(0);
 		assertEquals(country2, newMap.findCountry(country2.getName()));
 		//case 5:
 		newMap.setModified(false);
@@ -460,11 +453,11 @@ public class RsikMapTest {
 		newMap.addContinent("testContinent", 12);
 		newMap.addContinent("testContinent2", 12);
 		newMap.addCountry("testCountry","testContinent", 1,1);
-		Country country1 = newMap.getContinents().get(0).getCountryList().get(0);
+		CountryModel country1 = newMap.getContinents().get(0).getCountryList().get(0);
 		newMap.addCountry("testCountry2","testContinent", 1,1);
-		Country country2 = newMap.getContinents().get(0).getCountryList().get(1);
+		CountryModel country2 = newMap.getContinents().get(0).getCountryList().get(1);
 		newMap.addCountry("testCountry3","testContinent2", 1,1);
-		Country country3 = newMap.getContinents().get(1).getCountryList().get(0);
+		CountryModel country3 = newMap.getContinents().get(1).getCountryList().get(0);
 		assertEquals(3,newMap.getAdjacencyList().size());
 		//case 1:
 		newMap.setModified(false);
@@ -536,11 +529,11 @@ public class RsikMapTest {
 		newMap.addContinent("testContinent", 12);
 		newMap.addContinent("testContinent2", 12);
 		newMap.addCountry("testCountry","testContinent", 1,1);
-		Country country1 = newMap.getContinents().get(0).getCountryList().get(0);
+		CountryModel country1 = newMap.getContinents().get(0).getCountryList().get(0);
 		newMap.addCountry("testCountry2","testContinent", 1,1);
-		Country country2 = newMap.getContinents().get(0).getCountryList().get(1);
+		CountryModel country2 = newMap.getContinents().get(0).getCountryList().get(1);
 		newMap.addCountry("testCountry3","testContinent2", 1,1);
-		Country country3 = newMap.getContinents().get(1).getCountryList().get(0);
+		CountryModel country3 = newMap.getContinents().get(1).getCountryList().get(0);
 		assertEquals(3,newMap.getAdjacencyList().size());
 		//case 1:
 		newMap.setModified(false);
@@ -576,11 +569,11 @@ public class RsikMapTest {
 		newMap.addContinent("testContinent", 12);
 		newMap.addContinent("testContinent2", 12);
 		newMap.addCountry("testCountry","testContinent", 1,1);
-		Country country1 = newMap.getContinents().get(0).getCountryList().get(0);
+		CountryModel country1 = newMap.getContinents().get(0).getCountryList().get(0);
 		newMap.addCountry("testCountry2","testContinent", 1,1);
-		Country country2 = newMap.getContinents().get(0).getCountryList().get(1);
+		CountryModel country2 = newMap.getContinents().get(0).getCountryList().get(1);
 		newMap.addCountry("testCountry3","testContinent2", 1,1);
-		Country country3 = newMap.getContinents().get(1).getCountryList().get(0);
+		CountryModel country3 = newMap.getContinents().get(1).getCountryList().get(0);
 		assertEquals(3,newMap.getAdjacencyList().size());
 		newMap.addCompletedConnection();
 
@@ -647,11 +640,11 @@ public class RsikMapTest {
 		newMap.addContinent("testContinent", 12);
 		newMap.addContinent("testContinent2", 12);
 		newMap.addCountry("testCountry","testContinent", 1,1);
-		Country country1 = newMap.getContinents().get(0).getCountryList().get(0);
+		CountryModel country1 = newMap.getContinents().get(0).getCountryList().get(0);
 		newMap.addCountry("testCountry2","testContinent", 1,1);
-		Country country2 = newMap.getContinents().get(0).getCountryList().get(1);
+		CountryModel country2 = newMap.getContinents().get(0).getCountryList().get(1);
 		newMap.addCountry("testCountry3","testContinent2", 1,1);
-		Country country3 = newMap.getContinents().get(1).getCountryList().get(0);
+		CountryModel country3 = newMap.getContinents().get(1).getCountryList().get(0);
 		assertEquals(3,newMap.getAdjacencyList().size());
 		newMap.addCompletedConnection();
 		//case 1:
@@ -741,89 +734,89 @@ public class RsikMapTest {
 	@Test
 	public void checkWarningsTest(){
 		//case 1:
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(31,existingMap.checkWarnings());
 		assertEquals(0,existingMap.checkWarnings());
 		//case 2:
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setAuthor("");
 		assertEquals(31,existingMap.checkWarnings());		
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setAuthor("testAuthor");
 		assertEquals(30,existingMap.checkWarnings());
 		//case 3:
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWarn("");
 		assertEquals(31,existingMap.checkWarnings());	
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWarn("pp");
 		assertEquals(31,existingMap.checkWarnings());	
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWarn("yes");
 		assertEquals(29,existingMap.checkWarnings());
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWarn("no");
 		assertEquals(29,existingMap.checkWarnings());
 		//case 4:
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setImage("");
 		assertEquals(31,existingMap.checkWarnings());
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setImage("none");
 		assertEquals(27,existingMap.checkWarnings());
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setImage("dsafsdafdsf");
 		assertEquals(27,existingMap.checkWarnings());
 		//case 5:
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWrap("");
 		assertEquals(31,existingMap.checkWarnings());	
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWrap("every");
 		assertEquals(31,existingMap.checkWarnings());	
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWrap("yes");
 		assertEquals(23,existingMap.checkWarnings());
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setWrap("no");
 		assertEquals(23,existingMap.checkWarnings());	
 		//case 6:
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setScroll("");
 		assertEquals(31,existingMap.checkWarnings());	
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setScroll("every");
 		assertEquals(31,existingMap.checkWarnings());	
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setScroll("horizontal");
 		assertEquals(15,existingMap.checkWarnings());
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setScroll("vertical");
 		assertEquals(15,existingMap.checkWarnings());
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setScroll("none");
 		assertEquals(15,existingMap.checkWarnings());
 		//case 7:
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		existingMap.setAuthor("testAuthor");
 		existingMap.setScroll("none");
 		assertEquals(14,existingMap.checkWarnings());
@@ -859,7 +852,7 @@ public class RsikMapTest {
 		assertEquals(1,newMap.saveToFile("./src/map/test").getResult());
 		//case 3:
 		assertTrue(newMap.saveToFile("./src/map/test/test.map").isResult());
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertTrue(existingMap.loadMapFile("./src/map/test/test.map").isResult());
 		assertTrue(existingMap.checkErrors().isResult());
 		assertEquals(0,existingMap.checkWarnings());	
@@ -867,7 +860,7 @@ public class RsikMapTest {
 		newMap.removeConnection("testCountry", "testCountry3");
 		assertTrue(newMap.saveToFile("./src/map/test/test.map").isResult());
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertTrue(existingMap.loadMapFile("./src/map/test/test.map").isResult());
 		assertTrue(existingMap.checkErrors().isResult());
 		assertEquals(0,existingMap.checkWarnings());	
@@ -897,7 +890,7 @@ public class RsikMapTest {
 	 * case 19: create map file with non-existing country in adjacency list, load file, check return value and relative value.<br>
 	 * case 20: create map file with self-connection, load file, check return value and relative value.<br>
 	 * case 21: create map file with unpaired connection, load file, check return value and relative value.<br>
-	 * case 22: create map file with not connected graph, load file, check return value and relative value.
+	 * case 22: create map file with a unconnected graph, load file, check return value and relative value.
 	 */
 	@Test	
 	public void loadMapFileTest() {
@@ -916,7 +909,7 @@ public class RsikMapTest {
 		assertTrue(newMap.saveToFile("./src/map/test/test.map").isResult());
 		
 		//case 1:
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(13,existingMap.loadMapFile("").getResult());
 		//case 2:
 		assertEquals(13,existingMap.loadMapFile("./src/map/test").getResult());
@@ -948,7 +941,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(1,existingMap.loadMapFile("./src/map/test/test4.map").getResult());
 		//case 5:
 		outputFile = new File("./src/map/test/test5.map");
@@ -973,7 +966,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(1,existingMap.loadMapFile("./src/map/test/test5.map").getResult());
 		//case 6:
 		outputFile = new File("./src/map/test/test6.map");
@@ -998,7 +991,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(1,existingMap.loadMapFile("./src/map/test/test6.map").getResult());
 		//case 7:
 		outputFile = new File("./src/map/test/test7.map");
@@ -1023,7 +1016,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertTrue(existingMap.loadMapFile("./src/map/test/test7.map").isResult());		
 		assertTrue(existingMap.checkErrors().isResult());
 		assertEquals(1,existingMap.checkWarnings());
@@ -1050,7 +1043,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(1,existingMap.loadMapFile("./src/map/test/test8.map").getResult());		
 		//case 9:
 		outputFile = new File("./src/map/test/test9.map");
@@ -1075,7 +1068,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(1,existingMap.loadMapFile("./src/map/test/test9.map").getResult());	
 		//case 10:
 		outputFile = new File("./src/map/test/test10.map");
@@ -1100,7 +1093,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(3,existingMap.loadMapFile("./src/map/test/test10.map").getResult());	
 		//case 11:
 		outputFile = new File("./src/map/test/test11.map");
@@ -1125,7 +1118,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(2,existingMap.loadMapFile("./src/map/test/test11.map").getResult());	
 		//case 12:
 		outputFile = new File("./src/map/test/test12.map");
@@ -1150,7 +1143,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(9,existingMap.loadMapFile("./src/map/test/test12.map").getResult());
 		//case 13:
 		outputFile = new File("./src/map/test/test13.map");
@@ -1175,7 +1168,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(4,existingMap.loadMapFile("./src/map/test/test13.map").getResult());
 		//case 14:
 		outputFile = new File("./src/map/test/test14.map");
@@ -1200,7 +1193,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(5,existingMap.loadMapFile("./src/map/test/test14.map").getResult());
 		//case 15:
 		outputFile = new File("./src/map/test/test15.map");
@@ -1225,7 +1218,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(6,existingMap.loadMapFile("./src/map/test/test15.map").getResult());
 		//case 16:
 		outputFile = new File("./src/map/test/test16.map");
@@ -1250,7 +1243,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(7,existingMap.loadMapFile("./src/map/test/test16.map").getResult());
 		//case 17:
 		outputFile = new File("./src/map/test/test17.map");
@@ -1275,7 +1268,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(7,existingMap.loadMapFile("./src/map/test/test17.map").getResult());	
 		//case 18:
 		outputFile = new File("./src/map/test/test18.map");
@@ -1300,7 +1293,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(8,existingMap.loadMapFile("./src/map/test/test18.map").getResult());	
 		//case 19:
 		outputFile = new File("./src/map/test/test19.map");
@@ -1325,7 +1318,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(10,existingMap.loadMapFile("./src/map/test/test19.map").getResult());
 		//case 20:
 		outputFile = new File("./src/map/test/test20.map");
@@ -1350,7 +1343,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(12,existingMap.loadMapFile("./src/map/test/test20.map").getResult());
 		//case 21:
 		outputFile = new File("./src/map/test/test21.map");
@@ -1375,7 +1368,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertEquals(11,existingMap.loadMapFile("./src/map/test/test21.map").getResult());
 		
 		System.out.println("RiskMap Test: loadMapFile(String) finished.");	
@@ -1402,7 +1395,7 @@ public class RsikMapTest {
 			}
 		}
 		existingMap = null;
-		existingMap = new RiskMap();
+		existingMap = new RiskMapModel();
 		assertTrue(existingMap.loadMapFile("./src/map/test/test22.map").isResult());
 		assertFalse(existingMap.checkErrors().isResult());
 		

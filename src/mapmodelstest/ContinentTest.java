@@ -1,4 +1,4 @@
-package mapelementstest;
+package mapmodelstest;
 
 import static org.junit.Assert.*;
 
@@ -8,26 +8,27 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gameelements.Player;
-import mapelements.Continent;
-import mapelements.Country;
+import mapmodels.ContinentModel;
+import mapmodels.CountryModel;
 
 /**
- * Test Class to test all methods defined in class Continent
+ * Test Class to test all methods defined in class Continent.
+ * Including 6 methods and 20 test cases.
  */
 public class ContinentTest {
 
-	private Continent continent;
+	private ContinentModel continent;
 	private Player player ,player2;
-	private Country country, country2;
+	private CountryModel country, country2;
 
 	/**
 	 * Set test environment before each test.
 	 */
 	@Before
 	public void setEnvironment(){
-		continent = new Continent("testContinent");
-		country = new Country("testCountry",continent);
-		country2 = new Country("testCountry2",continent);
+		continent = new ContinentModel("testContinent");
+		country = new CountryModel("testCountry",continent);
+		country2 = new CountryModel("testCountry2",continent);
 		player = new Player("testPlayer", Color.RED);
 		player2 = new Player("testPlayer2", Color.DARK_GRAY);
 	}
@@ -46,7 +47,7 @@ public class ContinentTest {
 		assertEquals(0,continent.getCountryList().size());
 		//case 2:
 		String name = "testContinent"+(int)(Math.random()*10);
-		continent = new Continent(name);
+		continent = new ContinentModel(name);
 		assertEquals(name,continent.getName());
 		assertEquals(0,continent.getControlNum());
 		assertEquals(null,continent.getOwner());

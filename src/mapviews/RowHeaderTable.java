@@ -1,8 +1,7 @@
-package mapeditor;
+package mapviews;
 import javax.swing.*;  
 import java.awt.*;  
 import javax.swing.table.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.event.*;
 
 /**
@@ -11,7 +10,10 @@ import javax.swing.event.*;
  * @see JTable
  */
 public class RowHeaderTable extends JTable{  
-	private JTable refTable;  
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
 	/** 
 	 * Constructor of the class. 
 	 * @param refTable The JTable that needs to add rowHeader 
@@ -20,7 +22,6 @@ public class RowHeaderTable extends JTable{
 	 */  
 	public RowHeaderTable(JTable refTable,int columnWidth,Object[] columnTitle){  
 		super(new RowHeaderTableModel(refTable.getRowCount()));  
-		this.refTable=refTable;  
 		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
 		this.getColumnModel().getColumn(0).setPreferredWidth(columnWidth);  
 		this.setDefaultRenderer(Object.class,new RowHeaderRenderer(refTable,this,columnTitle));  
@@ -36,6 +37,7 @@ public class RowHeaderTable extends JTable{
  * @see ListSelectionListener
  */
 class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectionListener{  
+	private static final long serialVersionUID = 1L;
 	private JTable reftable; 
 	private JTable tableShow; 
 	private Object [] columnTitle;
@@ -49,7 +51,7 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
 	 */
 	public RowHeaderRenderer(JTable reftable,JTable tableShow, Object[] columns){  
 		this.reftable = reftable;  
-		this.tableShow=tableShow;  
+		this.tableShow = tableShow;  
 		this.columnTitle = columns;
 		 
 		ListSelectionModel listModel=reftable.getSelectionModel();  
@@ -110,6 +112,7 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
  * This is header class used to fill the head of table.
  */
 class RowHeaderTableModel extends AbstractTableModel{  
+	private static final long serialVersionUID = 1L;
 	private int rowCount; 
 	
 	/**

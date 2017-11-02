@@ -1,4 +1,4 @@
-package mapelements;
+package mapmodels;
 
 /**
  * This is the class used to return result of a method, 

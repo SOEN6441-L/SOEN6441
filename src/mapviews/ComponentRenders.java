@@ -1,4 +1,4 @@
-package mapeditor;
+package mapviews;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -46,7 +46,7 @@ class MatrixRenderer implements TableCellRenderer{
 		Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
 		renderer.setFont(new java.awt.Font("dialog",Font.BOLD,12));
 		renderer.setForeground(Color.RED);
-		Color foreground, background;
+		Color background;
 		table.setOpaque(true);
 		renderer.setPreferredSize(renderer.getPreferredSize());
 		if (row == column) {     
@@ -76,6 +76,10 @@ class MatrixRenderer implements TableCellRenderer{
  * Render of the tree view of continents and countries in mapEditor main GUI.
  */
 class  CategoryNodeRenderer  extends  DefaultTreeCellRenderer{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	ImageIcon rootIcon = new ImageIcon("src/images/map.png");
 	ImageIcon continentIcon = new ImageIcon("src/images/continent.png");
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");

@@ -1,4 +1,4 @@
-package mapelementstest;
+package mapmodelstest;
 
 import static org.junit.Assert.*;
 
@@ -8,22 +8,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gameelements.Player;
-import mapelements.Continent;
-import mapelements.Country;
+import mapmodels.ContinentModel;
+import mapmodels.CountryModel;
 /**
- * Test Class to test all methods defined in class Country
+ * Test Class to test all methods defined in class Country.
+ * Including 7 methods and 16 test cases.
  */
 public class CountryTest {
-	private Country country;
-	private Continent continent;
+	private CountryModel country;
+	private ContinentModel continent;
 	
 	/**
 	 * Set test environment before each test.
 	 */
 	@Before
 	public void setCountry(){
-		continent = new Continent("testContinent");
-		country = new Country("testCountry",continent);
+		continent = new ContinentModel("testContinent");
+		country = new CountryModel("testCountry",continent);
 	}
 	
 	/**
@@ -42,8 +43,8 @@ public class CountryTest {
 		assertEquals(0,country.getArmyNumber());
 		//case 2:
 		String name= "testCountry"+(int)(Math.random()*10);
-		Continent continent2 = new Continent("testContinent2");
-		country = new Country(name,continent2);
+		ContinentModel continent2 = new ContinentModel("testContinent2");
+		country = new CountryModel(name,continent2);
 		assertEquals(name,country.getName());
 		assertEquals(continent2,country.getBelongTo());
 		assertEquals(null,country.getOwner());
@@ -78,7 +79,7 @@ public class CountryTest {
 		//case 1:
 		assertEquals(continent,country.getBelongTo());
 		//case 2:
-		Continent changeContinent = new Continent("changeContinent");
+		ContinentModel changeContinent = new ContinentModel("changeContinent");
 		country.setBelongTo(changeContinent);
 		assertEquals(changeContinent,country.getBelongTo());
 		System.out.println("Country Test: setBelongTo(Continent), getBelongTo() finished");
