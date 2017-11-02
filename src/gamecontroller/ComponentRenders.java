@@ -13,8 +13,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import gameelements.Player;
-import mapelements.Country;
-import mapelements.RiskMap;
+import mapmodels.ContinentModel;
+import mapmodels.CountryModel;
+import mapmodels.RiskMapModel;
 
 /**
  * Render the matrix in table showing the relationship of countries.
@@ -29,13 +30,15 @@ class MatrixRenderer implements TableCellRenderer{
 	public static final DefaultTableCellRenderer DEFAULT_RENDERER =new DefaultTableCellRenderer();     
 	
 	/**
-	 * This method is used to get unit in table and render every unit
-	 * @param table	Object of JTable
-	 * @param value	
-	 * @param isSelected	Status of components
-	 * @param hasFocus	Status of focus on table 
-	 * @param row	Row of table
-	 * @param column	Column of table
+	 * Method to get cells in matrix and render every cell, highlight the areas for each continent, 
+	 * use different colors to display connections in matrix (upper_right light-gray, lower_left red). 
+	 * @param table	JTable object
+	 * @param value	value of cell
+	 * @param isSelected selection status of cell
+	 * @param hasFocus focus status of cell
+	 * @param row row of cell
+	 * @param column column of cell
+	 * @return the component used for drawing the cell. 
 	 */
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column){ 
@@ -74,38 +77,48 @@ class MatrixRenderer implements TableCellRenderer{
  * Render each continent node
  */
 class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
+	private static final long serialVersionUID = 1L;
 	ImageIcon rootIcon = new ImageIcon("src/images/map.png");
 	ImageIcon continentIcon = new ImageIcon("src/images/continent.png");
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
-	RiskMap myMap;
-	public ContinentNodeRenderer(RiskMap map){
+	RiskMapModel myMap;
+	
+	public ContinentNodeRenderer(RiskMapModel map){
 		myMap = map;
 	}
 	
 	/**
-	 * This method is used to get unit in table and render every unit
-	 * @param tree Object of JTree
-	 * @param value	
-	 * @param isSelected	Status of components
-	 * @param hasFocus	Status of focus on table 
-	 * @param row	Row of table
-	 * @param column	Column of table
+	 * Method to get items in tree and render every item, show different icons.
+	 * @param tree JTree object
+	 * @param value	value of item
+	 * @param sel selection status of item
+	 * @param expanded expanded status of item 
+	 * @param leaf if item is a leaf node
+	 * @param row row of item
+	 * @param hasFocus focus status of item
+	 * @return the component used for drawing the cell. 
 	 */
 	public  Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
 			boolean  leaf, int  row, boolean  hasFocus){   
-		super .getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus); 		
+		super .getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus); 	
+		int index = value.toString().indexOf('(');
 		if (tree.getPathForRow(row)==null) {		
 		}
-		else if (tree.getPathForRow(row).getParentPath()==null){
+		else if (index == -1){
 			setIcon(rootIcon);
 		}
-		else if (tree.getPathForRow(row).getParentPath().getParentPath()==null){
+		else if (value.toString().indexOf(") (") >= 0){
 			setIcon(continentIcon);
+			if (myMap!=null){
+				ContinentModel curContinent = myMap.findContinent(value.toString().substring(0,value.toString().indexOf("(")-1));
+				if (curContinent.getOwner()!=null)
+					setForeground(curContinent.getOwner().getMyColor());
+			}
 		}
 		else{
 			setIcon(countryIcon);
 			if (myMap!=null){
-				Country curCountry = myMap.findCountry(value.toString().substring(0,value.toString().indexOf("(")-1));
+				CountryModel curCountry = myMap.findCountry(value.toString().substring(0,value.toString().indexOf("(")-1));
 				if (curCountry.getOwner()!=null)
 					setForeground(curCountry.getOwner().getMyColor());
 			}	
@@ -118,6 +131,7 @@ class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
  * Render the players' node
  */
 class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
+	private static final long serialVersionUID = 1L;
 	ImageIcon rootIcon = new ImageIcon("src/images/players.png");
 	ImageIcon playerIcon = new ImageIcon("src/images/player.png");
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
@@ -128,15 +142,15 @@ class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
 	}
   
 	/**
-	 * This method is used to get unit in table and render every unit
-	 * @param tree	Object of JTree
-	 * @param value	
-	 * @param sel	Status of components
-	 * @param expanded	Status of focus on table 
-	 * @param leaf	Row of table
-	 * @param row	Column of table
-	 * @param hasFocus
-	 * @return the component
+	 * Method to get items in tree and render every item, show different icons.
+	 * @param tree JTree object
+	 * @param value	value of item
+	 * @param sel selection status of item
+	 * @param expanded expanded status of item 
+	 * @param leaf if item is a leaf node
+	 * @param row row of item
+	 * @param hasFocus focus status of item
+	 * @return the component used for drawing the cell. 
 	 */
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
 			boolean  leaf, int  row, boolean  hasFocus){   
@@ -170,6 +184,7 @@ class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
  * Render the node of countries
  */
 class  CountryNodeRenderer  extends  DefaultTreeCellRenderer{
+	private static final long serialVersionUID = 1L;
 	ImageIcon rootIcon = new ImageIcon("src/images/players.png");
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
 	Color myColor;
@@ -179,13 +194,15 @@ class  CountryNodeRenderer  extends  DefaultTreeCellRenderer{
 	}
 	
 	/**
-	 * This method is used to get unit in table and render every unit
-	 * @param tree	Object of JTree
-	 * @param value	
-	 * @param isSelected	Status of components
-	 * @param hasFocus	Status of focus on table 
-	 * @param row	Row of table
-	 * @param column	Column of table
+	 * Method to get items in tree and render every item, show different icons.
+	 * @param tree JTree object
+	 * @param value	value of item
+	 * @param sel selection status of item
+	 * @param expanded expanded status of item 
+	 * @param leaf if item is a leaf node
+	 * @param row row of item
+	 * @param hasFocus focus status of item
+	 * @return the component used for drawing the cell. 
 	 */
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean  sel, boolean  expanded, 
 			boolean  leaf, int  row, boolean  hasFocus){   
