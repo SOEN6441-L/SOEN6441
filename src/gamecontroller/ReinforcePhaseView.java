@@ -21,8 +21,7 @@ import javax.swing.tree.TreePath;
 import gameelements.NodeRecord;
 import gameelements.Player;
 import gameelements.RiskGame;
-import mapelements.Continent;
-import mapelements.Country;
+import mapmodels.CountryModel;
 
 /**
  * This class is the implementation of reinforcement phase in the Risk.
@@ -32,8 +31,8 @@ import mapelements.Country;
  */
 public class ReinforcePhaseView extends JDialog{
 
-
-    //components in this window
+	private static final long serialVersionUID = 1L;
+	//components in this window
     JLabel playerLabel;
     JLabel countryLabel;
     JLabel InitialArmy;
@@ -43,7 +42,7 @@ public class ReinforcePhaseView extends JDialog{
     JComboBox<Object> armyNumberCombo;
     JScrollPane scrollPaneForCountry;
     JButton exchangeBtn;
-    JButton cancelBtn;
+    //JButton cancelBtn;
     JButton enterBtn;
     private int width= 420,height = 560;
 
@@ -94,7 +93,7 @@ public class ReinforcePhaseView extends JDialog{
         int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
         setLocation((screenWidth-width)/2, (screenHeight-height)/2);
         //set exit program when close the window
-        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         //not capable adjust windows size
         setResizable(false);
@@ -106,7 +105,7 @@ public class ReinforcePhaseView extends JDialog{
 
         localCountries = new NodeRecord[player.getCountries().size()];
         int j = 0;
-        for (Country loopCountry:player.getCountries()){
+        for (CountryModel loopCountry:player.getCountries()){
             localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
         }
 
@@ -148,7 +147,7 @@ public class ReinforcePhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            Country loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
             myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
                     +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
         }
@@ -186,20 +185,20 @@ public class ReinforcePhaseView extends JDialog{
         size = promptLabel.getPreferredSize();
         promptLabel.setBounds(15,458,size.width,size.height);
 
-        cancelBtn = new JButton("Cancel");
+        /*cancelBtn = new JButton("Cancel");
         cancelBtn.setMnemonic('c');
         cancelBtn.setDisplayedMnemonicIndex(0);
         add(cancelBtn);
         size = cancelBtn.getPreferredSize();
         cancelBtn.setBounds(scrollPaneForCountry.getBounds().x+scrollPaneForCountry.getSize().width-size.width-1,484,size.width,size.height);
-        cancelBtn.addActionListener(new cancelBtnHandler());
+        cancelBtn.addActionListener(new cancelBtnHandler());*/
 
         exchangeBtn = new JButton("Exchange");
         exchangeBtn.setMnemonic('e');
         exchangeBtn.setDisplayedMnemonicIndex(0);
         add(exchangeBtn);
         size = exchangeBtn.getPreferredSize();
-        exchangeBtn.setBounds(cancelBtn.getBounds().x-size.width-10,484,size.width,size.height);
+        exchangeBtn.setBounds(scrollPaneForCountry.getBounds().x+scrollPaneForCountry.getSize().width-size.width-1,484,size.width,size.height);
         exchangeBtn.setVisible(player.canExchange(myCards));
         exchangeBtn.addActionListener(new exchangeHandler());
 
@@ -207,7 +206,7 @@ public class ReinforcePhaseView extends JDialog{
         enterBtn = new JButton("Confirm");
         add(enterBtn);
         size = enterBtn.getPreferredSize();
-        enterBtn.setBounds(cancelBtn.getBounds().x-size.width-10,123,size.width,size.height);
+        enterBtn.setBounds(scrollPaneForCountry.getBounds().x+scrollPaneForCountry.getSize().width-size.width-1,123,size.width,size.height);
         enterBtn.setVisible(false);
         enterBtn.addActionListener(new enterBtnHandler());
     }
@@ -229,7 +228,7 @@ public class ReinforcePhaseView extends JDialog{
             scrollPaneForCountry.setVisible(false);
             promptLabel.setVisible(false);
             enterBtn.setVisible(true);
-            cancelBtn.setBounds(cancelBtn.getBounds().x,123,cancelBtn.getSize().width,cancelBtn.getSize().height);
+            //cancelBtn.setBounds(cancelBtn.getBounds().x,123,cancelBtn.getSize().width,cancelBtn.getSize().height);
             setSize(width,205);
             return;
         }
@@ -246,7 +245,7 @@ public class ReinforcePhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            Country loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
             myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
                     +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
         }
@@ -279,12 +278,12 @@ public class ReinforcePhaseView extends JDialog{
     /**
      * To add action listener to the cancel button
      */
-    private class cancelBtnHandler implements ActionListener {
+    /*private class cancelBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             state = 0;
             setVisible(false);
         }
-    }
+    }*/
 
     /**
      * To add action listener to the enter button

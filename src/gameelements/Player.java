@@ -1,12 +1,10 @@
 package gameelements;
-import mapelements.*;
-
 import java.awt.Color;
 import java.util.ArrayList;
 
 import gamecontroller.FortificationPhaseView;
 import gamecontroller.ReinforcePhaseView;
-import gamecontroller.StartupPhaseView;
+import mapmodels.*;
 
 /**
  *   This is class for defining player.
@@ -16,7 +14,7 @@ public class Player {
 	private String name;
 	private int[] cards;
 	private int changeCardTimes;
-	private ArrayList <Country> countries;
+	private ArrayList <CountryModel> countries;
     private int totalArmies;
     private int initialArmies;
     private Color myColor;
@@ -33,7 +31,7 @@ public class Player {
         name = newName;
         cards = new int[3];
         for (int i=0;i<3;i++) cards[i] = 0;
-        countries = new ArrayList<Country>();
+        countries = new ArrayList<CountryModel>();
         myColor = color;
         totalArmies = 0;
         totalReinforcement = 0;
@@ -100,7 +98,7 @@ public class Player {
      * Method to get country list of player.
      * @return country list of the player
      */
-    public ArrayList<Country> getCountries() {
+    public ArrayList<CountryModel> getCountries() {
         return countries;
     }
     
@@ -108,7 +106,7 @@ public class Player {
      * Method to add a country to player.
      * @param newCountry country object adding to this player
      */
-    public void addCountry(Country newCountry) {
+    public void addCountry(CountryModel newCountry) {
     	this.countries.add(newCountry);
     }
     
@@ -116,7 +114,7 @@ public class Player {
      * Method to remove a country from player.
      * @param country country object to be removed
      */
-    public void removeCountrie(Country country) {
+    public void removeCountrie(CountryModel country) {
     	this.countries.remove(country);
     }
 
@@ -169,12 +167,8 @@ public class Player {
      *  @return true if player is forced to exchange cards
      */
     public boolean ifForceExchange(){
-        if ((cards[0]+cards[1]+cards[2]) >= 5)
-            return true;
-        else
-            return false;
+    	return (cards[0]+cards[1]+cards[2]) >= 5;
     }
-    
 
     /**
      *   The function calculate how many armies after exchanging and change number of armies of player
@@ -194,17 +188,14 @@ public class Player {
     	return (Math.max(myCards[0], Math.max(myCards[1], myCards[2]))>=3
     			||Math.min(myCards[0], Math.min(myCards[1], myCards[2]))>=1);
     }	
-    
-    
-
 
     /**
-     * The function to calculate how many armies player get this turn
-     * @param continents the continent list to be checked
+     * The function to calculate how many armies player get this turn.
+     * @param continents country list to be checked
      */
-    public void calculateArmyNumber(ArrayList<Continent> continents) {
-    	this.totalReinforcement = Math.floorDiv(this.countries.size(), 3);;
-    	for (Continent loopContinent:continents){
+    public void calculateArmyNumber(ArrayList<ContinentModel> continents) {
+    	this.totalReinforcement = Math.floorDiv(this.countries.size(), 3);
+    	for (ContinentModel loopContinent:continents){
         	if (loopContinent.getOwner()!=null&&loopContinent.getOwner().getName().equals(this.name)){
         		totalReinforcement+=loopContinent.getControlNum();
         	}
@@ -237,7 +228,6 @@ public class Player {
      * The function to judge if complete reinforcement phase
      * @param myGame the current RiskGame object
      * @return if complete or not
-     *
 	 */
 	public boolean reinforcementPhase(RiskGame myGame){
 		calculateArmyNumber(myGame.getGameMap().getContinents());
@@ -255,7 +245,6 @@ public class Player {
     public void fortificationPhase(RiskGame myGame){
         FortificationPhaseView fortiPhase = new FortificationPhaseView(this, myGame);
         fortiPhase.setVisible(true);
-        int state = fortiPhase.state;
         fortiPhase.dispose();
     }
 }

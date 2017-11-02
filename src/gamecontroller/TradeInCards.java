@@ -9,7 +9,9 @@ import java.awt.event.MouseListener;
  */
 
 public class TradeInCards extends JDialog{
-    JPanel ContentPanel = new JPanel();
+	private static final long serialVersionUID = 1L;
+
+	JPanel ContentPanel = new JPanel();
 
     //Four buttons
     JButton b1 = new JButton("infantry");//creating instance of JButton

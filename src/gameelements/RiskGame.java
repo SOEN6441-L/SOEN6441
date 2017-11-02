@@ -1,28 +1,33 @@
 package gameelements;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
-import gamecontroller.StartupPhaseView;
-import mapelements.Continent;
-import mapelements.Country;
-import mapelements.ErrorMsg;
-import mapelements.RiskMap;
+import java.util.Observable;
+import gamecontroller.putInitialArmyView;
+import mapmodels.ContinentModel;
+import mapmodels.CountryModel;
+import mapmodels.ErrorMsg;
+import mapmodels.RiskMapModel;
 
 /**
- * Class RiskGame to set up the game
+ * This is the Class RiskGame to represent and control a game
  */
-public class RiskGame {
-    private static Color[] colors = {Color.RED,Color.BLUE,Color.MAGENTA,new Color(0,142,0),new Color(128,0,64),new Color(134,13,255)};
-    private static int[] initialArmies = {1,40,35,30,25,20};
-	private RiskMap gameMap;
+public class RiskGame extends Observable{
+	private RiskMapModel gameMap;
     private Player[] players;
-    private int gameStage = 0; //0-blank 1-with map 2-with players 3-after startup 4-in game
-    private int turn, curPlayer;
-    private int initialArmy;
+	private String phaseString = "";
+    private int gameStage; //0-blank 1-with map 2-with players 3-after startup 4-in game
 
-    public RiskMap getGameMap() {
+    /**Pre-defined colors array to be assigned to different players.*/
+    private static Color[] colors = {Color.RED,Color.BLUE,Color.MAGENTA,new Color(0,142,0),new Color(128,0,64),new Color(134,13,255)};
+    /**Pre-defined initial armies according to the rules.*/
+    private static int[] initialArmies = {1,40,35,30,25,20};
+
+    private int turn, curPlayer;
+    private int initialArmyNum;
+    
+    public RiskMapModel getGameMap() {
         return gameMap;
     }
 
@@ -33,59 +38,61 @@ public class RiskGame {
         gameMap = null;
     }
 
-
     public Player[] getPlayers() {
         return players;
     }
+    
+    public int getValidPlayers() {
+        int total = players.length;
+        int result = 0;
+    	for (int i=0;i<total;i++){
+    		if (players[i].getState()) result++;
+    	}
+    	return result;
+    }    
 
     /**
-     * The function to clear current players
+     * The function to clear players, used when re-create players.
      */
     public void clearPlayers() {
-        for(int i=0;i<players.length;i++){
-            for(Country loopCountry:players[i].getCountries()){
-                loopCountry.setOwner(null);
-                loopCountry.setArmyNumber(0);
+    	int continentNum = gameMap.getContinents().size();
+        for(int i=0;i<continentNum;i++){
+        	ArrayList<CountryModel> loopCountries = gameMap.getContinents().get(i).getCountryList();
+        	int countryNum = loopCountries.size();
+            for(int j=0;j<countryNum;j++){
+            	loopCountries.get(j).setOwner(null);
+            	loopCountries.get(j).setArmyNumber(0);
             }
-            players[i].removeAllCountrie();
         }
         players = null;
     }
     
     public int getInitialArmies() {
-    	return initialArmy;
+    	return initialArmyNum;
     };
 
     /**
-     * The function to reset player's information
+     * The function to reset player's information, used when re-assigning countries to players.
      */
     public void resetPlayersInfo() {
         for (int i=0;i<players.length;i++){
             if (players[i].getCountries().size()!=0){
                 players[i].setTotalArmies(players[i].getCountries().size());
-                players[i].addArmies(initialArmy);
-                for (Country loopCountry:players[i].getCountries()){
+                players[i].addArmies(initialArmyNum);
+                for (CountryModel loopCountry:players[i].getCountries()){
                     loopCountry.setArmyNumber(1);
                 }
             }
         }
     }
 
-    public int getGameStage() {
-        return gameStage;
-    }
-
-    public void setGameStage(int gameStage) {
-        this.gameStage = gameStage;
-    }
-
     /**
      * The function to load the map file
      * @param inputFileName The name of the map file
-     * @return succeed or not
+     * @return succeed or failed with error message
      */
-    public boolean loadMapFile(String inputFileName){
-        RiskMap existingMap = new RiskMap();
+    public ErrorMsg loadMapFile(String inputFileName){
+        RiskMapModel existingMap = new RiskMapModel();
         ErrorMsg errorMsg;
         if ((errorMsg = existingMap.loadMapFile(inputFileName)).isResult()){
         	if ((errorMsg = existingMap.checkErrors()).isResult()){
@@ -93,17 +100,15 @@ public class RiskGame {
         		gameMap = null;
         		gameMap = existingMap;
         		gameMap.setModified(false);
-        		gameStage = 1;
-        		return true;
+        		setGameStage(10);
+        		return new ErrorMsg(0,null);
         	}
         	else {
-        		JOptionPane.showMessageDialog(null, errorMsg.getMsg());
-        		return false;
+        		return new ErrorMsg(errorMsg.getResult(),errorMsg.getMsg());
         	}
         }	
         else{
-        	JOptionPane.showMessageDialog(null, errorMsg.getMsg());
-        	return false;
+        	return new ErrorMsg(errorMsg.getResult(),errorMsg.getMsg());
         }	
     };
 
@@ -122,9 +127,9 @@ public class RiskGame {
             int randomIndex = (int)(Math.random()*toAssigned);
             int step=0;
             boolean founded=false;
-            for (Continent loopContinent:gameMap.getContinents()){
+            for (ContinentModel loopContinent:gameMap.getContinents()){
                 if (!founded){
-                    for (Country loopCountry:loopContinent.getCountryList()){
+                    for (CountryModel loopCountry:loopContinent.getCountryList()){
                         if (loopCountry.getOwner()==null){
                             if (step==randomIndex){
                                 players[curPlayerIndex%players.length].addCountry(loopCountry);
@@ -141,18 +146,19 @@ public class RiskGame {
                 }
             }
         }
-        initialArmy = initialArmies[Math.min(playerNum,gameMap.getCountryNum())-1];
+        this.checkContinentOwner();
+        initialArmyNum = initialArmies[Math.min(playerNum,gameMap.getCountryNum())-1];
         for (int i=0;i<players.length;i++){
             if (players[i].getState()){
                 players[i].setTotalArmies(players[i].getCountries().size());
-                players[i].addArmies(initialArmy);
+                players[i].addArmies(initialArmyNum);
                 for (int j=0;j<5;j++){ // initial cards, maybe removed for later build
                     int randomCard = (int)(Math.random()*3);
                     players[i].increaseCard(randomCard);
                 }
             }
         }
-        gameStage = 2;
+        setGameStage(20);
     }
 
 
@@ -160,13 +166,13 @@ public class RiskGame {
      * The function to call startUp phase's UI
      * @return succeed or not
      */
-    public boolean startupPhase() {
-        StartupPhaseView startupPhase = new StartupPhaseView(this);
+    public boolean putInitialArmy() {
+        putInitialArmyView startupPhase = new putInitialArmyView(this);
         startupPhase.setVisible(true);
         int state = startupPhase.state;
         startupPhase.dispose();
         if (state ==1){
-            gameStage = 3;
+        	setGameStage(30);
             return true;
         }
         else return false;
@@ -176,21 +182,17 @@ public class RiskGame {
      * The function to start the game
      * @return the which turn
      */
-    public int startGame() {
+    public ErrorMsg startGame() {
         turn = 1;
-        curPlayer = 0;
-        this.checkContinentOwner();
+        curPlayer = -1;
+        setGameStage(40);
+        setPhaseString("Game Started");
         for (int i=0;i<players.length;i++){
         	if (players[i].winGame(gameMap.getCountryNum())){
-        		JOptionPane.showMessageDialog(null,players[i].getName()+" has win the game!");
-        		return 1;
+        		return new ErrorMsg(1,players[i].getName()+" has win the game!");
         	}
-        }	
-        int result = playerTurn();
-        if (result == 0) {
-            gameStage =4;
         }
-        return result;
+        return playerTurn();
     }
 
 
@@ -198,26 +200,22 @@ public class RiskGame {
      * The function to check the state of the current player's turn
      * @return which state
      */
-    public int playerTurn(){ //0-succeed 1-winGame 2-user cancel in reinforcement
-        while (!players[curPlayer].getState()){
+    public ErrorMsg playerTurn(){ //0-succeed 1-winGame
+        do {
             int tempPlayer=(curPlayer+1)%players.length;
             if (tempPlayer<curPlayer) turn++;
             curPlayer = tempPlayer;
-        }
+        }while (!players[curPlayer].getState());
+        
         players[curPlayer].calculateArmyNumber(getGameMap().getContinents());
-        if (!players[curPlayer].reinforcementPhase(this)) return 2;
+        players[curPlayer].reinforcementPhase(this);
         //players[curPlayer].attackPhase(getGameMap());
         this.checkContinentOwner();
         if (players[curPlayer].winGame(gameMap.getCountryNum())){
-            JOptionPane.showMessageDialog(null,players[curPlayer].getName()+" has win the game!");
-            return 1;
+            return new ErrorMsg(1,players[curPlayer].getName()+" has win the game!");
         }
         players[curPlayer].fortificationPhase(this);
-
-        int tempPlayer=(curPlayer+1)%players.length;
-        if (tempPlayer<curPlayer) turn++;
-        curPlayer = tempPlayer;
-        return 0;
+        return new ErrorMsg(0,null);
     }
 
     public int getTurn() {
@@ -243,8 +241,28 @@ public class RiskGame {
      * The function to check if the whole continent is owned by a player
      */
     private void checkContinentOwner(){
-        for (Continent loopCountinent:gameMap.getContinents()){
+        for (ContinentModel loopCountinent:gameMap.getContinents()){
             loopCountinent.checkOwner();
         }
     }
+
+	public int getGameStage() {
+		return gameStage;
+	}
+
+	public void setGameStage(int gameStage) {
+		this.gameStage = gameStage;
+		setChanged();
+		notifyObservers(1);		
+	}
+
+	public String getPhaseString() {
+		return phaseString;
+	}
+
+	public void setPhaseString(String phaseString) {
+		this.phaseString = phaseString;
+		setChanged();
+		notifyObservers(0);
+	}
 }
