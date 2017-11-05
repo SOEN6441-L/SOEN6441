@@ -8,19 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import gameelements.NodeRecord;
 import gameelements.Player;
 import gameelements.RiskGame;
+import javafx.beans.Observable;
 import mapelements.Continent;
 import mapelements.Country;
 
@@ -30,7 +25,7 @@ import mapelements.Country;
  * to their country, based on the countries under control.</p >
  *
  */
-public class ReinforcePhaseView extends JDialog{
+public class ReinforcePhaseView extends JDialog {
 
 
     //components in this window
@@ -55,6 +50,7 @@ public class ReinforcePhaseView extends JDialog{
     private int[] myCards;
     private boolean cardExchanged;
     private int exchangeArmies;
+    private TradeInCardsView tradeInCardsView;
 
     public int state=0; //0-Cancel, 1-confirm
 
@@ -71,21 +67,33 @@ public class ReinforcePhaseView extends JDialog{
         cardExchanged = false;
         exchangeArmies = 0;
         player.getCards(myCards);
+        tradeInCardsView = new TradeInCardsView();
+        this.player.addObserver(tradeInCardsView);
 
         if (player.ifForceExchange()){
+
             while (!cardExchanged){
-                JOptionPane.showMessageDialog(null, "You has 5 cards, so you have to exchange 3 card for armies!  "
-                        + "\r\nThis is your "+(player.getChangeCardTimes()+1)+" time to exhange, can get "+player.CalExchangeArmies()+" armies.");
+
+                JOptionPane.showMessageDialog(null, "You have more than 5 cards, so you have to exchange 3 card for armies!  "
+                        + "\r\nThis is your "+(player.getChangeCardTimes()+1)+" time to exchange, can get "+player.CalExchangeArmies()+" armies.");
+
+                tradeInCardsView.setVisible(true);
+
                 TradeInCards exchangeView = new TradeInCards(myCards);
                 exchangeView.setVisible(true);
+
                 cardExchanged = exchangeView.state;
-                if (cardExchanged) exchangeArmies = player.CalExchangeArmies();
+                if (cardExchanged)
+                {
+//                    System.out.println("haha");
+                    exchangeArmies = player.CalExchangeArmies();
+                }
                 exchangeView.dispose();
-            };
-        }
-        sourceArmies = armies;
-        leftArmies = Math.max(sourceArmies, 3);
-        totalArmies = Math.max(sourceArmies, 3);
+            }
+
+            sourceArmies = armies;
+            leftArmies = Math.max(sourceArmies, 3);
+            totalArmies = Math.max(sourceArmies, 3);
 
         setTitle("Reinforcement Phase");
 
@@ -210,6 +218,9 @@ public class ReinforcePhaseView extends JDialog{
         enterBtn.setBounds(cancelBtn.getBounds().x-size.width-10,123,size.width,size.height);
         enterBtn.setVisible(false);
         enterBtn.addActionListener(new enterBtnHandler());
+        }
+
+
     }
 
     /**
@@ -305,6 +316,8 @@ public class ReinforcePhaseView extends JDialog{
             }
             state = 1;
             setVisible(false);
+            tradeInCardsView.closeTradeInCardsView();
+            player.deleteObserver(tradeInCardsView);
         }
     }
 
@@ -315,8 +328,13 @@ public class ReinforcePhaseView extends JDialog{
         public void actionPerformed(ActionEvent e) {
             if (cardExchanged) return;
             JOptionPane.showMessageDialog(null, "This is your "+(player.getChangeCardTimes()+1)+" time to exhange, can get "+player.CalExchangeArmies()+" armies.");
+
             TradeInCards exchangeView = new TradeInCards(myCards);
+            TradeInCardsView tradeInCardsView = new TradeInCardsView();
+            tradeInCardsView.setVisible(true);
+            player.addObserver(tradeInCardsView);
             exchangeView.setVisible(true);
+
             cardExchanged = exchangeView.state;
             if (cardExchanged) {
                 exchangeArmies = player.CalExchangeArmies();
@@ -326,6 +344,9 @@ public class ReinforcePhaseView extends JDialog{
                 reloadGUI();
             }
             exchangeView.dispose();
+//            player.deleteObserver(tradeInCardsView);
+
+            tradeInCardsView.closeTradeInCardsView();
         }
     }
 }

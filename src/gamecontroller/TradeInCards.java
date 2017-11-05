@@ -1,5 +1,7 @@
 package gamecontroller;
 
+import javafx.beans.Observable;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -8,7 +10,7 @@ import java.awt.event.MouseListener;
  *   This class is GUI for Exchange cards to armies.
  */
 
-public class TradeInCards extends JDialog{
+public class TradeInCards extends JDialog {
     JPanel ContentPanel = new JPanel();
 
     //Four buttons

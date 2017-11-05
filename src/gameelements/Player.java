@@ -3,6 +3,7 @@ import mapelements.*;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Observable;
 
 import gamecontroller.FortificationPhaseView;
 import gamecontroller.ReinforcePhaseView;
@@ -12,7 +13,7 @@ import gamecontroller.StartupPhaseView;
  *   This is class for defining player.
  *   A player belongs to a RiskGame object, has amount of armies, can own several countries.
  */
-public class Player {
+public class Player extends Observable {
 	private String name;
 	private int[] cards;
 	private int changeCardTimes;
@@ -20,6 +21,7 @@ public class Player {
     private int totalArmies;
     private int initialArmies;
     private Color myColor;
+
     
     private String reinforcementStr;
     private int totalReinforcement;
@@ -71,6 +73,8 @@ public class Player {
      */
     public void setCards(int[] myCards) {
         for(int i=0;i<3;i++) cards[i] = myCards[i];
+        setChanged();
+        notifyObservers();
     }
     
     /**
