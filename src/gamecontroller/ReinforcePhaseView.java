@@ -66,7 +66,7 @@ public class ReinforcePhaseView extends JDialog {
         myCards = new int[3];
         cardExchanged = false;
         exchangeArmies = 0;
-        player.getCards(myCards);
+        myCards = player.getCards();
         tradeInCardsView = new TradeInCardsView();
         this.player.addObserver(tradeInCardsView);
 
@@ -302,6 +302,7 @@ public class ReinforcePhaseView extends JDialog {
      */
     private class enterBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            dispose();
             if (player.getState()){
                 player.addArmies(totalArmies);
                 if (cardExchanged) {
@@ -315,7 +316,6 @@ public class ReinforcePhaseView extends JDialog {
                 }
             }
             state = 1;
-            setVisible(false);
             tradeInCardsView.closeTradeInCardsView();
             player.deleteObserver(tradeInCardsView);
         }

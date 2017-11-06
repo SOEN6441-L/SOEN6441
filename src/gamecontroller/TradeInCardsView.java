@@ -1,5 +1,6 @@
 package gamecontroller;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import gameelements.Player;
 
@@ -45,25 +46,24 @@ public class TradeInCardsView extends JFrame implements Observer {
 
     public void update(Observable obs, Object x){
         int[] cards = new int [3];
-        ((Player) obs).getCards(cards);
+        cards = ((Player) obs).getCards();
         int armies =  ((Player) obs).getTotalArmies();
         int exchangeCardTimes = ((Player) obs).getChangeCardTimes();
-        try {
+
+        try{
             Thread.sleep(1000);
             Label1.setText(MessageFormat.format("Your cards are {0} + {1} + {2}", cards[0],cards[1],cards[2]));
             Label2.setText(MessageFormat.format("Your cards have been change {0} times and you have {1} armies", exchangeCardTimes,armies));
             Thread.sleep(2000);
-
-        } catch (InterruptedException e) {
+        }catch(InterruptedException e){
             e.printStackTrace();
         }
-
 //        if(((Player) obs).reinforcementPhase())
     }
 
     public void closeTradeInCardsView(){
         try {
-            Thread.sleep(5000);
+            Thread.sleep(6000);
             this.dispose();
         } catch (InterruptedException e1) {
             e1.printStackTrace();
@@ -71,20 +71,20 @@ public class TradeInCardsView extends JFrame implements Observer {
 
     }
 
-//    public static void main(String args[]){
-//        TradeInCardsView T = new TradeInCardsView();
-//        Player P = new Player("12",Color.RED);
-//
-//        T.setVisible(true);
-//
-//        P.addObserver(T);
-//        int[] cards = {6,2,3};
-//        P.setCards(cards);
-//
-//        int[] cards2 = {1,3,3};
-//        P.setCards(cards2);
-//
-//        T.closeTradeInCardsView();
-//
-//    }
+    public static void main(String args[]){
+        TradeInCardsView T = new TradeInCardsView();
+        Player P = new Player("12",Color.RED);
+
+        T.setVisible(true);
+
+        P.addObserver(T);
+        int[] cards = {6,2,3};
+        P.setCards(cards);
+
+        int[] cards2 = {1,3,3};
+        P.setCards(cards2);
+
+        T.closeTradeInCardsView();
+
+    }
 }

@@ -55,8 +55,8 @@ public class Player extends Observable {
      * Method to get a copy of cards.
      * @param myCards integer array to store the copy of cards
      */
-    public void getCards(int[] myCards) {
-        for(int i=0;i<3;i++) myCards[i] = cards[i];
+    public int[] getCards() {
+       return cards;
     }
     
     /**
