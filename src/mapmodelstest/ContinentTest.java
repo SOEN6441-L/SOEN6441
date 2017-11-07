@@ -7,18 +7,18 @@ import java.awt.Color;
 import org.junit.Before;
 import org.junit.Test;
 
-import gameelements.Player;
+import gamemodels.PlayerModel;
 import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
 
 /**
  * Test Class to test all methods defined in class Continent.
- * Including 6 methods and 20 test cases.
+ * Including 7 methods and 24 test cases.
  */
 public class ContinentTest {
 
 	private ContinentModel continent;
-	private Player player ,player2;
+	private PlayerModel player ,player2;
 	private CountryModel country, country2;
 
 	/**
@@ -27,10 +27,10 @@ public class ContinentTest {
 	@Before
 	public void setEnvironment(){
 		continent = new ContinentModel("testContinent");
-		country = new CountryModel("testCountry",continent);
-		country2 = new CountryModel("testCountry2",continent);
-		player = new Player("testPlayer", Color.RED);
-		player2 = new Player("testPlayer2", Color.DARK_GRAY);
+		country = new CountryModel(1,"testCountry",continent);
+		country2 = new CountryModel(2,"testCountry2",continent);
+		player = new PlayerModel("testPlayer", Color.RED,null);
+		player2 = new PlayerModel("testPlayer2", Color.DARK_GRAY,null);
 	}
 	
 	/**
@@ -177,4 +177,30 @@ public class ContinentTest {
 		assertEquals(country2,continent.findCountry(country2.getName()));
 		System.out.println("Continent Test: findCountry(String) finished.");	
 	}
+	
+	/**
+	 * Test findCountryByID(int).<br>
+	 * case 1: try to find a country in an empty continent.<br>
+	 * case 2: add a country to continent, try to find this country and another country in the continent.<br>
+	 * case 3: add another country to continent too, try to find this two countries in the continent.<br>
+	 * case 4: delete the first country from continent, try to find this two countries in the continent.
+	 */
+	@Test
+	public void findCountryByIDTest() {
+		//case 1:
+		assertEquals(null,continent.findCountryByID(country.getCountryId()));
+		//case 2:
+		continent.addCountry(country);
+		assertEquals(country,continent.findCountryByID(country.getCountryId()));
+		assertEquals(null,continent.findCountryByID(country2.getCountryId()));
+		//case 3:
+		continent.addCountry(country2);
+		assertEquals(country,continent.findCountryByID(country.getCountryId()));
+		assertEquals(country2,continent.findCountryByID(country2.getCountryId()));
+		//case 4:
+		continent.deleteCountry(country);
+		assertEquals(null,continent.findCountryByID(country.getCountryId()));
+		assertEquals(country2,continent.findCountryByID(country2.getCountryId()));
+		System.out.println("Continent Test: findCountryByID(int) finished.");	
+	}	
 }
