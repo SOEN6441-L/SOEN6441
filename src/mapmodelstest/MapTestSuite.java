@@ -7,6 +7,6 @@ import org.junit.runners.Suite.SuiteClasses;
                CountryTest.class,
                RsikMapTest.class})
 
-public class MapElementTestSuite {
+public class MapTestSuite {
 
 }

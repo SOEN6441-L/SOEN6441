@@ -1,4 +1,4 @@
-package mapviews;
+package basicclasses;
 import javax.swing.*;  
 import java.awt.*;  
 import javax.swing.table.*;
@@ -10,9 +10,6 @@ import javax.swing.event.*;
  * @see JTable
  */
 public class RowHeaderTable extends JTable{  
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L; 
 	/** 
 	 * Constructor of the class. 

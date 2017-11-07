@@ -16,7 +16,7 @@ import mapmodels.RiskMapModel;
 
 /**
  * Test Class to test all methods defined in class RiskMap.
- * Including 19 methods and 91 test cases.
+ * Including 20 methods and 93 test cases.
  */
 public class RsikMapTest {
 	private RiskMapModel newMap, existingMap;
@@ -111,11 +111,45 @@ public class RsikMapTest {
 		assertEquals(secondCountry,newMap.findCountry(secondCountry.getName()));
 		assertEquals(secondContinent,newMap.findCountry(secondCountry.getName()).getBelongTo());
 		//case 2:
-		CountryModel thirdCountry = new CountryModel("testCountry3",firstContinent);
+		CountryModel thirdCountry = new CountryModel(3,"testCountry3",firstContinent);
 		assertEquals(null,newMap.findCountry(thirdCountry.getName()));
 		System.out.println("RiskMap Test: findCountry(String) finished.");
 	}
 
+	/**
+	 * Test findCountryByID(int).<br>
+	 * case 1: add two continents each has one country in it, call findCountryByID(int 
+	 * to find these two countries, check the name and belongTo parameter.<br>  
+	 * case 2: try to find a country which is not in the map.
+	 */
+	@Test
+	public void findCountryByIDTest() {
+		//case 1:
+		newMap.addContinent("testContinent", 12);
+		newMap.addCountry("testCountry", "testContinent", 10, 20);
+		newMap.addContinent("testContinent2", 10);
+		newMap.addCountry("testCountry2","testContinent2",30,40);
+		
+		ContinentModel firstContinent =  newMap.getContinents().get(0);
+		ContinentModel secondContinent =  newMap.getContinents().get(1);
+		
+		CountryModel firstCountry = firstContinent.getCountryList().get(0);
+		CountryModel secondCountry = secondContinent.getCountryList().get(0);		
+		
+		assertEquals(2,newMap.getContinents().size());
+		assertEquals(2,newMap.getCountryNum());
+		assertEquals(2,newMap.getAdjacencyList().size());
+		
+		assertEquals(firstCountry,newMap.findCountryByID(firstCountry.getCountryId()));
+		assertEquals(firstContinent,newMap.findCountryByID(firstCountry.getCountryId()).getBelongTo());
+		assertEquals(secondCountry,newMap.findCountryByID(secondCountry.getCountryId()));
+		assertEquals(secondContinent,newMap.findCountryByID(secondCountry.getCountryId()).getBelongTo());
+		//case 2:
+		CountryModel thirdCountry = new CountryModel(13,"testCountry3",firstContinent);
+		assertEquals(null,newMap.findCountryByID(thirdCountry.getCountryId()));
+		System.out.println("RiskMap Test: findCountryByID(int) finished.");
+	}
+	
 	/**
 	 * Test findContinent(String).<br>
 	 * case 1: add two continents to map, call findContinent(String) to find these two continents.<br>  

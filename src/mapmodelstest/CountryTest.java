@@ -7,7 +7,7 @@ import java.awt.Color;
 import org.junit.Before;
 import org.junit.Test;
 
-import gameelements.Player;
+import gamemodels.PlayerModel;
 import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
 /**
@@ -24,7 +24,7 @@ public class CountryTest {
 	@Before
 	public void setCountry(){
 		continent = new ContinentModel("testContinent");
-		country = new CountryModel("testCountry",continent);
+		country = new CountryModel(1,"testCountry",continent);
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class CountryTest {
 		//case 2:
 		String name= "testCountry"+(int)(Math.random()*10);
 		ContinentModel continent2 = new ContinentModel("testContinent2");
-		country = new CountryModel(name,continent2);
+		country = new CountryModel(2,name,continent2);
 		assertEquals(name,country.getName());
 		assertEquals(continent2,country.getBelongTo());
 		assertEquals(null,country.getOwner());
@@ -96,11 +96,11 @@ public class CountryTest {
 		//case 1:
 		assertEquals(null,country.getOwner());
 		//case 2:
-		Player player = new Player("testPlayer",Color.RED);
+		PlayerModel player = new PlayerModel("testPlayer",Color.RED,null);
 		country.setOwner(player);
 		assertEquals(player,country.getOwner());
 		//case 3:
-		Player player2 = new Player("testPlayer2",Color.DARK_GRAY);
+		PlayerModel player2 = new PlayerModel("testPlayer2",Color.DARK_GRAY,null);
 		country.setOwner(player2);
 		assertEquals(player2,country.getOwner());
 		System.out.println("Country Test: setOwner(Player), getOwner() finished");
