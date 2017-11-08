@@ -235,9 +235,9 @@ When a methid is too complicated to understand, it is better to add descriptions
 	/**
 	 * Function to find the Country according to the Country's name
 	 * 
-	 * 1. loop the country arraylist (nested loop)
-	 * 2. compare each country's name with targeted country's name
-	 * 3. return country if found or null if not
+	 * <p> 1. loop the country arraylist (nested loop) <p> <br>
+	 * <p> 2. compare each country's name with targeted country's name <p><br>
+	 * <p> 3. return country if found or null if not <p> <br>
 	 * 
 	 * @param countryName Country's name
 	 * @return Country that found
