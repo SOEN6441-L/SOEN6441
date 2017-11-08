@@ -76,6 +76,19 @@ RowHeaderTable  | Class for row headers
 ### 1.8 Tests
 The module includes all unit tests about the project.
 
+File_Name  | Description
+------------- | -------------
+AttackPhase  | Unit test case about attack phase
+ContinentTest  | Unit test case about continent.
+CountryTest  | Unit test case about country.
+FortificationPhaseTest  | Unit test case about fortification phase.
+PlayerModelTest  | Unit test case about player model.
+PlayerTestReinforcementArmies  | Unit test case about reinforcement armies in player.
+RiskGameModelTest  | Unit test case about risk game model.
+RiskMapTest  | Unit test case about risk map.
+TestStartupPhase  | Unit test case about startup phase.
+TestSuit  | Testsuit includes all the unit testcases
+
 ### 1.9 Maps
 The module is used to store map files.
 
