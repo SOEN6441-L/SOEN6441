@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -26,9 +27,7 @@ import gamemodels.RiskGameModel;
 import mapmodels.CountryModel;
 
 /**
- * This class is the implementation of reinforcement phase in the Risk.
- * <p> The ReinforcementPhase class will allow players add armies to their<br>
- * to their country, based on the countries under control.</p >
+ * This class is the implementation of attack phase in the Risk.
  *@see JDialog
  */
 public class AttackPhaseView extends JDialog{
@@ -64,9 +63,9 @@ public class AttackPhaseView extends JDialog{
      * @param player The player that who is in turn
      * @param game The game reinforce phase is in
      */
-    public AttackPhaseView(PlayerModel player, RiskGameModel game){
+    public AttackPhaseView(PlayerModel player){
         this.player = player;
-        this.myGame = game;
+        this.myGame = player.getMyGame();
 
         setTitle("Attack Phase");
 
@@ -87,7 +86,7 @@ public class AttackPhaseView extends JDialog{
         int attackingCountry = player.getAttackingCountry();
         
         if (attackingCountry == 0){
-        	player.setAttackInfo("No more territories can attacking, attack phase finished");
+        	player.setAttackInfo("No more territories can attack, attack phase finished");
         	this.dispose();
         }
         else {
@@ -208,7 +207,7 @@ public class AttackPhaseView extends JDialog{
     }
 
     /**
-     * The method to reload attack phase
+     * The method to refresh the UI
      */
     public void reloadAttacked(){
         DefaultMutableTreeNode myTreeRootTo = new DefaultMutableTreeNode("Countries");
@@ -248,12 +247,18 @@ public class AttackPhaseView extends JDialog{
         attackBtn.setEnabled(false);
     }
 
-    /**
-     * The method to refresh the UI
-     */
+
     public void reloadGUI(){
 
         int attackingCountry = player.getAttackingCountry();
+        
+        if (attackingCountry==0){
+        	player.setAttackInfo("No more territories can attack, attack phase finished");
+        	setVisible(false);
+        }
+        else {
+        	player.setAttackInfo("");
+        }
         
         localCountries = new NodeRecord[attackingCountry];
         int j = 0;
@@ -354,6 +359,9 @@ public class AttackPhaseView extends JDialog{
 		@Override
         public void actionPerformed(ActionEvent e) {
 			player.setAttackInfo(selCountryNameFrom+" attacking "+selCountryNameTo);
+			AttackDiceView diceView = new AttackDiceView(myGame.getGameMap().findCountry(selCountryNameFrom),
+					myGame.getGameMap().findCountry(selCountryNameTo));
+			diceView.setVisible(true);
             //setVisible(false);
             reloadGUI();
         }

@@ -162,7 +162,6 @@ public class MapEditorController implements ActionListener {
 							retry = false;
 						}
 						else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
-
 					}
 				}
 				else retry = false;

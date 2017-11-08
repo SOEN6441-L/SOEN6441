@@ -54,7 +54,7 @@ public class BasicInfoController implements ActionListener {
 	private void proceedHandler() { 
 		if (curView.getAuthor()==null||curView.getAuthor().trim().isEmpty()){
 			JOptionPane.showMessageDialog(null,"Parameter author can't be empty.");
-			curView.setAuthor("somebody");
+			curView.setAuthor("anonymous");
 			return;
 		}
 		if (curView.getImage()==null||curView.getImage().trim().isEmpty()){

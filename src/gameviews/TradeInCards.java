@@ -44,7 +44,7 @@ public class TradeInCards extends JDialog{
 
     /**
      *  This method is to set layout if GUI
-     *	@param player The player who will trade cards
+     *	@param player player object
      */
     public TradeInCards(PlayerModel player){
     	this.player = player;
@@ -53,6 +53,7 @@ public class TradeInCards extends JDialog{
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		setModal(true);
 		setResizable(false);
+		setTitle("Exchange Cards");
 		
 		Label1.setIcon(nullIcon);
         Label2.setIcon(nullIcon);

@@ -72,7 +72,7 @@ public class CountryTest {
 	/**
 	 * Test setBelongTo(Continent), getBelongTo().<br>
 	 * case 1: check continent that the country belongs to right after create.<br>
-	 * case 2ï¿½ï¿½ call setBelongTo(Continent) to assign country to another continent, then check again.
+	 * case 2£º call setBelongTo(Continent) to assign country to another continent, then check again.
 	 */	
 	@Test
 	public void setBelongToTest(){

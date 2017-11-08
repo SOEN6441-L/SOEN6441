@@ -1,0 +1,12 @@
+[Map]
+author=
+warn=yes
+image=none
+wrap=no
+scroll=none
+
+[Continents]
+testContinent=3
+
+[Territories]
+testCountry,1,1,testContinent

@@ -86,7 +86,18 @@ public class PlayerModel extends Observable {
      */
     public void increaseCard(int type){
         this.cards[type]++;
-    }    
+    }  
+    
+    /**
+     * Method to add other player's cards to this player.
+     * @param source card type
+     */
+    public void addCards(int[] source){
+    	for (int i=0;i<3;i++){
+    		cards[i]+=source[i];
+    		source[i]=0;
+    	}       
+    }        
     
     /**
      * Method to remove all the cards of this user.
@@ -176,6 +187,14 @@ public class PlayerModel extends Observable {
 		this.totalArmies += armies;
 	}	    
 	
+	
+	/**
+     * Method to add armies to player.
+     * @param armies armies to add
+     */
+	public void lostArmies() {
+		this.totalArmies--;
+	}	
     /**
      *  This function is to judge if player must exchange cards with armies.
      *
@@ -278,7 +297,7 @@ public class PlayerModel extends Observable {
 	public void reinforcementPhase(){
 		calculateArmyNumber();
 		this.setPhaseString("Reinforcement Phase");
-		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(this, myGame);
+		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(this);
 		reinforcementPhase.setVisible(true);
 		reinforcementPhase.dispose();
 	}
@@ -288,7 +307,7 @@ public class PlayerModel extends Observable {
      */
     public void attackPhase(){
 		this.setPhaseString("Attack Phase");
-        AttackPhaseView attackPhase = new AttackPhaseView(this, myGame);
+        AttackPhaseView attackPhase = new AttackPhaseView(this);
         attackPhase.setVisible(true);
         attackPhase.dispose();
     }
@@ -297,7 +316,7 @@ public class PlayerModel extends Observable {
      */
     public void fortificationPhase(){
 		this.setPhaseString("Fortification Phase");
-        FortificationPhaseView fortiPhase = new FortificationPhaseView(this, myGame);
+        FortificationPhaseView fortiPhase = new FortificationPhaseView(this);
         fortiPhase.setVisible(true);
         fortiPhase.dispose();
     }
@@ -425,11 +444,7 @@ public class PlayerModel extends Observable {
 		}
 		return count;
 	}
-
-	/**
-	 * Get countries attacked
-	 * @return the number of Countries
-	 */
+	
 	public int getAttackingCountry() {
 		int count = 0;
 		for(CountryModel loopCountry:this.getCountries()){
@@ -446,19 +461,11 @@ public class PlayerModel extends Observable {
 		return count;
 	}
 
-	/**
-	 * get attack information
-	 * @return attack information
-	 */
 	public String getAttackInfo() {
 		return attackInfo;
 
 	}
 
-	/**
-	 * Set of attack information
-	 * @param attackInfo attack information
-	 */
 	public void setAttackInfo(String attackInfo) {
 		this.attackInfo = attackInfo;
 		setChanged();
@@ -468,10 +475,6 @@ public class PlayerModel extends Observable {
 		else notifyObservers(9);
 	}
 
-	/**
-	 * Get attack step information
-	 * @return attack step information
-	 */
 	public String getAttackStepInfo() {
 		return attackStepInfo;
 	}
@@ -480,6 +483,11 @@ public class PlayerModel extends Observable {
 		this.attackStepInfo = attackStepInfo;
 		setChanged();
 		notifyObservers(10);
+	}
+	
+	public void moveArmies(CountryModel country1,CountryModel country2, int armies){
+		country1.setArmyNumber(country1.getArmyNumber()+armies);
+		country2.setArmyNumber(country2.getArmyNumber()-armies);
 	}
 }
 

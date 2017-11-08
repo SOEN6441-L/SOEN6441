@@ -20,7 +20,7 @@ import mapmodels.RiskMapModel;
  * This is the Class RiskGame to represent and control a game
  */
 public class RiskGameModel extends Observable {
-	private RiskMapModel gameMap;
+	public RiskMapModel gameMap;
     private PlayerModel[] players;
 	private String phaseString = "";
     private int gameStage; //0-blank 1-with map 2-with players 3-after startup 4-in game
@@ -42,9 +42,6 @@ public class RiskGameModel extends Observable {
         return gameMap;
     }
 
-    public void setGameMap(RiskMapModel gameMap){
-    	this.gameMap = gameMap;
-	}
     /**
      * The function to clear the game map
      */
@@ -219,7 +216,7 @@ public class RiskGameModel extends Observable {
 					if (players[i].getState()){
 						players[i].setTotalArmies(players[i].getCountries().size());
 						players[i].addArmies(initialArmyNum);
-						for (int j=0;j<10;j++){ // initial cards, maybe removed for later build
+						for (int j=0;j<4;j++){ // initial cards, maybe removed for later build
 							int randomCard = (int)(Math.random()*3);
 							players[i].increaseCard(randomCard);
 						}
@@ -236,6 +233,55 @@ public class RiskGameModel extends Observable {
 			}
 		};
 		worker.execute();
+    }    
+    
+    
+    /**
+     * The function to assign countries to players randomly.
+     */
+    public void assignCountriesManual(){
+		setGameStage(21);
+        int curPlayerIndex = (int)(Math.random()*players.length);
+		setGameStage(230+curPlayerIndex);
+        int toAssigned = gameMap.getCountryNum();
+		while (toAssigned>0){
+			int randomIndex = (int)(Math.random()*toAssigned);
+			int step=0;
+			boolean founded=false;
+			for (ContinentModel loopContinent:gameMap.getContinents()){
+				if (!founded){
+					for (CountryModel loopCountry:loopContinent.getCountryList()){
+						if (loopCountry.getOwner()==null){
+							if (step==randomIndex){
+								players[curPlayerIndex%players.length].addCountry(loopCountry);
+								loopCountry.setOwner(players[curPlayerIndex%players.length]);
+								loopCountry.setArmyNumber(1);
+								setGameStage(loopCountry.getCountryId()*1000+(curPlayerIndex%players.length));
+						        changeDominationView();
+								curPlayerIndex++;
+								toAssigned--;
+								founded = true;
+								break;
+							}
+							else step++;
+						}
+					}
+				}
+				else break;
+			}
+		}
+		checkContinentOwner();
+		initialArmyNum = initialArmies[Math.min(players.length,gameMap.getCountryNum())-1];
+		for (int i=0;i<players.length;i++){
+			if (players[i].getState()){
+				players[i].setTotalArmies(players[i].getCountries().size());
+				players[i].addArmies(initialArmyNum);
+				for (int j=0;j<4;j++){ // initial cards, maybe removed for later build
+					int randomCard = (int)(Math.random()*3);
+					players[i].increaseCard(randomCard);
+				}
+			}
+		}
     }    
     
     /**
@@ -357,7 +403,7 @@ public class RiskGameModel extends Observable {
     /**
      * The function to check if the whole continent is owned by a player
      */
-    private void checkContinentOwner(){
+    public void checkContinentOwner(){
         for (ContinentModel loopCountinent:gameMap.getContinents()){
             loopCountinent.checkOwner();
         }
@@ -431,13 +477,13 @@ public class RiskGameModel extends Observable {
      */
     public int CalExchangeArmies(){
     	return 5*(++changeCardTimes);
-    }
-
-	/**
-	 * Change the domination View
-	 */
-	public void changeDominationView() {
+    }  
+    /*
+     * changeDominationView
+     */
+    public void changeDominationView() {
     	setChanged();
     	notifyObservers(111);
     }   
+    
 }

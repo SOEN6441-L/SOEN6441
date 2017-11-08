@@ -137,6 +137,16 @@ public class CountryModel{
 	public void setArmyNumber(int armyNumber) {
 		this.armyNumber = armyNumber;
 	}
+	
+	/**
+	 * Method to change the army number on this country, is used in all phases of a game.
+	 * @param armyNumber number of armies
+	 */
+	public void lostArmy() {
+		this.armyNumber--;
+		this.owner.lostArmies();
+	}
+
 
 	/**
 	 * Method to get the unique ID of this country.

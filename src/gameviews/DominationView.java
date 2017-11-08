@@ -12,7 +12,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * This is the view class of Domination view show the chart of domination
+ * Created by liarthur on 03/11/2017.
  */
 public class DominationView implements Observer{
     private PlayerModel[] players;
@@ -25,6 +25,9 @@ public class DominationView implements Observer{
         frame = new JFrame();
         //frame.getContentPane().add(new DominationChart(null);
         frame.setSize(300, 300);
+        frame.setTitle("Domination View");
+		int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
+		frame.setLocation(screenWidth-300,0);  
         frame.setVisible(true);
     }
 

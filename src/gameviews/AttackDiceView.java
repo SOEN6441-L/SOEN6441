@@ -1,0 +1,363 @@
+package gameviews;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+
+import gamemodels.NodeRecord;
+import gamemodels.PlayerModel;
+import gamemodels.RiskGameModel;
+import mapmodels.ContinentModel;
+import mapmodels.CountryModel;
+import mapmodels.ErrorMsg;
+
+/**
+ * This class is the implementation of attack dice in the Risk.
+ *@see JDialog
+ */
+public class AttackDiceView extends JDialog{
+	private static final long serialVersionUID = 1L;
+	//components in this window
+    JLabel playerLabel1,playerLabel2;
+    JLabel VSLabel;
+    ImageIcon[] diceIcons  = new ImageIcon[6];
+    JLabel [] attackingDice = new JLabel[3];
+    JLabel [] attackedDice = new JLabel[2];
+    
+    JComboBox<Object> attackingDices,attackedDices; 
+    
+    JButton attackBtn;
+    JButton enterBtn;
+    private int width= 870,height = 360;
+    
+
+    private PlayerModel player1, player2;
+    private CountryModel country1,country2;
+    private RiskGameModel myGame;
+    private int lastDice = 0;
+
+    /**
+     * Constructor of class ReinforcePhaseView to generate reinforce phase UI
+     * @param player The player that who is in turn
+     * @param game The game reinforce phase is in
+     */
+    public AttackDiceView(CountryModel country1, CountryModel country2){
+        player1 = country1.getOwner();
+        player2 = country2.getOwner();
+        myGame = player1.getMyGame();
+        this.country1 = country1;
+        this.country2 = country2;
+
+        setTitle("Play Dice");
+
+        setSize(width,height);
+        int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
+        int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+        setLocation((screenWidth-width)/2, (screenHeight-height)/2);
+        //set exit program when close the window
+        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        //not capable adjust windows size
+        setResizable(false);
+        setLayout(null);
+        setModal(true);
+        setVisible(false);
+
+        Dimension size;    
+        
+        int attackingArmy = country1.getArmyNumber()-1;
+        int attackedArmy = country2.getArmyNumber();        
+
+        playerLabel1 =  new JLabel(country1.getName()+" ("+attackingArmy+" armies) owned by "+player1.getName());
+        add(playerLabel1);
+        playerLabel1.setFont(new java.awt.Font("dialog",1,18));
+        playerLabel1.setForeground(player1.getMyColor());
+        size = playerLabel1.getPreferredSize();
+        playerLabel1.setBounds(15,15,size.width,size.height);
+        
+        VSLabel =  new JLabel("VS");
+        add(VSLabel);
+        VSLabel.setFont(new java.awt.Font("dialog",1,20));
+        size = VSLabel.getPreferredSize();
+        VSLabel.setBounds(playerLabel1.getBounds().x+playerLabel1.getSize().width+40,15,size.width,size.height);
+        
+        playerLabel2 =  new JLabel(country2.getName()+" ("+attackedArmy+" armies) owned by "+player2.getName());
+        add(playerLabel2);
+        playerLabel2.setFont(new java.awt.Font("dialog",1,18));
+        playerLabel2.setForeground(player2.getMyColor());
+        size = playerLabel2.getPreferredSize();
+        playerLabel2.setBounds(VSLabel.getBounds().x+VSLabel.getSize().width+40,15,size.width,size.height);
+        
+        for (int i=0;i<6;i++){
+        	diceIcons[i] = new ImageIcon("src/images/"+(i+1)+".jpg");
+        }
+ 
+        for (int i=0;i<3;i++){
+        	attackingDice[i] = new JLabel("");
+        	attackingDice[i].setIcon(diceIcons[5]);
+            add(attackingDice[i]);
+            attackingDice[i].setEnabled(attackingArmy>(2-i));
+            attackingDice[i].setBounds(playerLabel1.getBounds().x+playerLabel1.getSize().width-(3-i)*77+10,65,57,57);
+        }
+        
+        attackingDices = new JComboBox<Object>();
+        //armyNumberCombo.setSelectedIndex(leftArmies-1);
+        size = attackingDices.getPreferredSize();
+        attackingDices.setBounds(attackingDice[2].getBounds().x+attackingDice[2].getSize().width-size.width-20,141,size.width+20,size.height);       
+        attackingDices.removeAllItems();
+        for (int i=1;i<=Math.min(3,attackingArmy);i++) {
+        	attackingDices.addItem(i);
+        }
+        attackingDices.setSelectedIndex(-1);
+        add(attackingDices);
+        attackingDices.addActionListener(new attackingHandler());
+        
+        for (int i=0;i<2;i++){
+        	attackedDice[i] = new JLabel("");
+        	attackedDice[i].setIcon(diceIcons[0]);
+            add(attackedDice[i]);
+            attackedDice[i].setEnabled(attackedArmy>(1-i));
+            attackedDice[i].setBounds(playerLabel2.getBounds().x+10+i*77,65,57,57);
+        }        
+
+        attackedDices = new JComboBox<Object>();
+        //armyNumberCombo.setSelectedIndex(leftArmies-1);
+        size = attackedDices.getPreferredSize();
+        attackedDices.setBounds(attackedDice[0].getBounds().x,141,size.width+20,size.height);       
+        attackedDices.removeAllItems();
+        for (int i=1;i<=Math.min(2,attackedArmy);i++) {
+        	attackedDices.addItem(i);
+        }
+        attackedDices.setSelectedIndex(-1);
+        add(attackedDices);
+        attackedDices.addActionListener(new attackedHandler());
+        
+        attackBtn = new JButton("Begin");
+        add(attackBtn);
+        attackBtn.setEnabled(false);
+        attackBtn.addActionListener(new attackHandler());  
+        attackBtn.setBounds(VSLabel.getBounds().x+(VSLabel.getSize().width)/2-50,191,100,30);
+        
+        enterBtn = new JButton("finish");
+        add(enterBtn);
+        enterBtn.setBounds(attackBtn.getBounds().x,231,100,30);
+        enterBtn.addActionListener(new enterHandler());  
+    }
+    
+    private void reloadGUI(){
+        Dimension size;    
+        
+        int attackingArmy = country1.getArmyNumber()-1;
+        int attackedArmy = country2.getArmyNumber();        
+        
+		if (attackingArmy==0){
+			JOptionPane.showMessageDialog(null, player1.getName()+" failed.");
+			setVisible(false);
+    	}
+    	else if (attackedArmy==0){
+    		country2.setOwner(player1);
+    		player1.addCountry(country2);
+    		player2.removeCountry(country2);
+    		myGame.changeDominationView();
+    		if (!player2.getState()) player1.addCards(player2.getCards());
+			JOptionPane.showMessageDialog(null, player1.getName()+" grasps "+country2.getName()+" owned by "+player2.getName());
+			
+			String [] choice = new String [country1.getArmyNumber()-lastDice];
+			int index=0;
+			for (int i=lastDice;i<country1.getArmyNumber();i++) {
+				choice[index] = String.valueOf(i);
+			}
+			JComboBox<Object> armyInput = new JComboBox<Object>(choice);
+			Object[] message = {
+					"How many armies you want to left on new country:", armyInput
+			};  
+
+			boolean retry = true;
+			while (retry){
+				int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
+				if (armyInput.getSelectedIndex()==-1){
+					JOptionPane.showMessageDialog(null,"You must left some armies on the new conquared country.");
+				}
+				else {
+					int armyNum = Integer.parseInt((String)armyInput.getItemAt(armyInput.getSelectedIndex()));
+					player1.moveArmies(country2,country1,armyNum);
+					retry = false;
+				}
+			}
+			
+			setVisible(false);
+    	}
+
+        playerLabel1.setText(country1.getName()+" ("+attackingArmy+" armies) owned by "+player1.getName());
+        size = playerLabel1.getPreferredSize();
+        playerLabel1.setBounds(15,15,size.width,size.height);
+        size = VSLabel.getPreferredSize();
+        VSLabel.setBounds(playerLabel1.getBounds().x+playerLabel1.getSize().width+40,15,size.width,size.height);
+       
+        playerLabel2.setText(country2.getName()+" ("+attackedArmy+" armies) owned by "+player2.getName());
+        size = playerLabel2.getPreferredSize();
+        playerLabel2.setBounds(VSLabel.getBounds().x+VSLabel.getSize().width+40,15,size.width,size.height);
+   
+        attackingDices.removeAllItems();
+        for (int i=1;i<=Math.min(3,attackingArmy);i++) {
+        	attackingDices.addItem(i);
+        }
+        attackingDices.setSelectedIndex(-1);        
+        for (int i=0;i<3;i++){
+            attackingDice[i].setEnabled(attackingArmy>(2-i));
+            attackingDice[i].setBounds(playerLabel1.getBounds().x+playerLabel1.getSize().width-(3-i)*77+10,65,57,57);
+        }
+        
+        attackedDices.removeAllItems();
+        for (int i=1;i<=Math.min(2,attackedArmy);i++) {
+        	attackedDices.addItem(i);
+        }
+        attackedDices.setSelectedIndex(-1);        
+        for (int i=0;i<2;i++){
+            attackedDice[i].setEnabled(attackedArmy>(1-i));
+            attackedDice[i].setBounds(playerLabel2.getBounds().x+10+i*77,65,57,57);
+        }        
+           
+        attackBtn.setEnabled(false);
+        attackBtn.setBounds(VSLabel.getBounds().x+(VSLabel.getSize().width)/2-50,191,100,30);
+        
+        enterBtn.setBounds(attackBtn.getBounds().x,231,100,30);
+    }
+    
+    class attackingHandler implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if (attackingDices.getSelectedIndex()!=-1){
+				int selected = attackingDices.getSelectedIndex();
+				for (int i=0;i<3;i++){
+		            attackingDice[i].setEnabled(selected>(1-i));
+				}
+				if (attackedDices.getSelectedIndex()!=-1) attackBtn.setEnabled(true);
+			}
+		}
+    }
+
+    class attackedHandler implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if (attackedDices.getSelectedIndex()!=-1){
+				int selected = attackedDices.getSelectedIndex();
+				for (int i=0;i<2;i++){
+		            attackedDice[i].setEnabled(selected>(0-i));
+				}
+				if (attackingDices.getSelectedIndex()!=-1) attackBtn.setEnabled(true);
+			}
+		}
+    }
+
+    class attackHandler implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int [] attacking = new int[]{0,0,0};
+			int [] attacked = new int[]{0,0};
+
+			if (attackedDices.getSelectedIndex()!=-1&&attackingDices.getSelectedIndex()!=-1){
+				int attackingArmy = attackingDices.getSelectedIndex()+1;
+				lastDice = attackingArmy;
+				int attackedArmy = attackedDices.getSelectedIndex()+1;
+				for (int i=3-attackingArmy;i<3;i++){
+					attacking[i] = (int)(Math.random()*6)+1;
+					attackingDice[i].setIcon(diceIcons[attacking[i]-1]);
+				}
+				for (int i=2-attackedArmy;i<2;i++){
+					attacked[i] = (int)(Math.random()*6)+1;
+					attackedDice[i].setIcon(diceIcons[attacked[i]-1]);
+				}	
+				int biggestAttacking = attacking[2];
+				int biggestAttackingIndex=2;
+				if (attacking[1]>biggestAttacking) {
+					biggestAttacking = attacking[1];
+					biggestAttackingIndex = 1;
+				}
+				if (attacking[0]>biggestAttacking) {
+					biggestAttacking = attacking[0];
+					biggestAttackingIndex = 0;
+				}
+				
+				int biggestAttacked = attacked[1];
+				int biggestAttackedIndex=1;
+				if (attacked[0]>biggestAttacked) {
+					biggestAttacked = attacked[0];
+					biggestAttackedIndex = 0;
+				}
+				PlayerModel firstLoser=null;
+				PlayerModel secondLoser=null;
+				if (biggestAttacking>biggestAttacked){//attacked lost one army
+					country2.lostArmy();					
+					firstLoser = player2;
+				}
+				else{//attacking lost one army
+					country1.lostArmy();	
+					firstLoser = player1;
+				}
+				
+				if (attackedArmy == 2 && attackingArmy>1){ //
+					int secondAttacked = attacked[1-biggestAttackedIndex];
+					int secondAttacking = 0;
+					switch (biggestAttackingIndex) {
+					case 0: 
+						secondAttacking = Math.max(attacking[1],attacking[2]);
+						break;
+					case 1:
+						secondAttacking = Math.max(attacking[0],attacking[2]);
+						break;
+					case 2:
+						secondAttacking = Math.max(attacking[0],attacking[1]);
+						break;								
+					}
+					if (secondAttacking>secondAttacked){//attacked lost one more army
+						secondLoser = player2;
+						country2.lostArmy();
+					}
+					else{//attacking lost one more army
+						secondLoser = player1;
+						country1.lostArmy();
+					}
+				}
+				
+				if (secondLoser==null)
+					JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army.");
+				else {
+					if (firstLoser==secondLoser){
+						JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost 2 armies.");
+					}
+					else JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.");
+				}
+					
+					
+				reloadGUI();
+			}
+		}	
+    }    
+    
+    class enterHandler implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			JOptionPane.showMessageDialog(null, player1.getName()+" betrayed.");
+			setVisible(false);
+		}
+    }
+}

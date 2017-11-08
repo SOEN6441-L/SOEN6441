@@ -61,9 +61,9 @@ public class ReinforcePhaseView extends JDialog{
      * @param player The player that who is in turn
      * @param game The game reinforce phase is in
      */
-    public ReinforcePhaseView(PlayerModel player, RiskGameModel game){
+    public ReinforcePhaseView(PlayerModel player){
         this.player = player;
-        this.myGame = game;
+        this.myGame = player.getMyGame();
         
         boolean changeCards = false;
 
