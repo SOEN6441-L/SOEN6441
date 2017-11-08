@@ -27,8 +27,8 @@ import gamemodels.RiskGameModel;
 import mapmodels.CountryModel;
 
 /**
- * This class is the implementation of reinforcement phase in the Risk.
- * <p> The ReinforcementPhase class will allow players add armies to their<br>
+ * This class is the implementation of Fortification phase in the Risk.
+ * <p> The FortificationPhaseView class will allow players add armies to their<br>
  * to their country, based on the countries under control.</p >
  *
  */
@@ -61,7 +61,7 @@ public class FortificationPhaseView extends JDialog{
     public int state=0; //0-Cancel, 1-confirm
 
     /**
-     * Constructor of class ReinforcePhaseView to generate reinforce phase UI
+     * Constructor of class FortificationPhaseView to generate reinforce phase UI
      * @param player The player that who is in turn
      * @param game The game reinforce phase is in
      */
