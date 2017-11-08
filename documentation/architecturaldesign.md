@@ -49,16 +49,16 @@ File_Name  | Description
 ------------- | -------------
 AttackPhaseView  | This class is the implementation of reinforcement phase in the Risk.
 ComponentRenders  | The class is to describe the main part of the Risk game
-DominationView   | 
-FortificationPhaseView  | 
+DominationView   | This is the view class of Domination view show the chart of domination.
+FortificationPhaseView  | This class is the implementation of Fortification phase in the Risk. The FortificationPhaseView class will allow players add armies to their to their country, based on the countries under control.
 ObservableNodes  | User-defined observable array of nodes
-PhaseView  | 
+PhaseView  | PhaseView is the GUI for monitors to see the progress of a game.
 PutInitialArmyView  | Class to define the GUI for players to place one by one their initial given armies on their own countries.
 ReinforcePhaseView  | This class is the implementation of reinforcement phase in the Risk.
 RaskGameMainView  | The class is used to create a window for player to edit maps of games.
 RiskGameView  | The class is used to create a window for player to edit maps of the game.
 TradeInCards  | This class is GUI for Exchange cards to armies.
-TradeInCardsView  | 
+TradeInCardsView  | This class is phase view using observer.
 
 ### 1.6 Game Controllers
 
