@@ -208,7 +208,7 @@ public class AttackPhaseView extends JDialog{
     }
 
     /**
-     * The method to refresh the UI
+     * The method to reload attack phase
      */
     public void reloadAttacked(){
         DefaultMutableTreeNode myTreeRootTo = new DefaultMutableTreeNode("Countries");
@@ -248,7 +248,9 @@ public class AttackPhaseView extends JDialog{
         attackBtn.setEnabled(false);
     }
 
-
+    /**
+     * The method to refresh the UI
+     */
     public void reloadGUI(){
 
         int attackingCountry = player.getAttackingCountry();
