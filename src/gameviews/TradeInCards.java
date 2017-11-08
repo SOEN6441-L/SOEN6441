@@ -44,7 +44,7 @@ public class TradeInCards extends JDialog{
 
     /**
      *  This method is to set layout if GUI
-     *	@param cards player's cards
+     *	@param player The player who will trade cards
      */
     public TradeInCards(PlayerModel player){
     	this.player = player;

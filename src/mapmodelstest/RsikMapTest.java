@@ -733,7 +733,7 @@ public class RsikMapTest {
 		assertTrue(errorMsg.getMsg().equals("Error: The whole map is not a connected graph.\n"
 				+ "Error: The continent <testContinent> is not a connected graph.\n"
 				+ "Error: The continent <testContinent2> has no country in it.\n"));
-		//case 3£º
+		//case 3:
 		newMap.addConnection("testCountry", "testCountry2");
 		assertEquals(1,(errorMsg=newMap.checkErrors()).getResult());
 		assertTrue(errorMsg.getMsg().equals("Error: The continent <testContinent2> has no country in it.\n"));
