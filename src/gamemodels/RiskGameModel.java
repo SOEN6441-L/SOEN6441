@@ -42,6 +42,9 @@ public class RiskGameModel extends Observable {
         return gameMap;
     }
 
+    public void setGameMap(RiskMapModel gameMap){
+    	this.gameMap = gameMap;
+	}
     /**
      * The function to clear the game map
      */
@@ -428,9 +431,12 @@ public class RiskGameModel extends Observable {
      */
     public int CalExchangeArmies(){
     	return 5*(++changeCardTimes);
-    }  
-    
-    public void changeDominationView() {
+    }
+
+	/**
+	 * Change the domination View
+	 */
+	public void changeDominationView() {
     	setChanged();
     	notifyObservers(111);
     }   

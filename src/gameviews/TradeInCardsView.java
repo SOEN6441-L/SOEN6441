@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * This class is phase view using observer
+ */
 public class TradeInCardsView extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
@@ -37,8 +40,11 @@ public class TradeInCardsView extends JFrame implements Observer {
 			dispose();
 		}
 	};
-    
-    public TradeInCardsView(){
+
+	/**
+	 * This is constructor
+	 */
+	public TradeInCardsView(){
         //this.setLocation((screenWidth-500)/3, (screenHeight-300)/3);
         this.setSize(400,230);
         this.setLayout(null);
@@ -67,7 +73,12 @@ public class TradeInCardsView extends JFrame implements Observer {
         this.setVisible(false);
     }
 
-    public void update(Observable obs, Object x){
+	/**
+	 * Rewrite update method
+	 * @param obs observable
+	 * @param x Observer
+	 */
+	public void update(Observable obs, Object x){
     	int type = (Integer) x;
     	if (type == 4){//update player phase info
     		Label1.setText(MessageFormat.format("{0} now has {1}",((PlayerModel)obs).getName(),((PlayerModel)obs).getCardsString(1)));
@@ -100,8 +111,11 @@ public class TradeInCardsView extends JFrame implements Observer {
        		worker.execute();
     	}
     }
-    
-    public void closeTradeInCardsView(){
+
+	/**
+	 * To close the view
+	 */
+	public void closeTradeInCardsView(){
         try {
             Thread.sleep(6000);
             this.dispose();
@@ -110,19 +124,19 @@ public class TradeInCardsView extends JFrame implements Observer {
         }
     }
 
-    public static void main(String args[]){
-        TradeInCardsView T = new TradeInCardsView();
-        PlayerModel P = new PlayerModel("12",Color.RED,null);
-
-        T.setVisible(true);
-
-        P.addObserver(T);
-        int[] cards = {6,2,3};
-        P.setCards(cards);
-
-        int[] cards2 = {1,3,3};
-        P.setCards(cards2);
-
-        T.closeTradeInCardsView();
-    }
+//    public static void main(String args[]){
+//        TradeInCardsView T = new TradeInCardsView();
+//        PlayerModel P = new PlayerModel("12",Color.RED,null);
+//
+//        T.setVisible(true);
+//
+//        P.addObserver(T);
+//        int[] cards = {6,2,3};
+//        P.setCards(cards);
+//
+//        int[] cards2 = {1,3,3};
+//        P.setCards(cards2);
+//
+//        T.closeTradeInCardsView();
+//    }
 }

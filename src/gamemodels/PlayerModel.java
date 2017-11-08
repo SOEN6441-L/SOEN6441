@@ -425,7 +425,11 @@ public class PlayerModel extends Observable {
 		}
 		return count;
 	}
-	
+
+	/**
+	 * Get countries attacked
+	 * @return the number of Countries
+	 */
 	public int getAttackingCountry() {
 		int count = 0;
 		for(CountryModel loopCountry:this.getCountries()){
@@ -442,11 +446,19 @@ public class PlayerModel extends Observable {
 		return count;
 	}
 
+	/**
+	 * get attack information
+	 * @return attack information
+	 */
 	public String getAttackInfo() {
 		return attackInfo;
 
 	}
 
+	/**
+	 * Set of attack information
+	 * @param attackInfo attack information
+	 */
 	public void setAttackInfo(String attackInfo) {
 		this.attackInfo = attackInfo;
 		setChanged();
@@ -456,6 +468,10 @@ public class PlayerModel extends Observable {
 		else notifyObservers(9);
 	}
 
+	/**
+	 * Get attack step information
+	 * @return attack step information
+	 */
 	public String getAttackStepInfo() {
 		return attackStepInfo;
 	}
