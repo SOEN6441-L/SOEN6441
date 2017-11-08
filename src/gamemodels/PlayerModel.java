@@ -26,6 +26,7 @@ public class PlayerModel extends Observable {
 
     private String phaseString="", exchangeStatus = "";
     private String reinforcementStr="", baseReinforceStr="", exchangeCardStr="", putArmyStr="";
+    private String attackInfo="", attackStepInfo="";
 
 
     /**
@@ -433,6 +434,30 @@ public class PlayerModel extends Observable {
 			}
 		}
 		return count;
+	}
+
+	public String getAttackInfo() {
+		return attackInfo;
+
+	}
+
+	public void setAttackInfo(String attackInfo) {
+		this.attackInfo = attackInfo;
+		setChanged();
+		if (attackInfo.isEmpty()) {
+			notifyObservers(8);
+		}
+		else notifyObservers(9);
+	}
+
+	public String getAttackStepInfo() {
+		return attackStepInfo;
+	}
+
+	public void setAttackStepInfo(String attackStepInfo) {
+		this.attackStepInfo = attackStepInfo;
+		setChanged();
+		notifyObservers(10);
 	}
 }
 

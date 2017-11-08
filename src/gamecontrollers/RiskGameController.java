@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import gamemodels.RiskGameModel;
+import gameviews.DominationView;
 import gameviews.PhaseView;
 import gameviews.RiskGameView;
 import mapmodels.ErrorMsg;
@@ -228,6 +229,7 @@ public class RiskGameController implements ActionListener {
 		//create two views, one model and one controller
 		RiskGameView gameView = new RiskGameView();
 		PhaseView phaseView = new PhaseView();
+		DominationView domiView = new DominationView();
 		RiskGameModel gameModel = new RiskGameModel();
 		RiskGameController gameController = new RiskGameController();
 		//add model and controller to views
@@ -238,6 +240,7 @@ public class RiskGameController implements ActionListener {
 		gameController.addModel(gameModel);
 		//add phase view to model
 		gameModel.addObserver(phaseView);
+		gameModel.addObserver(domiView);
 		gameModel.setPhaseView(phaseView);
 		gameModel.setObserverLabel(phaseView.getAssignCountryLable());
 		//initialize model

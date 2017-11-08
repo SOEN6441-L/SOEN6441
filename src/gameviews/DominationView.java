@@ -1,10 +1,12 @@
-package gamecontroller;
+package gameviews;
 
 
-import gameelements.Player;
-import gameelements.Players;
 
 import javax.swing.*;
+
+import gamemodels.PlayerModel;
+import gamemodels.RiskGameModel;
+
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
@@ -13,18 +15,16 @@ import java.util.Observer;
  * Created by liarthur on 03/11/2017.
  */
 public class DominationView implements Observer{
-    private Players players;
+    private PlayerModel[] players;
+    JFrame frame;
 
     /**
-     * This is the consturtor of class DominationView
+     * This is the constructor of class DominationView
      * @param newPlayers The players are in the game
      */
-    public DominationView(Players newPlayers){
-
-        this.players = newPlayers;
-
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(new DominationChart(players));
+    public DominationView(){      
+        frame = new JFrame();
+        //frame.getContentPane().add(new DominationChart(null);
         frame.setSize(300, 300);
         frame.setVisible(true);
     }
@@ -46,13 +46,13 @@ public class DominationView implements Observer{
      * The slices detail in chart class DominationChart
      */
     class DominationChart extends JComponent {
-
-        Slice[] slice;
-        DominationChart(Players players) {
-            int sliceNumber = players.getPlayers().size();
+		private static final long serialVersionUID = 1L;
+		Slice[] slice;
+        DominationChart(PlayerModel[] players) {
+            int sliceNumber = players.length;
             int i = 0;
             slice = new Slice[sliceNumber];
-            for (Player player:players.getPlayers()) {
+            for (PlayerModel player:players) {
                 slice[i] = new Slice(player.getCountries().size(),player.getMyColor());
                 i++;
             }
@@ -86,11 +86,15 @@ public class DominationView implements Observer{
      * @param arg the notifying object from model
      */
     public void update(Observable ob, Object arg) {
-        players = (Players) ob;
-
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(new DominationChart(players));
-        frame.setSize(300, 300);
-        frame.setVisible(true);
+    	if ((int)arg==111){
+    		players = ((RiskGameModel) ob).getPlayers();
+    		frame.getContentPane().removeAll();   		
+    		if (players!=null&&players.length>0) {
+    			frame.getContentPane().add(new DominationChart(players));
+    			frame.getContentPane().validate();
+    		}	
+    	}	
+        //frame.setSize(300, 300);
+        //frame.setVisible(true);
     }
 }

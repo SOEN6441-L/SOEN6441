@@ -12,7 +12,7 @@ public class ObservableNodes extends Observable{
 	private NodeRecord[][] localNodes;
 	/**
 	 * Initialize  x dimension of array
-	 * @param x This is dimension
+	 * @param indexX x dimension
 	 */	
 	public void initDimensionX(int x){
 		if (x>0)

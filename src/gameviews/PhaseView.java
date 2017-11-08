@@ -29,10 +29,9 @@ import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
 
 /**
- * PhaseView is the GUI for monitors to see the progress of a game.
+ * PhaseView is the GUI for monitors to see the progress of a game
  * 
  * @see JFrame
- * @see Observer
  */
 public class PhaseView extends JFrame implements Observer{
 	private static final long serialVersionUID = 1L;
@@ -63,7 +62,6 @@ public class PhaseView extends JFrame implements Observer{
 	
 	/**
 	 * Constructor for PhaseView class.
-	 * <p>Configuring the window of PhaseView
 	 */
 	public PhaseView(){
 		setTitle("Risk Game - Phase View");
@@ -227,8 +225,6 @@ public class PhaseView extends JFrame implements Observer{
 	
 	/**
 	 * The method is to reload one player tree
-	 * 
-	 * @param index The index of current player
 	 */
 	private void reloadPlayers(int index){
 		//configuration
@@ -276,8 +272,6 @@ public class PhaseView extends JFrame implements Observer{
 	
 	/**
 	 * Class to define local action Listener.
-	 * 
-	 * @see ActionListener
 	 */
 	private class ButtonHandler implements ActionListener { 
 		/**
@@ -350,7 +344,7 @@ public class PhaseView extends JFrame implements Observer{
 
 	/**
 	 * Method to get the observer label for the assign countries progress.
-	 * @return gameStageLabel4 The observer label
+	 * @return the observer label
 	 */
 	public ObserverLabel getAssignCountryLable(){
 		return gameStageLabel4;
@@ -552,6 +546,7 @@ public class PhaseView extends JFrame implements Observer{
 		else if (type == 5){//update reinforcement Status
 			gameStageLabel1.setText("Calculating reinforcement armies ... succeed");
 			gameStageLabel1.setVisible(true);
+			gameStageLabel1.setForeground(Color.BLACK);
 			size = gameStageLabel1.getPreferredSize();
 			gameStageLabel1.setBounds(25,90,size.width,size.height);
 			
@@ -576,7 +571,6 @@ public class PhaseView extends JFrame implements Observer{
 			gameStageLabel2.setBounds(25,115,size.width,size.height); 
 			
 			gameStageLabel3.setText((((PlayerModel)obs).getReinforcementStr()));
-			gameStageLabel3.setVisible(true);
 			size = gameStageLabel3.getPreferredSize();
 			gameStageLabel3.setBounds(40,135,size.width,size.height);	
 			reloadPlayers(myGame.getCurPlayer());
@@ -588,7 +582,24 @@ public class PhaseView extends JFrame implements Observer{
 			gameStageLabel4.setForeground(Color.RED);
 			size = gameStageLabel4.getPreferredSize();
 			gameStageLabel4.setBounds(25,labelContinent.getBounds().y-30,size.width,size.height);
-		}		
+		}	
+		else if (type == 8){//update attack info
+			gameStageLabel1.setText("Waiting for attack command ...");
+			gameStageLabel1.setVisible(true);
+			gameStageLabel1.setForeground(Color.RED);
+			size = gameStageLabel1.getPreferredSize();
+			gameStageLabel1.setBounds(25,90,size.width,size.height);
+		}
+		else if (type == 9){//update attack info
+			gameStageLabel1.setText(((PlayerModel)obs).getAttackInfo());
+		}
+		else if (type == 10){//update attack info
+			gameStageLabel2.setText(((PlayerModel)obs).getAttackStepInfo());
+			gameStageLabel2.setVisible(true);
+			size = gameStageLabel2.getPreferredSize();
+			gameStageLabel2.setBounds(25,120,size.width,size.height);
+		}
+		
 	}
 
 	/**
@@ -605,11 +616,8 @@ public class PhaseView extends JFrame implements Observer{
 }
 
 /**
- * Class to define a label can act as an observer,<br> 
+ * Class to define a label can act as an observer, 
  * to show the internal progress of an operation.
- * 
- * @see JLabel
- * @see Observer
  */
 class ObserverLabel extends JLabel implements Observer {
 	private static final long serialVersionUID = 1L;

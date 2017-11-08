@@ -29,13 +29,8 @@ import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
 
 /**
- * The class is used to create a window for player to edit maps of the game.
- * 
- * <p>The RiskGameView implements interface observer, which can respond to<br>
- * the change of game that performed by player</p>
- * 
- * @see JFrame
- * @see Observer
+ * The class is used to create a window for player to edit maps of games
+ *
  */
 public class RiskGameView extends JFrame implements Observer{
 	private static final long serialVersionUID = 1L;
@@ -75,7 +70,6 @@ public class RiskGameView extends JFrame implements Observer{
 
 	/**
 	 * Constructor of RiskGameView class.
-	 * <p>Configuring the window of the game</p>
 	 */
 	public RiskGameView(){		
 		//configuration
@@ -271,10 +265,7 @@ public class RiskGameView extends JFrame implements Observer{
 	}	
 	
 	/**
-	 * Class ButtonHandler used to define local action Listener, which<br>
-	 * implements the interface ActionListener
-	 * 
-	 * @see ActionListener
+	 * Class to define local action Listener.
 	 */
 	private class ButtonHandler implements ActionListener { 
 		/**
@@ -349,7 +340,7 @@ public class RiskGameView extends JFrame implements Observer{
 	}	
 	
 	/**
-	 * The method is used to reload continents tree
+	 * The method is to reload continents tree
 	 */
 	private void reloadContinents(){	
 		//configuration
@@ -544,7 +535,6 @@ public class RiskGameView extends JFrame implements Observer{
 	}
 	/**
 	 * Method to be called by Observable's notifyObservers method.
-	 * 
 	 * @param arg0 the observable object
 	 * @param arg1 an argument passed by the notifyObservers method.
 	 */	

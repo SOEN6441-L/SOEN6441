@@ -90,6 +90,7 @@ public class RiskGameModel extends Observable {
         	players[i].setTotalArmies(0);
         	players[i].removeCards();
         }
+        this.changeDominationView();
     }
     
     /**
@@ -97,6 +98,7 @@ public class RiskGameModel extends Observable {
      */
     public void deletePlayers() {
         players = null;
+        this.changeDominationView();
     }    
     /**
      * The getter of InitialArmies, used to return the number of initial armies
@@ -156,6 +158,7 @@ public class RiskGameModel extends Observable {
         for (int i=0;i<players.length;i++)
             players[i] = new PlayerModel("Player"+String.valueOf(i+1),colors[i%colors.length],this);
         setGameStage(20);
+        this.changeDominationView();
     }
 
     /**
@@ -188,6 +191,7 @@ public class RiskGameModel extends Observable {
 										loopCountry.setOwner(players[curPlayerIndex%players.length]);
 										loopCountry.setArmyNumber(1);
 										setGameStage(loopCountry.getCountryId()*1000+(curPlayerIndex%players.length));
+								        changeDominationView();
 										publish(1);
 										curPlayerIndex++;
 										toAssigned--;
@@ -419,5 +423,10 @@ public class RiskGameModel extends Observable {
      */
     public int CalExchangeArmies(){
     	return 5*(++changeCardTimes);
-    }    
+    }  
+    
+    public void changeDominationView() {
+    	setChanged();
+    	notifyObservers(111);
+    }   
 }

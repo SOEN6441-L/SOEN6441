@@ -4,6 +4,8 @@ package gameviews;
 import java.awt.Color;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -11,9 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -29,9 +29,9 @@ import mapmodels.CountryModel;
  * This class is the implementation of reinforcement phase in the Risk.
  * <p> The ReinforcementPhase class will allow players add armies to their<br>
  * to their country, based on the countries under control.</p >
- *
+ *@see JDialog
  */
-public class AttackPhaseView extends JFrame{
+public class AttackPhaseView extends JDialog{
 	private static final long serialVersionUID = 1L;
 	//components in this window
     JLabel playerLabel;
@@ -80,11 +80,19 @@ public class AttackPhaseView extends JFrame{
         //not capable adjust windows size
         setResizable(false);
         setLayout(null);
-        //setModal(true);
+        setModal(true);
         setVisible(false);
 
         Dimension size;    
         int attackingCountry = player.getAttackingCountry();
+        
+        if (attackingCountry == 0){
+        	player.setAttackInfo("No more territories can attacking, attack phase finished");
+        	this.dispose();
+        }
+        else {
+        	player.setAttackInfo("");
+        }
 
         localCountries = new NodeRecord[attackingCountry];
         int j = 0;
@@ -171,8 +179,9 @@ public class AttackPhaseView extends JFrame{
         attackBtn = new JButton("Attack");
         size = attackBtn.getPreferredSize();
         add(attackBtn);
+        attackBtn.setEnabled(false);
         attackBtn.setBounds(scrollPaneForCountryFrom.getBounds().x+scrollPaneForCountryFrom.getSize().width+10,260,size.width+20,size.height);
-        
+        attackBtn.addActionListener(new attackBtnHandler());
         
         countryLabelTo = new JLabel("Territories can be attacked (0):");
         add(countryLabelTo);
@@ -193,7 +202,9 @@ public class AttackPhaseView extends JFrame{
         add(enterBtn);
         size = enterBtn.getPreferredSize();
         enterBtn.setBounds(815,540,size.width,size.height);
-        //enterBtn.addActionListener(new enterBtnHandler());
+        enterBtn.addActionListener(new enterBtnHandler());
+        
+        
     }
 
     /**
@@ -213,29 +224,138 @@ public class AttackPhaseView extends JFrame{
         Dimension size = countryLabelTo.getPreferredSize();
         countryLabelTo.setBounds(attackBtn.getBounds().x+attackBtn.getSize().width+10,100,size.width,size.height);
         treeCountryTo = new JTree(myTreeRootTo);
+        treeCountryTo.addMouseListener( new  MouseAdapter(){
+        	public void mousePressed(MouseEvent e){
+        		int selRow = treeCountryTo.getRowForLocation(e.getX(), e.getY());
+        		TreePath selPath = treeCountryTo.getPathForLocation(e.getX(), e.getY());
+        		if (selRow>0 && (e.getButton() == 1)){
+        			treeCountryTo.setSelectionPath(selPath);
+        			if (selPath!=null) {
+        				if (selPath.getParentPath().getParentPath()==null){//continents
+           					selCountryNameTo = selPath.getLastPathComponent().toString().trim();
+           					selCountryNameTo = selCountryNameTo.substring(0, selCountryNameTo.indexOf("(")-1);
+           					//myGame.getGameMap().findPath(localAdjacencyList,myGame.getGameMap().findCountry(selCountryNameFrom));
+           					attackBtn.setEnabled(true);
+        				}
+        			}
+        			//popupMenu.show(e.getComponent(), e.getX(), e.getY());
+        		}
+        	}	
+		}); 
         treeCountryTo.setCellRenderer(new CountryNodeRenderer(player.getMyColor()));
         scrollPaneForCountryTo.getViewport().removeAll();
         scrollPaneForCountryTo.getViewport().add(treeCountryTo);
+        attackBtn.setEnabled(false);
     }
 
 
+    public void reloadGUI(){
 
+        int attackingCountry = player.getAttackingCountry();
+        
+        localCountries = new NodeRecord[attackingCountry];
+        int j = 0;
+        for (CountryModel loopCountry:player.getCountries()){
+        	if (loopCountry.getArmyNumber()>1){
+				ArrayList<CountryModel> neighbors = myGame.getGameMap().getAdjacencyList().get(loopCountry);
+				for (CountryModel neighbor:neighbors){
+					if (neighbor.getBelongTo()!=loopCountry.getBelongTo()){
+						localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
+						break;
+					}
+				}	
+        	}
+        }
+        
+		localAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
+		for (CountryModel loopCountry: player.getCountries()){
+			localAdjacencyList.put(loopCountry, new ArrayList<CountryModel>());
+			for (CountryModel neighbour: myGame.getGameMap().getAdjacencyList().get(loopCountry)){
+				if (neighbour.getOwner()!=player){
+					localAdjacencyList.get(loopCountry).add(neighbour);
+				}
+			}
+		}  
 
-    /*private class enterBtnHandler implements ActionListener {
+        countryLabelFrom.setText("Territories can attacking ("+attackingCountry+"):");
+
+        DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
+        for (int i=0;i<localCountries.length;i++) {
+            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
+                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
+        }
+        treeCountryFrom = new JTree(myTreeRoot);
+        treeCountryFrom.addMouseListener( new  MouseAdapter(){
+        	public void mousePressed(MouseEvent e){
+        		int selRow = treeCountryFrom.getRowForLocation(e.getX(), e.getY());
+        		TreePath selPath = treeCountryFrom.getPathForLocation(e.getX(), e.getY());
+        		if (selRow>0 && (e.getButton() == 1)){
+        			treeCountryFrom.setSelectionPath(selPath);
+        			if (selPath!=null) {
+        				if (selPath.getParentPath().getParentPath()==null){//continents
+           					selCountryNameFrom = selPath.getLastPathComponent().toString().trim();
+           					selCountryNameFrom = selCountryNameFrom.substring(0, selCountryNameFrom.indexOf("(")-1);
+           					//myGame.getGameMap().findPath(localAdjacencyList,myGame.getGameMap().findCountry(selCountryNameFrom));
+           					reloadAttacked();
+        				}
+        			}
+        			//popupMenu.show(e.getComponent(), e.getX(), e.getY());
+        		}
+        	}	
+		}); 
+
+        treeCountryFrom.setCellRenderer(new CountryNodeRenderer(player.getMyColor()));
+
+        scrollPaneForCountryFrom.getViewport().removeAll();
+        scrollPaneForCountryFrom.getViewport().add(treeCountryFrom);
+
+        attackBtn.setEnabled(false);
+        
+        
+        countryLabelTo.setText("Territories can be attacked (0):");
+
+        DefaultMutableTreeNode myTreeRootTo = new DefaultMutableTreeNode("Countries");
+        treeCountryTo = new JTree(myTreeRootTo);
+
+        treeCountryTo.setCellRenderer(new CountryNodeRenderer(player.getMyColor()));
+
+        scrollPaneForCountryTo.getViewport().removeAll();
+        scrollPaneForCountryTo.getViewport().add(treeCountryTo);
+    }
+    /**
+     * 
+     * Class to define the action when user finish attack phase
+     *
+     */
+    private class enterBtnHandler implements ActionListener {
+    	/**
+    	 * Method to define action performed according to different users' action.
+    	 * @param e the action event of user.
+    	 */	
+		@Override
         public void actionPerformed(ActionEvent e) {
-            if (player.getState()==1){
-                player.setTotalArmies(player.getTotalArmies()+totalArmies);
-                if (cardExchanged) player.setCards(myCards);
-                if (localCountries!=null){
-                    for (int j=0;j<localCountries.length;j++){
-                        myGame.getGameMap().findCountryByID(localCountries[j].ID).armyNumber = localCountries[j].Number;
-                    }
-                }
-            }
-            state = 1;
+			player.setAttackInfo("Attack phase terminated.");
             setVisible(false);
         }
-    }*/
+    }
+    /**
+     * 
+     * Class to define the action when user begin to attack
+     *
+     */   
+    private class attackBtnHandler implements ActionListener {
+    	/**
+    	 * Method to define action performed according to different users' action.
+    	 * @param e the action event of user.
+    	 */	
+		@Override
+        public void actionPerformed(ActionEvent e) {
+			player.setAttackInfo(selCountryNameFrom+" attacking "+selCountryNameTo);
+            //setVisible(false);
+            reloadGUI();
+        }
+    }
 }
 
 

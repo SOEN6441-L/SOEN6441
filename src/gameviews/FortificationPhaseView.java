@@ -1,9 +1,11 @@
-package gamecontroller;
+package gameviews;
 
 
 import java.awt.Color;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -19,9 +21,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import gameelements.NodeRecord;
-import gameelements.Player;
-import gameelements.RiskGame;
+import gamemodels.NodeRecord;
+import gamemodels.PlayerModel;
+import gamemodels.RiskGameModel;
 import mapmodels.CountryModel;
 
 /**
@@ -49,8 +51,8 @@ public class FortificationPhaseView extends JDialog{
     
     private String selCountryNameFrom,selCountryNameTo;
 
-    private Player player;
-    private RiskGame myGame;
+    private PlayerModel player;
+    private RiskGameModel myGame;
 
     private NodeRecord[] localCountries;
     private Map<CountryModel,ArrayList<CountryModel>> localAdjacencyList;
@@ -63,7 +65,7 @@ public class FortificationPhaseView extends JDialog{
      * @param player The player that who is in turn
      * @param game The game reinforce phase is in
      */
-    public FortificationPhaseView(Player player, RiskGame game){
+    public FortificationPhaseView(PlayerModel player, RiskGameModel game){
         this.player = player;
         this.myGame = game;
 
@@ -83,18 +85,20 @@ public class FortificationPhaseView extends JDialog{
         setVisible(false);
 
         Dimension size;    
-
-        localCountries = new NodeRecord[player.getCountries().size()];
+        int movableCountry = player.getMovableCountry();
+        
+        localCountries = new NodeRecord[movableCountry];
         int j = 0;
         for (CountryModel loopCountry:player.getCountries()){
-            localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
+        	if (loopCountry.getArmyNumber()>1)
+        		localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
         }
         
 		localAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
 		for (CountryModel loopCountry: player.getCountries()){
 			localAdjacencyList.put(loopCountry, new ArrayList<CountryModel>());
 			for (CountryModel neighbour: myGame.getGameMap().getAdjacencyList().get(loopCountry)){
-				if (neighbour.getOwner().getName().equals(player.getName())){
+				if (neighbour.getOwner()==player){
 					localAdjacencyList.get(loopCountry).add(neighbour);
 				}
 			}
@@ -120,7 +124,7 @@ public class FortificationPhaseView extends JDialog{
         size = phaseLabel.getPreferredSize();
         phaseLabel.setBounds(20,60,size.width,size.height);        
 
-        countryLabelFrom = new JLabel("Territories ("+player.getCountries().size()+"):");
+        countryLabelFrom = new JLabel("Territories more than 1 army ("+movableCountry+"):");
         add(countryLabelFrom);
         countryLabelFrom.setFont(new java.awt.Font("dialog",1,15));
         size = countryLabelFrom.getPreferredSize();
@@ -128,9 +132,9 @@ public class FortificationPhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
             myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
+                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountryFrom = new JTree(myTreeRoot);
         treeCountryFrom.addMouseListener( new  MouseAdapter(){
@@ -204,8 +208,8 @@ public class FortificationPhaseView extends JDialog{
         enterBtn = new JButton("Finish");
         add(enterBtn);
         size = enterBtn.getPreferredSize();
-        enterBtn.setBounds(815,540,size.width,size.height);
-        //enterBtn.addActionListener(new enterBtnHandler());
+        enterBtn.setBounds(scrollPaneForCountryTo.getBounds().x+scrollPaneForCountryTo.getSize().width-size.width,488,size.width,size.height);
+        enterBtn.addActionListener(new enterBtnHandler());
     }
 
     /**
@@ -268,25 +272,20 @@ public class FortificationPhaseView extends JDialog{
         scrollPaneForCountryTo.getViewport().removeAll();
         scrollPaneForCountryTo.getViewport().add(treeCountryTo);
     }
-
-
-
-
-    /*private class enterBtnHandler implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            if (player.getState()==1){
-                player.setTotalArmies(player.getTotalArmies()+totalArmies);
-                if (cardExchanged) player.setCards(myCards);
-                if (localCountries!=null){
-                    for (int j=0;j<localCountries.length;j++){
-                        myGame.getGameMap().findCountryByID(localCountries[j].ID).armyNumber = localCountries[j].Number;
-                    }
-                }
-            }
-            state = 1;
-            setVisible(false);
-        }
-    }*/
+    /**
+     * Class to define the action of enter Button 
+     */
+    private class enterBtnHandler implements ActionListener {
+		@Override
+		/*
+		 * (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			setVisible(false);
+		}
+    }
 }
 
 
