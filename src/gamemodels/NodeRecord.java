@@ -28,6 +28,7 @@ public class NodeRecord extends Observable{
 	}
 	/**
 	 * The setter of Name, used to set name value
+	 * @param name node's name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -41,6 +42,7 @@ public class NodeRecord extends Observable{
 	}
 	/**
 	 * The setter of Number, used to set number value
+	 * @param number node's number
 	 */
 	public void setNumber(int number) {
 		Number = number;

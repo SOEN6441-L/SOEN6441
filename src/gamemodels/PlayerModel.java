@@ -33,6 +33,7 @@ public class PlayerModel extends Observable {
      * Constructor for Player class.
      * @param newName the name of the new player
      * @param color the player's color
+     * @param game the current game object
      */
     public PlayerModel(String newName,Color color, RiskGameModel game){
         name = newName;
@@ -186,7 +187,6 @@ public class PlayerModel extends Observable {
 
     /**
      * The function to judge if player can exchange cards
-     * @param myCards array of my cards
      * @return true if can exchange
      */
     public boolean canExchange() {
@@ -196,7 +196,6 @@ public class PlayerModel extends Observable {
 
     /**
      * The function to calculate how many armies player get this turn.
-     * @param continents country list to be checked
      */
     public void calculateArmyNumber() {
     	ArrayList<ContinentModel> continents = myGame.getGameMap().getContinents();
@@ -236,8 +235,8 @@ public class PlayerModel extends Observable {
     }    
     
 	/**
-     * get the number of reinforcement armies of player
-     * @return name
+     * increase the number of reinforcement armies of player
+     * @param armies army's number
      */
     public void increaseTotalReinforcement(int armies)
     {
@@ -258,6 +257,7 @@ public class PlayerModel extends Observable {
 	
     /**
      * The function to this player to play a whole turn, stop when finished or win the game
+     * @return succeed of failed with error message
      */	
 	public ErrorMsg playTurn(){
 		reinforcementPhase();
@@ -274,8 +274,6 @@ public class PlayerModel extends Observable {
 	
 	/**
      * The function to judge if complete reinforcement phase
-     * @param myGame the current RiskGame object
-     * @return if complete or not
 	 */
 	public void reinforcementPhase(){
 		calculateArmyNumber();
@@ -312,6 +310,7 @@ public class PlayerModel extends Observable {
 	}
 	/**
 	 * The setter of phaseString, used to set phase info
+	 * @param phaseString current phaseString
 	 */
 	public void setPhaseString(String phaseString) {
 		this.phaseString = phaseString;
@@ -328,6 +327,7 @@ public class PlayerModel extends Observable {
 	}
 	/**
 	 * The setter of ReinforcementStr, used to set reinforcement info
+	 * @param reinforcementStr current reinforcementStr
 	 */
 	public void setReinforcementStr(String reinforcementStr) {
 		this.reinforcementStr = reinforcementStr;	
@@ -349,6 +349,7 @@ public class PlayerModel extends Observable {
 	}
 	/**
 	 * The setter of baseReinforceStr, used to set baseReinforce info
+	 * @param baseReinforceStr current baseReinforceStr
 	 */
 	public void setBaseReinforceStr(String baseReinforceStr) {
 		this.baseReinforceStr = baseReinforceStr;
@@ -365,6 +366,7 @@ public class PlayerModel extends Observable {
 
 	/**
 	 * The setter of ExchangeCardStr, used to set card exchange info
+	 * @param exchangeCardStr current exchangeCardStr
 	 */
 	public void setExchangeCardStr(String exchangeCardStr) {
 		if (exchangeCardStr==null||exchangeCardStr.isEmpty()) this.exchangeCardStr = "";
@@ -377,6 +379,7 @@ public class PlayerModel extends Observable {
 			}
 		}
 	}
+	
 	/**
 	 * The getter of ExchangeStatus, used to return status of exchange
 	 * @return exchangeStatus status of exchange
@@ -384,8 +387,10 @@ public class PlayerModel extends Observable {
 	public String getExchangeStatus() {
 		return exchangeStatus;
 	}
+	
 	/**
 	 * The setter of ExchangeStatus, used to set the status of exchange
+	 * @param exchangeStatus new exchangeStatus
 	 */
 	public void setExchangeStatus(String exchangeStatus) {
 		this.exchangeStatus = exchangeStatus;
@@ -406,7 +411,8 @@ public class PlayerModel extends Observable {
 		notifyObservers(7);
 	}
 	/**
-	 * The setter of PutArmyStr, used to set the armyputting info
+	 * The setter of PutArmyStr, used to set the army putting info
+	 * @return current game object
 	 */	
 	public RiskGameModel getMyGame() {
 		return myGame;

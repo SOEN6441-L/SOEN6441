@@ -22,6 +22,7 @@ public class CountryModel{
 	
 	/**
 	 * Constructor of Country class.
+	 * @param countryID country's unique ID
 	 * @param countryName name of the new country
 	 * @param continent	continent object which contains this country
 	 */

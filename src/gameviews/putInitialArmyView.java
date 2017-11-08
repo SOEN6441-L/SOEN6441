@@ -19,6 +19,7 @@ import javax.swing.SwingWorker;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import gamemodels.ObservableNodes;
 import gamemodels.PlayerModel;
 import gamemodels.RiskGameModel;
 import mapmodels.CountryModel;
@@ -26,11 +27,11 @@ import mapmodels.RiskMapModel;
 
 
 /**
- * Class to define the GUI for players to place one by one their initial given armies on
+ * Class to define the GUI for players to place one by one their initial given armies on 
  * their own countries.
- *
+ * 
  * <p> Player place armies in round-robin fashion.</p>
- *
+ * 
  * @see JDialog
  */
 public class putInitialArmyView extends JDialog{
@@ -48,7 +49,7 @@ public class putInitialArmyView extends JDialog{
 	JButton byComputerBtn;
 	JButton enterBtn;
 	private int width= 420,height = 560;
-
+	
 	private RiskMapModel gameMap;
 	private PlayerModel[] players;
 	private int curTurn,curPlayer;
@@ -56,10 +57,10 @@ public class putInitialArmyView extends JDialog{
 	private int totalPlayers;
 	private int totalTurn;
 	private int[] leftArmies;
-	private ObservableNodes localCountries;
-
+	private ObservableNodes localCountries;	
+	
 	public int state=0; //0-Cancel, 1-confirm
-
+	
 	/**
 	 * This is the Constructor for configuring this GUI.
 	 * @param myGame Object of class RiskGame
@@ -67,7 +68,7 @@ public class putInitialArmyView extends JDialog{
 	public putInitialArmyView(RiskGameModel myGame){
 		this.gameMap = myGame.getGameMap();
 		this.players = myGame.getPlayers();
-
+		
 		leftArmies = new int[players.length];
 		localCountries = myGame.getLocalCountries();
 		setTitle("Startup Phase - Initial Armies");
@@ -75,59 +76,59 @@ public class putInitialArmyView extends JDialog{
 		setSize(width,height);
 		int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
 		int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-		setLocation((screenWidth-width)/2, (screenHeight-height)/2);
+		setLocation((screenWidth-width)/2, (screenHeight-height)/2);  		  
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);//set hide window, when close the window
-		setResizable(false);
-		setLayout(null);
+		setResizable(false);  
+		setLayout(null); 
 		setModal(true);
 		setVisible(false);
-
+		
 		Dimension size;
 		totalInitialArmies=0;
 		totalPlayers = 0;
 		//Loop to initial armies belong to each player,and armies in country
 		for(int i=0;i<players.length;i++){
-			if (players[i].getState()){
+			if (players[i].getState()){ 
 				totalInitialArmies+=myGame.getInitialArmies();
 				totalPlayers++;
 				leftArmies[i] = myGame.getInitialArmies();
-			}
+			}	
 		}
 		totalTurn = totalInitialArmies/totalPlayers;
 		if (totalInitialArmies%totalPlayers!=0) totalTurn++;
 		curTurn = 1;
 		curPlayer = -1;
-
+				
 		turnLabel = new JLabel("TURN "+curTurn+" of "+totalTurn+": ");
-		add(turnLabel);
+		add(turnLabel);  
 		turnLabel.setFont(new java.awt.Font("dialog",1,24));
 		turnLabel.setForeground(Color.BLACK);
 		size = turnLabel.getPreferredSize();
 		turnLabel.setBounds(15,15,size.width+15,size.height);
-
+		
 		findNextPlayer();
-
+		
 		playerLabel =  new JLabel(players[curPlayer].getName());
-		add(playerLabel);
+		add(playerLabel);  
 		playerLabel.setFont(new java.awt.Font("dialog",1,18));
 		playerLabel.setForeground(players[curPlayer].getMyColor());
-		playerLabel.setBounds(turnLabel.getBounds().x+size.width+15,15,size.width,size.height);
-
+		playerLabel.setBounds(turnLabel.getBounds().x+size.width+15,15,size.width,size.height); 	
+		
 		InitialArmy = new JLabel("Available initial given armies: "+leftArmies[curPlayer]);
-		add(InitialArmy);
+		add(InitialArmy);  
 		InitialArmy.setFont(new java.awt.Font("dialog",1,18));
 		InitialArmy.setForeground(Color.BLACK);
 		size = InitialArmy.getPreferredSize();
-		InitialArmy.setBounds(20,60,size.width,size.height);
-
-		countryLabel = new JLabel("Territories ("+players[curPlayer].getCountries().size()+"):");
-		add(countryLabel);
+		InitialArmy.setBounds(20,60,size.width,size.height); 	
+		
+		countryLabel = new JLabel("Territories ("+players[curPlayer].getCountries().size()+"):");  
+		add(countryLabel);  
 		countryLabel.setFont(new java.awt.Font("dialog",1,15));
 		size = countryLabel.getPreferredSize();
-		countryLabel.setBounds(15,100,size.width,size.height);
-
+		countryLabel.setBounds(15,100,size.width,size.height);   
+        
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
-		for (int i=0;i<localCountries.getNodes()[curPlayer].length;i++) {
+		for (int i=0;i<localCountries.getNodes()[curPlayer].length;i++) { 
 			CountryModel loopCountry = gameMap.findCountry(localCountries.getNodes()[curPlayer][i].getName());
 			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
 					+" (In "+loopCountry.getBelongTo().getName()+", "+localCountries.getNodes()[curPlayer][i].getNumber()+" armies)"));
@@ -153,44 +154,44 @@ public class putInitialArmyView extends JDialog{
 				}
 			}
 		});
-
+				
 		treeCountry.setCellRenderer(new CountryNodeRenderer(players[curPlayer].getMyColor()));
 
 		scrollPaneForCountry= new JScrollPane(treeCountry,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		add(scrollPaneForCountry);
-		scrollPaneForCountry.setBounds(15,125,385,330);
+		add(scrollPaneForCountry);  
+		scrollPaneForCountry.setBounds(15,125,385,330);	
 
-
-		promptLabel = new JLabel("Double click one country to place one army each turn.");
-		add(promptLabel);
+		
+		promptLabel = new JLabel("Double click one country to place one army each turn.");  
+		add(promptLabel);  
 		promptLabel.setFont(new java.awt.Font("dialog",1,13));
 		promptLabel.setForeground(Color.RED);
 		size = promptLabel.getPreferredSize();
 		promptLabel.setBounds(15,458,size.width,size.height);
-
+		
 		ButtonHandler buttonHandler = new ButtonHandler();
 		cancelBtn = new JButton("Cancel");
 		cancelBtn.setMnemonic('c');
-		cancelBtn.setDisplayedMnemonicIndex(0);
-		add(cancelBtn);
-		size = cancelBtn.getPreferredSize();
+		cancelBtn.setDisplayedMnemonicIndex(0);		
+		add(cancelBtn);  	     
+		size = cancelBtn.getPreferredSize();		
 		cancelBtn.setBounds(scrollPaneForCountry.getBounds().x+scrollPaneForCountry.getSize().width-size.width-1,484,size.width,size.height);
 		cancelBtn.addActionListener(buttonHandler);
-
-		byComputerBtn = new JButton("Continue by Computer");
-		add(byComputerBtn);
-		size = byComputerBtn.getPreferredSize();
+		
+		byComputerBtn = new JButton("Continue by Computer");	
+		add(byComputerBtn);  	     
+		size = byComputerBtn.getPreferredSize();		
 		byComputerBtn.setBounds(cancelBtn.getBounds().x-size.width-10,484,size.width,size.height);
 		byComputerBtn.addActionListener(buttonHandler);
-
-
-		enterBtn = new JButton("Confirm");
-		add(enterBtn);
-		size = enterBtn.getPreferredSize();
+		
+		
+		enterBtn = new JButton("Confirm");	
+		add(enterBtn);  	     
+		size = enterBtn.getPreferredSize();		
 		enterBtn.setBounds(cancelBtn.getBounds().x-size.width-10,78,size.width,size.height);
 		enterBtn.setVisible(false);
 		enterBtn.addActionListener(buttonHandler);
-	}
+	}	
 
 	/**
 	 * Method to find the next valid player
@@ -201,14 +202,14 @@ public class putInitialArmyView extends JDialog{
 		do {
 			int tempPlayer=(curPlayer+1)%players.length;
 			if (tempPlayer<curPlayer) curTurn++;
-			curPlayer = tempPlayer;
+			curPlayer = tempPlayer;			
 		}while (!players[curPlayer].getState()||leftArmies[curPlayer]==0);
 		return true;
 	}
-
+		
 	/**
 	 * This is a method that can refresh the state of all components in current GUI
-	 * @param allowClick decide if the continent tree response to user's click
+	 * @param allowClick decide if the continent tree response to user's click 
 	 */
 	public void reloadGUI(Boolean allowClick){
 		if (totalInitialArmies==0){
@@ -216,8 +217,8 @@ public class putInitialArmyView extends JDialog{
 			Dimension size = turnLabel.getPreferredSize();
 			turnLabel.setBounds(15,15,size.width,size.height);
 			playerLabel.setVisible(false);
-			InitialArmy.setVisible(false);
-			countryLabel.setVisible(false);
+			InitialArmy.setVisible(false); 		
+			countryLabel.setVisible(false);  
 			scrollPaneForCountry.getViewport().removeAll();
 			scrollPaneForCountry.setVisible(false);
 			promptLabel.setVisible(false);
@@ -225,18 +226,18 @@ public class putInitialArmyView extends JDialog{
 			cancelBtn.setBounds(cancelBtn.getBounds().x,78,cancelBtn.getSize().width,cancelBtn.getSize().height);
 			setSize(width,160);
 			return;
-		}
+		}		
 		turnLabel.setText("TURN "+curTurn+" of "+totalTurn+": ");
-
+		
 		playerLabel.setText(players[curPlayer].getName());
 		playerLabel.setForeground(players[curPlayer].getMyColor());
-
-		InitialArmy.setText("Available initial given armies: "+leftArmies[curPlayer]);
-
-		countryLabel.setText("Territories ("+players[curPlayer].getCountries().size()+"):");
-
+		
+		InitialArmy.setText("Available initial given armies: "+leftArmies[curPlayer]); 	
+		
+		countryLabel.setText("Territories ("+players[curPlayer].getCountries().size()+"):");  
+        
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
-		for (int i=0;i<localCountries.getNodes()[curPlayer].length;i++) {
+		for (int i=0;i<localCountries.getNodes()[curPlayer].length;i++) { 
 			CountryModel loopCountry = gameMap.findCountry(localCountries.getNodes()[curPlayer][i].getName());
 			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
 					+" (In "+loopCountry.getBelongTo().getName()+", "+localCountries.getNodes()[curPlayer][i].getNumber()+" armies)"));
@@ -262,12 +263,12 @@ public class putInitialArmyView extends JDialog{
 							}
 						}
 					}
-				}
+				}	
 			});
-		};
+		};	
 		treeCountry.setCellRenderer(new CountryNodeRenderer(players[curPlayer].getMyColor()));
 		scrollPaneForCountry.getViewport().removeAll();
-		scrollPaneForCountry.getViewport().add(treeCountry);
+		scrollPaneForCountry.getViewport().add(treeCountry);		
 	}
 
 	/**
@@ -281,33 +282,33 @@ public class putInitialArmyView extends JDialog{
 		public void actionPerformed(ActionEvent e) {
 			String buttonName = e.getActionCommand();
 			switch (buttonName){
-				case "Cancel":
-					state = 0;
-					setVisible(false);
-					break;
-				case "Confirm":
-					confirmInput();
-					break;
-				case "Continue by Computer":
-					byComputer();
-					break;
+			case "Cancel":
+				state = 0;
+				setVisible(false);
+				break;
+			case "Confirm":
+				confirmInput();
+				break;
+			case "Continue by Computer":
+				byComputer();
+				break;				
 			}
 		}
-	}
-
+	}	
+	
 	/**
 	 * This is a enter button implements the class ActionListener.
 	 * <p> Create an invisible enter button until the end of current phase</p>
 	 */
-	private void confirmInput() {
+	private void confirmInput() { 
 		state = 1;
 		setVisible(false);
 	}
-
+	
 	/**
 	 * Method to define a swing worker to do put armies job in background.
 	 */
-	private void byComputer() {
+	private void byComputer() { 
 		SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
 			@Override
 			protected Void doInBackground() {
@@ -340,6 +341,6 @@ public class putInitialArmyView extends JDialog{
 		cancelBtn.setVisible(false);
 		reloadGUI(false);
 		worker.execute();
-	}
+	}	
 }
  

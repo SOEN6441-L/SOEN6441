@@ -32,8 +32,8 @@ import mapmodels.CountryModel;
  */
 public class ReinforcePhaseView extends JDialog{
 
-    private static final long serialVersionUID = 1L;
-    //components in this window
+	private static final long serialVersionUID = 1L;
+	//components in this window
     JLabel playerLabel;
     JLabel countryLabel;
     JLabel InitialArmy;
@@ -60,18 +60,17 @@ public class ReinforcePhaseView extends JDialog{
      * Constructor of class ReinforcePhaseView to generate reinforce phase UI
      * @param player The player that who is in turn
      * @param game The game reinforce phase is in
-     * @param armies The number of armies this reinforce phase has
      */
     public ReinforcePhaseView(PlayerModel player, RiskGameModel game){
         this.player = player;
         this.myGame = game;
-
+        
         boolean changeCards = false;
 
         if (player.ifForceExchange()){
             JOptionPane.showMessageDialog(null, "You have more than 5 cards, so you have to exchange them for armies until less than 5.");
-            player.setExchangeStatus("Forced to exchange Cards ...");
-            TradeInCards exchangeView = new TradeInCards(player);
+        	player.setExchangeStatus("Forced to exchange Cards ...");
+        	TradeInCards exchangeView = new TradeInCards(player);
             exchangeView.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
             exchangeView.setVisible(true);
             exchangeView.dispose();
@@ -178,8 +177,8 @@ public class ReinforcePhaseView extends JDialog{
         promptLabel.setFont(new java.awt.Font("dialog",1,13));
         promptLabel.setForeground(Color.RED);
         size = promptLabel.getPreferredSize();
-        promptLabel.setBounds(15,458,size.width,size.height);
-
+        promptLabel.setBounds(15,458,size.width,size.height); 
+        
         /*cancelBtn = new JButton("Cancel");
         cancelBtn.setMnemonic('c');
         cancelBtn.setDisplayedMnemonicIndex(0);
@@ -196,7 +195,7 @@ public class ReinforcePhaseView extends JDialog{
         exchangeBtn.setBounds(scrollPaneForCountry.getBounds().x+scrollPaneForCountry.getSize().width-size.width-1,484,size.width,size.height);
         exchangeBtn.setEnabled(!changeCards&&player.canExchange());
         exchangeBtn.addActionListener(new exchangeHandler());
-
+       
         cardsLabel = new JLabel(player.getCardsString(1));
         cardsLabel.setFont(new java.awt.Font("dialog",1,13));
         cardsLabel.setForeground(Color.BLUE);

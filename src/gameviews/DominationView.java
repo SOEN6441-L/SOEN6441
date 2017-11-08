@@ -20,7 +20,6 @@ public class DominationView implements Observer{
 
     /**
      * This is the constructor of class DominationView
-     * @param newPlayers The players are in the game
      */
     public DominationView(){      
         frame = new JFrame();

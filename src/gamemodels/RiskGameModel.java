@@ -8,7 +8,6 @@ import java.util.Observer;
 
 import javax.swing.SwingWorker;
 
-import gameviews.ObservableNodes;
 import gameviews.PhaseView;
 import gameviews.TradeInCardsView;
 import gameviews.putInitialArmyView;
@@ -344,6 +343,7 @@ public class RiskGameModel extends Observable {
     }
     /**
      * The setter of CurPlayer, used to set the current player
+     * @param curPlayer current player
      */
     public void setCurPlayer(int curPlayer) {
         this.curPlayer = curPlayer;
@@ -368,6 +368,7 @@ public class RiskGameModel extends Observable {
 	}
 	/**
 	 * The setter of GFameStage, used to set the stage of game.
+	 * @param gameStage current gameStage
 	 */
 	public void setGameStage(int gameStage) {
 		this.gameStage = gameStage;
@@ -383,6 +384,7 @@ public class RiskGameModel extends Observable {
 	}
 	/**
 	 * The setter of PhaseString, used to set phase string
+	 * @param phaseString current phaseString
 	 */
 	public void setPhaseString(String phaseString) {
 		this.phaseString = phaseString;
@@ -396,14 +398,17 @@ public class RiskGameModel extends Observable {
 	public ObservableNodes getLocalCountries(){
 		return localCountries;
 	}
+	
 	/**
 	 * Set observer label
+	 * @param observerLabel the observer Label object
 	 */
 	public void setObserverLabel(Observer observerLabel) {
 		this.AssignCountryLabel = observerLabel;
 	}
 	/**
 	 * Set observer label
+	 * @param phaseView the phase view object
 	 */
 	public void setPhaseView(PhaseView phaseView) {
 		this.phaseView = phaseView;

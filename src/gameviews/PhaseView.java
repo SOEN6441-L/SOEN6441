@@ -225,6 +225,7 @@ public class PhaseView extends JFrame implements Observer{
 	
 	/**
 	 * The method is to reload one player tree
+	 * @param index the index of player
 	 */
 	private void reloadPlayers(int index){
 		//configuration
