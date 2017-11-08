@@ -74,6 +74,7 @@ MyTree  | Class to extend JTable, add one new method.
 RowHeaderTable  | Class for row headers
 
 ### 1.8 Tests
+The module includes all unit tests about the project.
 
 ### 1.9 Maps
 The module is used to store map files.
