@@ -28,11 +28,13 @@ public class RiskMapModel extends Observable{
     private int countryNum; 
     /**store all the connections*/
     private Map<CountryModel,ArrayList<CountryModel>> adjacencyList;
+    private int globalID;
 
     /**
      * The constructor of class RiskMap.
      */
     public RiskMapModel(){
+    	this.globalID = 1;
     	this.setAuthor("");
 		this.setWarn("");
 		this.setWrap("");
@@ -51,6 +53,7 @@ public class RiskMapModel extends Observable{
 	 */
     public void initMapModel(String name) {
 		this.riskMapName = name;
+		this.globalID = 1;
 		this.setAuthor("Invincible Team Four");
 		this.setWarn("yes");
 		this.setWrap("no");
@@ -207,6 +210,20 @@ public class RiskMapModel extends Observable{
 		}
 		return null;
 	}
+	
+	/**
+	 * Method to find the country according to the country's ID.
+	 * @param countryID country's unique ID
+	 * @return country that found or null if not exits
+	 */
+	public CountryModel findCountryByID(int countryID) {
+		CountryModel country = null;
+		for (ContinentModel loopContinent : getContinents()) {
+			country = loopContinent.findCountryByID(countryID);
+			if (country!=null) return country; 
+		}
+		return null;
+	}	
 
 	/**
 	 * Method to find the continent according to the continent's name.
@@ -320,7 +337,7 @@ public class RiskMapModel extends Observable{
     		return new ErrorMsg(2,"Country <"+countryName+"> already exists");
     	}
 
-    	CountryModel newCountry = new CountryModel(countryName,targetContinent);
+    	CountryModel newCountry = new CountryModel(globalID++,countryName,targetContinent);
     	newCountry.setCoordinate(coordinateX, coordinateY);
     	
     	targetContinent.addCountry(newCountry);

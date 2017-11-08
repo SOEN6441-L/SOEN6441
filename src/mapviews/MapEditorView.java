@@ -15,12 +15,13 @@ import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import basicclasses.MyTable;
+import basicclasses.MyTree;
+import basicclasses.RowHeaderTable;
 import mapcontrollers.MapEditorController;
 import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
@@ -32,9 +33,6 @@ import mapmodels.RiskMapModel;
  * @see JFrame
  */
 public class MapEditorView extends JFrame implements Observer {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JButton newMapBtn;
 	private JButton loadFromFileBtn;
@@ -55,9 +53,9 @@ public class MapEditorView extends JFrame implements Observer {
 	private JMenuItem mDeleteCountry, mRenameCountry, mMoveCountry;
 	private JMenuItem mExpandAll, mCollapseAll;	
 
-	private JTree treeContinent;
+	private MyTree treeContinent;
 	private JScrollPane scrollPaneForContinent;
-	private JTable adjacencyMatrix;
+	private MyTable adjacencyMatrix;
 	private JScrollPane scrollPaneForMatrix;
 	
 	private RiskMapModel myMapModel;
@@ -90,7 +88,7 @@ public class MapEditorView extends JFrame implements Observer {
 		labelContinent.setBounds(15,8,size.width+200,size.height);   
         
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - Untitled ");
-		treeContinent= new JTree(myTreeRoot);
+		treeContinent= new MyTree(myTreeRoot);
 		treeContinent.setCellRenderer(new CategoryNodeRenderer());
 
 		scrollPaneForContinent= new JScrollPane(treeContinent,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -263,7 +261,7 @@ public class MapEditorView extends JFrame implements Observer {
 			switch (buttonName){
 			case "Full width":
 				matrixDisplayMode = "preferred";
-				fitTableColumns(adjacencyMatrix);
+				adjacencyMatrix.fitTableColumns();
 				break;
 			case "Set":
 				Pattern pattern = Pattern.compile("[0-9]*");  
@@ -272,13 +270,13 @@ public class MapEditorView extends JFrame implements Observer {
 					matrixColumnWidth = Integer.parseInt(width);			
 				else colWidthEdit.setText(String.valueOf(matrixColumnWidth));
 				matrixDisplayMode = "same";
-				fitTableColumns(adjacencyMatrix,matrixColumnWidth);	
+				adjacencyMatrix.fitTableColumns(matrixColumnWidth);	
 				break;
 			case "Expand All":
 				if (treeContinent!=null){
 					TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
 					continentExpandMode = 1;
-					expandAll(treeContinent, new TreePath(root),1);
+					treeContinent.expandAll(new TreePath(root),1);
 				}				
 				break;
 			case "Collapse All":
@@ -289,7 +287,7 @@ public class MapEditorView extends JFrame implements Observer {
 						for (Enumeration<?> eu = rootNode.children(); eu.hasMoreElements();) {
 							TreeNode n = (TreeNode) eu.nextElement();
 							TreePath path = new TreePath(rootNode).pathByAddingChild(n);
-							expandAll(treeContinent, path, 2);
+							treeContinent.expandAll(path, 2);
 						}
 					}
 				}				
@@ -297,25 +295,6 @@ public class MapEditorView extends JFrame implements Observer {
 			}
 		}
 	}	
-
-	/**
-	 * Method to expand or collapse all tree structure.
-	 * @param tree the tree object
-	 * @param parent the parent node
-	 * @param mode 1 - expand, other number - collapse
-	 */
-	private void expandAll(JTree tree, TreePath parent, int mode) {
-		TreeNode node = (TreeNode) parent.getLastPathComponent();
-		if (node.getChildCount() >= 0) {
-			for (Enumeration<?> e = node.children(); e.hasMoreElements();) {
-				TreeNode n = (TreeNode) e.nextElement();
-				TreePath path = parent.pathByAddingChild(n);
-				expandAll(tree, path, mode);
-			}
-		}
-		if (mode==1) tree.expandPath(parent);
-		else tree.collapsePath(parent);
-	}
 
 	/**
 	 * Method to get the user select object.
@@ -341,7 +320,7 @@ public class MapEditorView extends JFrame implements Observer {
 			}
 			myTreeRoot.add(loopContinentNode);
 		}	
-		treeContinent = new JTree(myTreeRoot);
+		treeContinent = new MyTree(myTreeRoot);
 		treeContinent.addMouseListener( new  MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				int selRow = treeContinent.getRowForLocation(e.getX(), e.getY());
@@ -370,77 +349,16 @@ public class MapEditorView extends JFrame implements Observer {
 		scrollPaneForContinent.getViewport().removeAll();
 		scrollPaneForContinent.getViewport().add(treeContinent);
 		TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
-		if (continentExpandMode==1) expandAll(treeContinent, new TreePath(root),1);
+		if (continentExpandMode==1) treeContinent.expandAll(new TreePath(root),1);
 		else {
 			if (root.getChildCount() >= 0) {
 				for (Enumeration<?> e = root.children(); e.hasMoreElements();) {
 					TreeNode n = (TreeNode) e.nextElement();
 					TreePath path = new TreePath(root).pathByAddingChild(n);
-					expandAll(treeContinent, path, 2);
+					treeContinent.expandAll(path, 2);
 				}
 			}
 		}
-	}
-
-	/**
-	 * Method to adjust the table's column size to preferred width.
-	 * @param myTable table want to adjust
-	 * @return max width of all columns
-	 */
-	private int fitTableColumns(JTable myTable) {
-		JTableHeader header = myTable.getTableHeader();
-		int rowCount = myTable.getRowCount();
-
-		Enumeration<?> columns = myTable.getColumnModel().getColumns();
-		int maxWidth = 0;
-		while (columns.hasMoreElements()) {
-			TableColumn column = (TableColumn) columns.nextElement();
-			int col = header.getColumnModel().getColumnIndex(column.getIdentifier());
-			int width = (int) header.getDefaultRenderer()
-					.getTableCellRendererComponent(myTable, column.getIdentifier(), false, false, -1, col)
-					.getPreferredSize().getWidth();
-			for (int row = 0; row < rowCount; row++) {
-				int preferredWidth = (int) myTable.getCellRenderer(row, col)
-						.getTableCellRendererComponent(myTable, myTable.getValueAt(row, col), false, false, row, col)
-						.getPreferredSize().getWidth();
-				width = Math.max(width, preferredWidth);
-				if (width>maxWidth) maxWidth = width;
-			}
-			header.setResizingColumn(column);
-			column.setWidth(Math.max(width,50) + myTable.getIntercellSpacing().width + 10);
-		}
-		return maxWidth;
-	}
-
-	/**
-	 * Method to adjust the table's column size as the parameter setWidth.
-	 * @param myTable table want to adjust
-	 * @param setWidth the column size want to adjust
-	 * @return max width of all columns
-	 */
-	private int fitTableColumns(JTable myTable, int setWidth) {
-		JTableHeader header = myTable.getTableHeader();
-		int rowCount = myTable.getRowCount();
-
-		Enumeration<?> columns = myTable.getColumnModel().getColumns();
-		int maxWidth = 0;
-		while (columns.hasMoreElements()) {
-			TableColumn column = (TableColumn) columns.nextElement();
-			int col = header.getColumnModel().getColumnIndex(column.getIdentifier());
-			int width = (int) header.getDefaultRenderer()
-					.getTableCellRendererComponent(myTable, column.getIdentifier(), false, false, -1, col)
-					.getPreferredSize().getWidth();
-			for (int row = 0; row < rowCount; row++) {
-				int preferredWidth = (int) myTable.getCellRenderer(row, col)
-						.getTableCellRendererComponent(myTable, myTable.getValueAt(row, col), false, false, row, col)
-						.getPreferredSize().getWidth();
-				width = Math.max(width, preferredWidth);
-				if (width>maxWidth) maxWidth = width;
-			}
-			header.setResizingColumn(column);
-			column.setWidth(setWidth + myTable.getIntercellSpacing().width);
-		}
-		return maxWidth;
 	}
 
 	/**
@@ -472,10 +390,7 @@ public class MapEditorView extends JFrame implements Observer {
 		}
 		matrixModel.setDataVector(dataVector, identifiers);
 		
-		adjacencyMatrix = new JTable(matrixModel){
-			/**
-			 * 
-			 */
+		adjacencyMatrix = new MyTable(matrixModel){
 			private static final long serialVersionUID = 1L;
 
 			public boolean isCellEditable(int row, int column){
@@ -528,8 +443,8 @@ public class MapEditorView extends JFrame implements Observer {
 		//adjacencyMatrix.getTableHeader().setDefaultRenderer(new AdjacencyMatrixHeaderRenderer(adjacencyMatrix));
 		int maxWidth;
 		if (matrixDisplayMode.equals("preferred"))
-			maxWidth = fitTableColumns(adjacencyMatrix);
-		else maxWidth = fitTableColumns(adjacencyMatrix,matrixColumnWidth); 
+			maxWidth = adjacencyMatrix.fitTableColumns();
+		else maxWidth = adjacencyMatrix.fitTableColumns(matrixColumnWidth); 
 		
 		scrollPaneForMatrix.getViewport().removeAll();
 		scrollPaneForMatrix.getViewport().add(adjacencyMatrix);
@@ -582,7 +497,7 @@ public class MapEditorView extends JFrame implements Observer {
 	}
 	
 	/**
-	 * Method to change the related RiskMap object.
+	 * Method to add the related RiskMap object.
 	 * @param myMap the new RiskMap model
 	 */
 	public void addModel(RiskMapModel myMap){

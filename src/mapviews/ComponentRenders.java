@@ -76,9 +76,6 @@ class MatrixRenderer implements TableCellRenderer{
  * Render of the tree view of continents and countries in mapEditor main GUI.
  */
 class  CategoryNodeRenderer  extends  DefaultTreeCellRenderer{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	ImageIcon rootIcon = new ImageIcon("src/images/map.png");
 	ImageIcon continentIcon = new ImageIcon("src/images/continent.png");

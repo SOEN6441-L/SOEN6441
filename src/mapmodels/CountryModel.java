@@ -1,6 +1,6 @@
 package mapmodels;
 
-import gameelements.Player;
+import gamemodels.PlayerModel;
 
 /**
  * This is the class for defining country module.
@@ -8,11 +8,12 @@ import gameelements.Player;
  * <p> This class contains all information of a country.</p>
  */
 public class CountryModel{
+	private int countryId;
 	private String countryName;//country's name, unique and can be changed.
 	/**continent which contains this country*/
 	private ContinentModel belongTo;
 	/**player who owns this country*/
-	private Player owner;
+	private PlayerModel owner;
 	private int coordinateX;
 	private int coordinateY;
 	/**used in DFS algorithm to find path or check connectivity*/
@@ -24,7 +25,8 @@ public class CountryModel{
 	 * @param countryName name of the new country
 	 * @param continent	continent object which contains this country
 	 */
-	public CountryModel(String countryName, ContinentModel continent){
+	public CountryModel(int countryID, String countryName, ContinentModel continent){
+		this.setCountryId(countryID);
 		this.setName(countryName);
 		this.setBelongTo(continent);
 		this.setOwner(null);
@@ -71,7 +73,7 @@ public class CountryModel{
 	 * Method to get country's owner.
 	 * @return country's current owner
 	 */
-	public Player getOwner() {
+	public PlayerModel getOwner() {
 		return owner;
 	}
 
@@ -80,7 +82,7 @@ public class CountryModel{
 	 * of a game or during an attack phase.
 	 * @param owner country's new owner
 	 */
-	public void setOwner(Player owner) {
+	public void setOwner(PlayerModel owner) {
 		this.owner = owner;
 	}
 
@@ -133,5 +135,21 @@ public class CountryModel{
 	 */
 	public void setArmyNumber(int armyNumber) {
 		this.armyNumber = armyNumber;
+	}
+
+	/**
+	 * Method to get the unique ID of this country.
+	 * @return  unique ID
+	 */
+	public int getCountryId() {
+		return countryId;
+	}
+
+	/**
+	 * Method to set country's unique ID
+	 * @param countryId unique ID
+	 */
+	public void setCountryId(int countryId) {
+		this.countryId = countryId;
 	}		
 }

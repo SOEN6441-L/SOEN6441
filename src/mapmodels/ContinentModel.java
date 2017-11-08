@@ -1,7 +1,8 @@
 package mapmodels;
 
 import java.util.ArrayList;
-import gameelements.Player;
+
+import gamemodels.PlayerModel;
 
 /**
  * This is the class for defining continent module.
@@ -12,7 +13,7 @@ import gameelements.Player;
 public class ContinentModel {
 	private String continentName;//continent's name, unique and can be changed.
 	private int controlNum;//Bonus armies during reinforcement phase when the whole continent is owned by one player.
-	private Player owner;//The player who owns the whole continent.
+	private PlayerModel owner;//The player who owns the whole continent.
 	private ArrayList<CountryModel> countryList;
 	/**
 	 * Constructor for Continent class.
@@ -86,7 +87,7 @@ public class ContinentModel {
 	 * Method to get the owner of this continent. 
 	 * @return the owner of this continent or null if no owner
 	 */
-	public Player getOwner() {
+	public PlayerModel getOwner() {
 		return owner;
 	}	
 	
@@ -94,7 +95,7 @@ public class ContinentModel {
 	 * Method to check if this continent has been owned by one player.
 	 */
 	public void checkOwner(){
-		Player player = null;
+		PlayerModel player = null;
 		boolean owned = true;
 		for (CountryModel loopCountry:countryList){
 			if (loopCountry.getOwner()!=null){
@@ -126,4 +127,18 @@ public class ContinentModel {
 		}
 		return null;
 	}
+	
+	/**
+	 * Method to find a country according to ID in this continent.
+	 * @param countryID the unique ID of the country
+	 * @return the country object found in this continent or null if can't find
+	 */	
+	public CountryModel findCountryByID(int countryID){
+		for (CountryModel loopCountry:countryList){
+			if (loopCountry.getCountryId()==countryID){
+				return loopCountry;
+			}	
+		}
+		return null;
+	}	
 }
