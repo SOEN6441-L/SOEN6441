@@ -190,7 +190,6 @@ public class PlayerModel extends Observable {
 	
 	/**
      * Method to add armies to player.
-     * @param armies armies to add
      */
 	public void lostArmies() {
 		this.totalArmies--;

@@ -140,7 +140,6 @@ public class CountryModel{
 	
 	/**
 	 * Method to change the army number on this country, is used in all phases of a game.
-	 * @param armyNumber number of armies
 	 */
 	public void lostArmy() {
 		this.armyNumber--;

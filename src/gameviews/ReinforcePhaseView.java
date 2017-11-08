@@ -59,7 +59,6 @@ public class ReinforcePhaseView extends JDialog{
     /**
      * Constructor of class ReinforcePhaseView to generate reinforce phase UI
      * @param player The player that who is in turn
-     * @param game The game reinforce phase is in
      */
     public ReinforcePhaseView(PlayerModel player){
         this.player = player;

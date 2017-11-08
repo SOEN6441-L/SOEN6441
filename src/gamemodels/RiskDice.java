@@ -17,8 +17,12 @@ public class RiskDice {
 	
 	/**
 	 * This method will perform entire dicing process between attacker and defender.
-	 * 
 	 * <p>A win or lose result will be provided to player, showing the result of current combat.</p>
+	 * @param attacker The attack player
+	 * @param defender The defend player
+	 * @param num_attacker The dice number of attacker
+	 * @param num_defender The dice number of defender
+	 * @return combat result
 	 */
 	public String[] startDicing(PlayerModel attacker, int num_attacker, 
 			PlayerModel defender, int num_defender){
@@ -44,19 +48,11 @@ public class RiskDice {
 				array_defender_dice[j]=rollDice();
 				System.out.println(array_defender_dice[j]);
 			}
-			
-			//return combat result
+
 			temp_att=sortDice(array_attacker_dice);
-//			//test only-print arr
-//			for(int numArr1:temp_att){
-//				System.out.print(numArr1+" ");
-//			}
-			
+
 			temp_def=sortDice(array_defender_dice);
-//			//test only-print arr
-//			for(int numArr2:temp_def){
-//				System.out.print(numArr2+" ");
-//			}	//test end
+
 			for(int i=0;i<num_defender;i++){
 				if(temp_att[temp_att.length-1]>temp_def[temp_def.length-1]){
 					combat_result[i]=RESILT_WIN;
@@ -114,6 +110,7 @@ public class RiskDice {
 	
 	/**
 	 * This is a sort method, which can process result of dices into positive-sequence.
+	 * @param arr The int array for the result from last attack
 	 * @return arr A sorted array for dice result.
 	 */
 	public int[] sortDice(int[] arr){
