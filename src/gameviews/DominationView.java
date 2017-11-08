@@ -12,7 +12,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Created by liarthur on 03/11/2017.
+ * This is the view class of Domination view show the chart of domination
  */
 public class DominationView implements Observer{
     private PlayerModel[] players;
