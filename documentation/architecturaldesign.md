@@ -9,7 +9,6 @@ The Graph below is the modular organization diagram.
 ## Modules Description
 
 ### 1.1 Map Models
-The Map Module includes all the elements about editting map.
 
 File_Name  | Description
 ------------- | -------------
@@ -34,7 +33,6 @@ BasicInfoController  | Class acting as the BasicInfoView's controller, to define
 MapEditorController  | Class acting as the MapEditorView's controller, to define action performed according to different users' action.
 
 ### 1.4 Game Modules
-The map module includes all the basic elements of the game, like player etc..
 
 File_Name  | Description
 ------------- | -------------
