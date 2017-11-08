@@ -38,8 +38,10 @@ The map module includes all the basic elements of the game, like player etc..
 
 File_Name  | Description
 ------------- | -------------
-Player  | The class is to describe attributes of players and calculate how many armies are given according to numbers of cards.
-RiskGame  | The class is to describe the main part of the Risk game
+NodeRecord  | This is a base class used to record brief information of a country, is used in all phases of a game.
+ObservbleNodes  | User-defined observable array of nodes
+PlayerModel  | This is class for defining player. A player belongs to a RiskGame object, has amount of armies, can own several countries.
+RiskGameModel  | This is the Class RiskGame to represent and control a game.
 
 ### 1.5 Game Views
 
