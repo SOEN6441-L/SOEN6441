@@ -1,4 +1,4 @@
-package gamecontroller;
+package gameviews;
 
 
 import java.awt.Color;
@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -18,9 +19,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import gameelements.NodeRecord;
-import gameelements.Player;
-import gameelements.RiskGame;
+import gamemodels.NodeRecord;
+import gamemodels.PlayerModel;
+import gamemodels.RiskGameModel;
 import mapmodels.CountryModel;
 
 /**
@@ -31,11 +32,12 @@ import mapmodels.CountryModel;
  */
 public class ReinforcePhaseView extends JDialog{
 
-	private static final long serialVersionUID = 1L;
-	//components in this window
+    private static final long serialVersionUID = 1L;
+    //components in this window
     JLabel playerLabel;
     JLabel countryLabel;
     JLabel InitialArmy;
+    JLabel cardsLabel;
     JLabel turnLabel;
     JTree treeCountry;
     JLabel promptLabel;
@@ -46,14 +48,11 @@ public class ReinforcePhaseView extends JDialog{
     JButton enterBtn;
     private int width= 420,height = 560;
 
-    private Player player;
-    private RiskGame myGame;
+    private PlayerModel player;
+    private RiskGameModel myGame;
 
-    private int leftArmies, sourceArmies, totalArmies;
+    private int leftArmies;
     private NodeRecord[] localCountries;
-    private int[] myCards;
-    private boolean cardExchanged;
-    private int exchangeArmies;
 
     public int state=0; //0-Cancel, 1-confirm
 
@@ -63,28 +62,23 @@ public class ReinforcePhaseView extends JDialog{
      * @param game The game reinforce phase is in
      * @param armies The number of armies this reinforce phase has
      */
-    public ReinforcePhaseView(Player player, RiskGame game, int armies){
+    public ReinforcePhaseView(PlayerModel player, RiskGameModel game){
         this.player = player;
         this.myGame = game;
-        myCards = new int[3];
-        cardExchanged = false;
-        exchangeArmies = 0;
-        player.getCards(myCards);
+
+        boolean changeCards = false;
 
         if (player.ifForceExchange()){
-            while (!cardExchanged){
-                JOptionPane.showMessageDialog(null, "You has 5 cards, so you have to exchange 3 card for armies!  "
-                        + "\r\nThis is your "+(player.getChangeCardTimes()+1)+" time to exhange, can get "+player.CalExchangeArmies()+" armies.");
-                TradeInCards exchangeView = new TradeInCards(myCards);
-                exchangeView.setVisible(true);
-                cardExchanged = exchangeView.state;
-                if (cardExchanged) exchangeArmies = player.CalExchangeArmies();
-                exchangeView.dispose();
-            };
+            JOptionPane.showMessageDialog(null, "You have more than 5 cards, so you have to exchange them for armies until less than 5.");
+            player.setExchangeStatus("Forced to exchange Cards ...");
+            TradeInCards exchangeView = new TradeInCards(player);
+            exchangeView.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+            exchangeView.setVisible(true);
+            exchangeView.dispose();
+            changeCards = true;
+            player.setExchangeStatus("Exchange Cards ... finished.");
         }
-        sourceArmies = armies;
-        leftArmies = Math.max(sourceArmies, 3);
-        totalArmies = Math.max(sourceArmies, 3);
+        leftArmies = player.getTotalReinforcement();
 
         setTitle("Reinforcement Phase");
 
@@ -147,23 +141,24 @@ public class ReinforcePhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
             myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
+                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountry= new JTree(myTreeRoot);
         treeCountry.addMouseListener( new  MouseAdapter(){
             public void mousePressed(MouseEvent e){
                 int selRow = treeCountry.getRowForLocation(e.getX(), e.getY());
                 TreePath selPath = treeCountry.getPathForLocation(e.getX(), e.getY());
-                if (selRow!=-1 && (e.getClickCount()==2)){
+                if (selRow>0 && (e.getClickCount()==2)){
                     treeCountry.setSelectionPath(selPath);
                     if (selPath!=null) {
                         if (selPath.getParentPath()==null){ //root node
                         }
                         else if (selPath.getParentPath().getParentPath()==null){//countries
                             leftArmies-=armyNumberCombo.getSelectedIndex()+1;
-                            localCountries[selRow-1].Number+=armyNumberCombo.getSelectedIndex()+1;
+                            localCountries[selRow-1].setNumber(localCountries[selRow-1].getNumber() + armyNumberCombo.getSelectedIndex()+1);
+                            player.setPutArmyStr("Places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName());
                             reloadGUI();
                         }
                     }
@@ -199,9 +194,15 @@ public class ReinforcePhaseView extends JDialog{
         add(exchangeBtn);
         size = exchangeBtn.getPreferredSize();
         exchangeBtn.setBounds(scrollPaneForCountry.getBounds().x+scrollPaneForCountry.getSize().width-size.width-1,484,size.width,size.height);
-        exchangeBtn.setVisible(player.canExchange(myCards));
+        exchangeBtn.setEnabled(!changeCards&&player.canExchange());
         exchangeBtn.addActionListener(new exchangeHandler());
 
+        cardsLabel = new JLabel(player.getCardsString(1));
+        cardsLabel.setFont(new java.awt.Font("dialog",1,13));
+        cardsLabel.setForeground(Color.BLUE);
+        size = cardsLabel.getPreferredSize();
+        cardsLabel.setBounds(exchangeBtn.getBounds().x-size.width-30,exchangeBtn.getBounds().y+3,size.width,size.height);
+        add(cardsLabel);
 
         enterBtn = new JButton("Confirm");
         add(enterBtn);
@@ -216,7 +217,7 @@ public class ReinforcePhaseView extends JDialog{
      */
     public void reloadGUI(){
 
-        exchangeBtn.setVisible(false);
+        exchangeBtn.setEnabled(false);
 
         if (leftArmies == 0){
             InitialArmy.setText("Reinforcement Phase done!");
@@ -245,9 +246,9 @@ public class ReinforcePhaseView extends JDialog{
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
-            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].name);
+            CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
             myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].Number+" armies)"));
+                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountry = null;
         treeCountry= new JTree(myTreeRoot);
@@ -255,14 +256,15 @@ public class ReinforcePhaseView extends JDialog{
             public void mousePressed(MouseEvent e){
                 int selRow = treeCountry.getRowForLocation(e.getX(), e.getY());
                 TreePath selPath = treeCountry.getPathForLocation(e.getX(), e.getY());
-                if (selRow!=-1 && (e.getClickCount()==2)){
+                if (selRow>0 && (e.getClickCount()==2)){
                     treeCountry.setSelectionPath(selPath);
                     if (selPath!=null) {
                         if (selPath.getParentPath()==null){ //root node
                         }
-                        else if (selPath.getParentPath().getParentPath()==null){//countries
+                        else{//countries
                             leftArmies-=armyNumberCombo.getSelectedIndex()+1;
-                            localCountries[selRow-1].Number+=armyNumberCombo.getSelectedIndex()+1;
+                            localCountries[selRow-1].setNumber(localCountries[selRow-1].getNumber() + armyNumberCombo.getSelectedIndex()+1);
+                            player.setPutArmyStr("Places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName());
                             reloadGUI();
                         }
                     }
@@ -291,18 +293,12 @@ public class ReinforcePhaseView extends JDialog{
     private class enterBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (player.getState()){
-                player.addArmies(totalArmies);
-                if (cardExchanged) {
-                    player.increaseChangeCardTimes();
-                    player.setCards(myCards);
-                }
                 if (localCountries!=null){
                     for (int j=0;j<localCountries.length;j++){
-                        myGame.getGameMap().findCountry(localCountries[j].name).setArmyNumber(localCountries[j].Number);
+                        myGame.getGameMap().findCountry(localCountries[j].getName()).setArmyNumber(localCountries[j].getNumber());
                     }
                 }
             }
-            state = 1;
             setVisible(false);
         }
     }
@@ -312,19 +308,19 @@ public class ReinforcePhaseView extends JDialog{
      */
     private class exchangeHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (cardExchanged) return;
-            JOptionPane.showMessageDialog(null, "This is your "+(player.getChangeCardTimes()+1)+" time to exhange, can get "+player.CalExchangeArmies()+" armies.");
-            TradeInCards exchangeView = new TradeInCards(myCards);
+            player.setExchangeStatus("Exchanging Cards ...");
+            TradeInCards exchangeView = new TradeInCards(player);
             exchangeView.setVisible(true);
-            cardExchanged = exchangeView.state;
-            if (cardExchanged) {
-                exchangeArmies = player.CalExchangeArmies();
-                sourceArmies+=exchangeArmies;
-                leftArmies = Math.max(sourceArmies, 3);
-                totalArmies = Math.max(sourceArmies, 3);
-                reloadGUI();
+            cardsLabel.setText(player.getCardsString(1));
+            exchangeBtn.setEnabled(false);
+            armyNumberCombo.removeAllItems();
+            leftArmies = player.getTotalReinforcement();
+            for (int i=0;i<leftArmies;i++) {
+                armyNumberCombo.addItem(i+1);
             }
+            armyNumberCombo.setSelectedIndex(leftArmies-1);
             exchangeView.dispose();
+            player.setExchangeStatus("Exchange Cards ... finished.");
         }
     }
 }

@@ -8,7 +8,10 @@ The Graph below is the modular organization diagram.
 
 ## Modules Description
 
-### 1.1 Game Module
+### 1.1 Map Models
+### 1.2 Map Views
+### 1.3 Map Controllers
+### 1.4 Game Module
 The map module includes all the basic elements of the game, like player etc..
 
 File_Name  | Description
