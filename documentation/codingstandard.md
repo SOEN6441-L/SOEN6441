@@ -150,9 +150,9 @@ It's even good to be *really* obvious.
       ...
     }
     
-### Comment codes out
+### Absence of "commented out" codes
 
-Add **"/*"** at the beginning of the code block and **"*/"** at the end.
+Delete codes between **"/*"**  and **"*/"** to make codes clear.
 
 	/*
 	public Country findCountry(String countryName) {
