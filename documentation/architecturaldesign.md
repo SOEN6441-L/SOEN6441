@@ -76,6 +76,20 @@ RowHeaderTable  | Class for row headers
 ### 1.8 Tests
 The module includes all unit tests about the project.
 
+File_Name  | Description
+------------- | -------------
+AttackPhase  | Class to extend JPopupMenu, add one new varible and relative methods
+ContinentTest  | Class to extend JTable, add two new methods.
+CountryTest  | Class to extend JTable, add one new method.
+RowHeaderTable  | Class for row headers
+FortificationPhaseTest  | 
+PlayerModelTest  | 
+PlayerTestReinforcementArmies  | 
+RiskGameModelTest  | 
+RiskMapTest  | 
+CountryTest  | 
+CountryTest  | 
+
 ### 1.9 Maps
 The module is used to store map files.
 
