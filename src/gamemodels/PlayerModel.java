@@ -28,7 +28,6 @@ public class PlayerModel extends Observable {
     private String reinforcementStr="", baseReinforceStr="", exchangeCardStr="", putArmyStr="";
     private String attackInfo="", attackStepInfo="";
 
-
     /**
      * Constructor for Player class.
      * @param newName the name of the new player
