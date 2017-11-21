@@ -38,7 +38,6 @@ public class AttackPhase {
         map = new RiskMapModel();
         map.initMapModel("testMap");
         game = new RiskGameModel();
-        game.setGameMap(map);
         player1 = new PlayerModel("1", Color.red, game);
         player2 = new PlayerModel("2",Color.BLACK,game);
         continent = new ContinentModel("test1");
