@@ -1,0 +1,18 @@
+[Map]
+author=Invincible Team Four
+warn=yes
+image=none
+wrap=no
+scroll=none
+
+[Continents]
+testContinent=12
+testContinent2=12
+
+[Territories]
+testCountry,1,1,testContinent,testCountry2,testCountry4
+testCountry2,1,1,testContinent,testCountry,testCountry4,testCountry3
+
+testCountry3,1,1,testContinent2,testCountry2,testCountry4
+testCountry4,1,1,testContinent2,testCountry,testCountry2,testCountry3
+
