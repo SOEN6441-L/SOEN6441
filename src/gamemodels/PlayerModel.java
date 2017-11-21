@@ -496,4 +496,3 @@ public class PlayerModel extends Observable {
 		country2.setArmyNumber(country2.getArmyNumber()-armies);
 	}
 }
-
