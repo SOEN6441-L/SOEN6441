@@ -1,3 +1,4 @@
+
 package gamemodels;
 
 import java.awt.Color;
@@ -27,6 +28,7 @@ public class PlayerModel extends Observable {
     private String phaseString="", exchangeStatus = "";
     private String reinforcementStr="", baseReinforceStr="", exchangeCardStr="", putArmyStr="";
     private String attackInfo="", attackStepInfo="";
+
 
     /**
      * Constructor for Player class.
@@ -442,11 +444,7 @@ public class PlayerModel extends Observable {
 		}
 		return count;
 	}
-
-	/**
-	 * This method is to get attacking countries
-	 * @return cuntrynumber
-	 */
+	
 	public int getAttackingCountry() {
 		int count = 0;
 		for(CountryModel loopCountry:this.getCountries()){
@@ -463,16 +461,12 @@ public class PlayerModel extends Observable {
 		return count;
 	}
 
-	/**
-	 * This method is to get attack information
-	 * @return attack information
-	 */
 	public String getAttackInfo() {
 		return attackInfo;
 
 	}
 
-	/**
+  /**
 	 * This method is to set attack information
 	 * @param attackInfo
 	 */
@@ -484,16 +478,16 @@ public class PlayerModel extends Observable {
 		}
 		else notifyObservers(9);
 	}
-
-	/**
-	 * This method is to get attack step information
+   /**
+   * This method is to get attack step information
 	 * @return step attack information
 	 */
+
 	public String getAttackStepInfo() {
 		return attackStepInfo;
 	}
 
-	/**
+  /**
 	 * This method is to set attack information
 	 * @param attackStepInfo attack step information
 	 */
@@ -502,10 +496,10 @@ public class PlayerModel extends Observable {
 		setChanged();
 		notifyObservers(10);
 	}
-
 	
 	public void moveArmies(CountryModel country1,CountryModel country2, int armies){
 		country1.setArmyNumber(country1.getArmyNumber()+armies);
 		country2.setArmyNumber(country2.getArmyNumber()-armies);
 	}
 }
+
