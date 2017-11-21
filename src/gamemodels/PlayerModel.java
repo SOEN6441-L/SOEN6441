@@ -1,3 +1,4 @@
+
 package gamemodels;
 
 import java.awt.Color;
@@ -465,6 +466,10 @@ public class PlayerModel extends Observable {
 
 	}
 
+  /**
+	 * This method is to set attack information
+	 * @param attackInfo
+	 */
 	public void setAttackInfo(String attackInfo) {
 		this.attackInfo = attackInfo;
 		setChanged();
@@ -473,11 +478,19 @@ public class PlayerModel extends Observable {
 		}
 		else notifyObservers(9);
 	}
+   /**
+   * This method is to get attack step information
+	 * @return step attack information
+	 */
 
 	public String getAttackStepInfo() {
 		return attackStepInfo;
 	}
 
+  /**
+	 * This method is to set attack information
+	 * @param attackStepInfo attack step information
+	 */
 	public void setAttackStepInfo(String attackStepInfo) {
 		this.attackStepInfo = attackStepInfo;
 		setChanged();
