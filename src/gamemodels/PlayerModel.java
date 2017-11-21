@@ -442,7 +442,11 @@ public class PlayerModel extends Observable {
 		}
 		return count;
 	}
-	
+
+	/**
+	 * This method is to get attacking countries
+	 * @return cuntrynumber
+	 */
 	public int getAttackingCountry() {
 		int count = 0;
 		for(CountryModel loopCountry:this.getCountries()){
@@ -459,6 +463,10 @@ public class PlayerModel extends Observable {
 		return count;
 	}
 
+	/**
+	 * This method is to get attack information
+	 * @return attack information
+	 */
 	public String getAttackInfo() {
 		return attackInfo;
 
