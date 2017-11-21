@@ -862,7 +862,10 @@ public class RiskMapModel extends Observable{
 
 		return new ErrorMsg(0,null);
 	}
-	
+
+	/**
+	 * method to generate notify
+	 */
 	public void generateNotify() {
 		setChanged();
 		notifyObservers(2);
