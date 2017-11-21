@@ -436,7 +436,11 @@ public class PlayerModel extends Observable {
 	public RiskGameModel getMyGame() {
 		return myGame;
 	}
-	
+
+	/**
+	 * This method is to get movable country
+	 * @return country number
+	 */
 	public int getMovableCountry() {
 		int count = 0;
 		for(CountryModel loopCountry:this.getCountries()){
@@ -444,7 +448,11 @@ public class PlayerModel extends Observable {
 		}
 		return count;
 	}
-	
+
+	/**
+	 * This method is to get attacking countries
+	 * @return Country number
+	 */
 	public int getAttackingCountry() {
 		int count = 0;
 		for(CountryModel loopCountry:this.getCountries()){
@@ -461,6 +469,10 @@ public class PlayerModel extends Observable {
 		return count;
 	}
 
+	/**
+	 * This method is to get attack information
+	 * @return attack information
+	 */
 	public String getAttackInfo() {
 		return attackInfo;
 
@@ -496,7 +508,13 @@ public class PlayerModel extends Observable {
 		setChanged();
 		notifyObservers(10);
 	}
-	
+
+	/**
+	 * This method is to get move armies
+	 * @param country1 armies moved to
+	 * @param country2 armies moved
+	 * @param armies armies number
+	 */
 	public void moveArmies(CountryModel country1,CountryModel country2, int armies){
 		country1.setArmyNumber(country1.getArmyNumber()+armies);
 		country2.setArmyNumber(country2.getArmyNumber()-armies);
