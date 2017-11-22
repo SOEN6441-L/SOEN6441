@@ -351,9 +351,12 @@ public class AttackDiceView extends JDialog{
 				reloadGUI();
 			}
 		}	
-    }    
-    
-    class enterHandler implements ActionListener{
+    }
+
+	/**
+	 * This method is to add listener
+	 */
+	class enterHandler implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			JOptionPane.showMessageDialog(null, player1.getName()+" betrayed.");
