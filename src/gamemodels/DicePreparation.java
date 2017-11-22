@@ -9,9 +9,12 @@ public class DicePreparation {
 
 	public static int attacker_dices=0;
 	public static int defender_dices=0;
-	
-	
-	
+
+
+	/**
+	 * This is to test
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		RiskDice risk_dice=new RiskDice();
