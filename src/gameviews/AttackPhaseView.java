@@ -247,6 +247,9 @@ public class AttackPhaseView extends JDialog{
     }
 
 
+    /**
+     * This method is to reload Gui
+     */
     public void reloadGUI(){
 
         int attackingCountry = player.getAttackingCountry();
