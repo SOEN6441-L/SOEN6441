@@ -60,6 +60,10 @@ public class DominationView implements Observer{
             }
         }
 
+        /**
+         * This method is to paint graph
+         * @param g
+         */
         public void paint(Graphics g) {
             drawPie((Graphics2D) g, getBounds(), slice);
         }
