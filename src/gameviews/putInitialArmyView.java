@@ -130,8 +130,8 @@ public class putInitialArmyView extends JDialog{
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
 		for (int i=0;i<localCountries.getNodes()[curPlayer].length;i++) { 
 			CountryModel loopCountry = gameMap.findCountry(localCountries.getNodes()[curPlayer][i].getName());
-			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-					+" (In "+loopCountry.getBelongTo().getName()+", "+localCountries.getNodes()[curPlayer][i].getNumber()+" armies)"));
+			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+					+" (In "+loopCountry.getBelongTo().getShowName()+", "+localCountries.getNodes()[curPlayer][i].getNumber()+" armies)"));
 		}
 		treeCountry= new JTree(myTreeRoot);
 		treeCountry.addMouseListener( new  MouseAdapter(){
@@ -239,8 +239,8 @@ public class putInitialArmyView extends JDialog{
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
 		for (int i=0;i<localCountries.getNodes()[curPlayer].length;i++) { 
 			CountryModel loopCountry = gameMap.findCountry(localCountries.getNodes()[curPlayer][i].getName());
-			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-					+" (In "+loopCountry.getBelongTo().getName()+", "+localCountries.getNodes()[curPlayer][i].getNumber()+" armies)"));
+			myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+					+" (In "+loopCountry.getBelongTo().getShowName()+", "+localCountries.getNodes()[curPlayer][i].getNumber()+" armies)"));
 		}
 		treeCountry = null;
 		treeCountry= new JTree(myTreeRoot);
@@ -310,6 +310,9 @@ public class putInitialArmyView extends JDialog{
 	 */
 	private void byComputer() { 
 		SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+			/**
+			 * Method to define background job
+			 */
 			@Override
 			protected Void doInBackground() {
 				do {
@@ -328,10 +331,18 @@ public class putInitialArmyView extends JDialog{
 				}while (findNextPlayer());
 				return null;
 			}
+
+			/**
+			 * Method to handle process
+			 * @param chunks the info
+			 */
 			@Override
 			protected void process(List<Integer> chunks) {
 				reloadGUI(false);
 			}
+			/**
+			 * Method to handle done
+			 */
 			@Override
 			protected void done() {
 				cancelBtn.setVisible(true);

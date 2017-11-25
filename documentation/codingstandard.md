@@ -149,23 +149,6 @@ It's even good to be *really* obvious.
     if ((values != null) && (10 > values.size())) {
       ...
     }
-    
-### Absence of "commented out" codes
-
-Delete codes between **"/*"**  and **"*/"** to make codes clear.
-
-	/*
-	public Country findCountry(String countryName) {
-		for (ArrayList<Country> loopList : countries.values()) {
-			for (Country loopCountry:loopList){
-				if (loopCountry.countryName.equals(countryName)){
-					return loopCountry;
-				}
-			}
-		}
-		return null;
-	}
-	*/
 
 ### Javadoc
 
@@ -230,29 +213,6 @@ also be important to document input format.
 		return null;
 	}
 
-When a methid is too complicated to understand, it is better to add descriptions about how the method processes.
-
-	/**
-	 * Function to find the Country according to the Country's name
-	 * 
-	 * <p> 1. loop the country arraylist (nested loop) <p> <br>
-	 * <p> 2. compare each country's name with targeted country's name <p><br>
-	 * <p> 3. return country if found or null if not <p> <br>
-	 * 
-	 * @param countryName Country's name
-	 * @return Country that found
-	 */
-	public Country findCountry(String countryName) {
-		for (ArrayList<Country> loopList : countries.values()) {
-			for (Country loopCountry:loopList){
-				if (loopCountry.countryName.equals(countryName)){
-					return loopCountry;
-				}
-			}
-		}
-		return null;
-	}
-
 #### Be professional
 We've all encountered frustration when dealing with other libraries, but ranting about it doesn't
 do you any favors.  Suppress the expletives and get to the point.
@@ -264,7 +224,7 @@ do you any favors.  Suppress the expletives and get to the point.
     } catch (NumberFormatException e) {
       ...
     }
-    
+
 #### Use javadoc features
 
 ##### No author tags

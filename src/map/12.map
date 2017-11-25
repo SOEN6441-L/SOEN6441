@@ -1,64 +1,41 @@
 [Map]
-author=Sean O'Connor
-warn=yes
-image=Africa.bmp
+author=Tim Martin
+warn=no
+image=3D Cliff.bmp
 wrap=no
-scroll=horizontal
+scroll=none
 
 [Continents]
-Northern Africa=4
-Southern Africa=3
-Western Africa=7
-Eastern Africa=3
-Central Africa=6
-The Horn=3
-The Congo=5
+clifftop=4
+ledge=3
+bottom=3
+leftstair=3
+rightstair=3
 
 [Territories]
-Algeria,193,85,Northern Africa,Western Sahara,Mauritania,Mali,Niger,Libya,Tunisia
-Tunisia,252,33,Northern Africa,Algeria,Libya
-Libya,314,94,Northern Africa,North Sudan,Tunisia,Algeria,Niger,Chad,Egypt,Mali
-Egypt,415,99,Northern Africa,Libya,North Sudan,Mali
+topleft,300,150,clifftop,topleftc,fourthleft,thirdleft,ledgeleft
+topleftc,400,130,clifftop,topleft,toprightc,topright
+toprightc,500,130,clifftop,topleftc,topright
+topright,600,150,clifftop,topleftc,toprightc,fifthright,thirdright,ledgeright
 
-Namibia,315,534,Southern Africa,Angola,Botswana,South Africa,Mali,Senegal
-Botswana,373,529,Southern Africa,Angola,Zambia,Zimbabwe,South Africa,Namibia,Senegal,Western Sahara,Guinea
-Zimbabwe,425,506,Southern Africa,Zambia,Mozambique,South Africa,Botswana
-Mozambique,482,496,Southern Africa,Tanzania,Malawi,Madagascar,Zambia,Zimbabwe,South Africa
-Madagascar,567,512,Southern Africa,Mozambique
-South Africa,385,596,Southern Africa,Namibia,Botswana,Zimbabwe,Mozambique
+ledgeleft,277,290,ledge,ledgecentre,thirdleft,secondleft,topleft,bottomleft
+ledgecentre,400,315,ledge,ledgeleft,ledgefront,ledgeright,bottomleftc
+ledgeright,545,310,ledge,ledgecentre,thirdright,secondright,bottomright,topright
+ledgefront,390,385,ledge,ledgecentre,bottomleft,bottomleftc,bottomrightc,bottomright
 
-Western Sahara,62,103,Western Africa,Algeria,Mauritania,Botswana
-Mauritania,84,147,Western Africa,Western Sahara,Algeria,Mali,Senegal
-Senegal,36,203,Western Africa,Mauritania,Mali,Guinea,Namibia,Botswana
-Mali,144,178,Western Africa,Senegal,Mauritania,Algeria,Niger,Burkina Faso,Ivory Coast,Guinea,Libya,Egypt,Namibia
-Guinea,65,236,Western Africa,Senegal,Mali,Ivory Coast,Sierra Leone,Liberia,Botswana
-Sierra Leone,56,255,Western Africa,Guinea,Liberia
-Liberia,77,276,Western Africa,Sierra Leone,Guinea,Ivory Coast
-Ivory Coast,112,268,Western Africa,Liberia,Guinea,Mali,Burkina Faso,Ghana
-Burkina Faso,146,223,Western Africa,Mali,Niger,Benin,Ghana,Ivory Coast
-Benin,174,259,Western Africa,Burkina Faso,Niger,Nigeria,Ghana
-Ghana,150,266,Western Africa,Burkina Faso,Benin,Ivory Coast
+bottomleft,230,390,bottom,bottomleftc,firstleft,ledgefront,ledgeleft
+bottomleftc,234,453,bottom,bottomleft,bottomrightc,firstleft,ledgefront
+bottomrightc,420,457,bottom,bottomleftc,bottomright,ledgefront
+bottomright,537,411,bottom,bottomrightc,firstright,ledgefront,ledgeright
 
-Uganda,452,323,Eastern Africa,South Sudan,Kenya,Tanzania,D.R.O.T. Congo
-Kenya,498,330,Eastern Africa,South Sudan,Ethiopia,Somalia,Tanzania,Uganda
-Tanzania,470,391,Eastern Africa,Uganda,Kenya,Mozambique,Malawi,D.R.O.T. Congo,Zambia
-Malawi,460,454,Eastern Africa,Tanzania,Mozambique,Zambia
+firstleft,70,435,leftstair,secondleft,bottomleft,bottomleftc
+secondleft,131,313,leftstair,firstleft,thirdleft,ledgeleft
+thirdleft,152,228,leftstair,secondleft,fourthleft,ledgeleft,thirdright,topleft
+fourthleft,195,132,leftstair,thirdleft,topleft
 
-Niger,248,180,Central Africa,Mali,Algeria,Libya,Chad,Nigeria,Benin,Burkina Faso
-Nigeria,229,254,Central Africa,Niger,Chad,Cameroon,Benin
-Chad,325,197,Central Africa,Libya,North Sudan,South Sudan,Central African Rep.,Cameroon,Nigeria,Niger
-Cameroon,271,293,Central Africa,Nigeria,Chad,Central African Rep.,Rep. of the Congo,Gabon
-Central African Rep.,341,278,Central Africa,Chad,South Sudan,D.R.O.T. Congo,Rep. of the Congo,Cameroon
-
-North Sudan,427,179,The Horn,Egypt,Libya,Eritrea,Ethiopia,South Sudan,Chad
-South Sudan,421,253,The Horn,North Sudan,Ethiopia,Kenya,Uganda,D.R.O.T. Congo,Central African Rep.,Chad
-Eritrea,507,199,The Horn,North Sudan,Somalia,Ethiopia
-Ethiopia,510,256,The Horn,Eritrea,Somalia,Kenya,South Sudan,North Sudan
-Somalia,584,274,The Horn,Eritrea,Ethiopia,Kenya
-
-Gabon,264,339,The Congo,Cameroon,Rep. of the Congo
-Rep. of the Congo,299,345,The Congo,Cameroon,Central African Rep.,D.R.O.T. Congo,Gabon
-D.R.O.T. Congo,372,356,The Congo,Central African Rep.,South Sudan,Uganda,Tanzania,Zambia,Angola,Rep. of the Congo
-Angola,315,449,The Congo,D.R.O.T. Congo,Zambia,Namibia,Botswana
-Zambia,408,462,The Congo,D.R.O.T. Congo,Tanzania,Malawi,Mozambique,Zimbabwe,Botswana,Angola
+firstright,643,431,rightstair,secondright,bottomright
+secondright,714,358,rightstair,firstright,thirdright,ledgeright
+thirdright,721,271,rightstair,secondright,fourthright,ledgeright,thirdleft,fifthright,topright
+fourthright,825,220,rightstair,thirdright,fifthright
+fifthright,740,160,rightstair,thirdright,fourthright,topright
 

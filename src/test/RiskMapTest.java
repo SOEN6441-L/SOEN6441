@@ -16,7 +16,7 @@ import mapmodels.RiskMapModel;
 
 /**
  * Test Class to test all methods defined in class RiskMap.
- * Including 20 methods and 93 test cases.
+ * Including 20 methods and 94 test cases.
  */
 public class RiskMapTest {
 	private RiskMapModel newMap, existingMap;
@@ -106,13 +106,13 @@ public class RiskMapTest {
 		assertEquals(2,newMap.getCountryNum());
 		assertEquals(2,newMap.getAdjacencyList().size());
 		
-		assertEquals(firstCountry,newMap.findCountry(firstCountry.getName()));
-		assertEquals(firstContinent,newMap.findCountry(firstCountry.getName()).getBelongTo());
-		assertEquals(secondCountry,newMap.findCountry(secondCountry.getName()));
-		assertEquals(secondContinent,newMap.findCountry(secondCountry.getName()).getBelongTo());
+		assertEquals(firstCountry,newMap.findCountry(firstCountry.getShowName()));
+		assertEquals(firstContinent,newMap.findCountry(firstCountry.getShowName()).getBelongTo());
+		assertEquals(secondCountry,newMap.findCountry(secondCountry.getShowName()));
+		assertEquals(secondContinent,newMap.findCountry(secondCountry.getShowName()).getBelongTo());
 		//case 2:
 		CountryModel thirdCountry = new CountryModel(3,"testCountry3",firstContinent);
-		assertEquals(null,newMap.findCountry(thirdCountry.getName()));
+		assertEquals(null,newMap.findCountry(thirdCountry.getShowName()));
 		System.out.println("RiskMap Test: findCountry(String) finished.");
 	}
 
@@ -222,22 +222,26 @@ public class RiskMapTest {
 	public void renameContinentTest(){
 		//prepare:
 		newMap.addContinent("testContinent", 12);	
-		assertEquals("testContinent",newMap.getContinents().get(0).getName());
+		assertEquals("testContinent",newMap.getContinents().get(0).getShowName());
+		assertEquals("testcontinent",newMap.getContinents().get(0).getName());
 		//case 1:
 		newMap.setModified(false);
 		assertEquals(1,newMap.renameContinent("testContinent2", "newName").getResult());
 		assertFalse(newMap.isModified());
-		assertEquals("testContinent",newMap.getContinents().get(0).getName());
+		assertEquals("testContinent",newMap.getContinents().get(0).getShowName());
+		assertEquals("testcontinent",newMap.getContinents().get(0).getName());
 		//case 2:
 		newMap.addContinent("newName", 12);
 		newMap.setModified(false);
 		assertEquals(2,newMap.renameContinent("testContinent", "newName").getResult());
 		assertFalse(newMap.isModified());
-		assertEquals("testContinent",newMap.getContinents().get(0).getName());		
+		assertEquals("testContinent",newMap.getContinents().get(0).getShowName());	
+		assertEquals("testcontinent",newMap.getContinents().get(0).getName());
 		//case 3:
 		assertTrue(newMap.renameContinent("testContinent", "newName2").isResult());
 		assertTrue(newMap.isModified());
-		assertEquals("newName2",newMap.getContinents().get(0).getName());
+		assertEquals("newName2",newMap.getContinents().get(0).getShowName());
+		assertEquals("newname2",newMap.getContinents().get(0).getName());
 		System.out.println("RiskMap Test: renameContinent(String, String), isModified() finished.");		
 	}
 
@@ -330,7 +334,7 @@ public class RiskMapTest {
 		assertEquals(1,newMap.getCountryNum());
 		assertEquals(1,newMap.getAdjacencyList().size());
 		CountryModel country = newMap.getContinents().get(0).getCountryList().get(0);
-		assertEquals(country, newMap.findCountry(country.getName()));
+		assertEquals(country, newMap.findCountry(country.getShowName()));
 		//case 2:
 		newMap.setModified(false);
 		assertEquals(1,newMap.addCountry("testCountry","testContinent3",1,2).getResult());
@@ -357,7 +361,7 @@ public class RiskMapTest {
 		assertEquals(2,newMap.getCountryNum());
 		assertEquals(2,newMap.getAdjacencyList().size());
 		CountryModel country2 = newMap.getContinents().get(1).getCountryList().get(0);
-		assertEquals(country2, newMap.findCountry(country2.getName()));
+		assertEquals(country2, newMap.findCountry(country2.getShowName()));
 		//case 5:
 		newMap.setModified(false);
 		assertEquals(2,newMap.addCountry("testCountry2","testContinent",1,2).getResult());
@@ -380,22 +384,27 @@ public class RiskMapTest {
 		//prepare:
 		newMap.addContinent("testContinent", 12);	
 		newMap.addCountry("testCountry","testContinent", 1,2);
-		assertEquals("testCountry", newMap.getContinents().get(0).getCountryList().get(0).getName());
+		assertEquals("testCountry", newMap.getContinents().get(0).getCountryList().get(0).getShowName());
+		assertEquals("testcountry", newMap.getContinents().get(0).getCountryList().get(0).getName());
 		//case 1:
 		newMap.setModified(false);
 		assertEquals(1,newMap.renameCountry("testCountry2", "newName").getResult());
 		assertFalse(newMap.isModified());
-		assertEquals("testCountry", newMap.getContinents().get(0).getCountryList().get(0).getName());
+		assertEquals("testCountry", newMap.getContinents().get(0).getCountryList().get(0).getShowName());
+		assertEquals("testcountry", newMap.getContinents().get(0).getCountryList().get(0).getName());
 		//case 2:
 		newMap.addCountry("newName","testContinent", 2,4);
 		newMap.setModified(false);
 		assertEquals(2,newMap.renameCountry("testCountry", "newName").getResult());
 		assertFalse(newMap.isModified());
-		assertEquals("testCountry", newMap.getContinents().get(0).getCountryList().get(0).getName());		
+		assertEquals("testCountry", newMap.getContinents().get(0).getCountryList().get(0).getShowName());
+		assertEquals("testcountry", newMap.getContinents().get(0).getCountryList().get(0).getName());		
 		//case 3:
+		newMap.setModified(false);
 		assertTrue(newMap.renameCountry("testCountry", "newName2").isResult());
 		assertTrue(newMap.isModified());
-		assertEquals("newName2", newMap.getContinents().get(0).getCountryList().get(0).getName());	
+		assertEquals("newName2", newMap.getContinents().get(0).getCountryList().get(0).getShowName());	
+		assertEquals("newname2", newMap.getContinents().get(0).getCountryList().get(0).getName());
 		System.out.println("RiskMap Test: renameCountry(String, String), isModified() finished.");		
 	}
 	
@@ -414,23 +423,23 @@ public class RiskMapTest {
 		newMap.addContinent("testContinent2", 12);
 		newMap.addCountry("testCountry","testContinent", 1,2);
 		newMap.addCountry("testCountry2","testContinent2", 2,4);
-		assertEquals("testCountry",newMap.findContinent("testContinent").getCountryList().get(0).getName());
-		assertEquals("testCountry2",newMap.findContinent("testContinent2").getCountryList().get(0).getName());
-		assertEquals("testContinent",newMap.findCountry("testCountry").getBelongTo().getName());
-		assertEquals("testContinent2",newMap.findCountry("testCountry2").getBelongTo().getName());
+		assertEquals("testCountry",newMap.findContinent("testContinent").getCountryList().get(0).getShowName());
+		assertEquals("testCountry2",newMap.findContinent("testContinent2").getCountryList().get(0).getShowName());
+		assertEquals("testContinent",newMap.findCountry("testCountry").getBelongTo().getShowName());
+		assertEquals("testContinent2",newMap.findCountry("testCountry2").getBelongTo().getShowName());
 		//case 1:
 		newMap.setModified(false);
 		assertTrue(newMap.moveCountry("testContinent2", "testCountry").isResult());
 		assertTrue(newMap.isModified());
-		assertEquals("testCountry",newMap.findContinent("testContinent2").getCountryList().get(1).getName());
-		assertEquals("testContinent2",newMap.findCountry("testCountry").getBelongTo().getName());
+		assertEquals("testCountry",newMap.findContinent("testContinent2").getCountryList().get(1).getShowName());
+		assertEquals("testContinent2",newMap.findCountry("testCountry").getBelongTo().getShowName());
 		assertEquals(0,newMap.findContinent("testContinent").getCountryList().size());
 		assertEquals(2,newMap.findContinent("testContinent2").getCountryList().size());
 		newMap.setModified(false);
 		assertTrue(newMap.moveCountry("testContinent", "testCountry2").isResult());
 		assertTrue(newMap.isModified());
-		assertEquals("testCountry2",newMap.findContinent("testContinent").getCountryList().get(0).getName());
-		assertEquals("testContinent",newMap.findCountry("testCountry2").getBelongTo().getName());
+		assertEquals("testCountry2",newMap.findContinent("testContinent").getCountryList().get(0).getShowName());
+		assertEquals("testContinent",newMap.findCountry("testCountry2").getBelongTo().getShowName());
 		assertEquals(1,newMap.findContinent("testContinent").getCountryList().size());		
 		assertEquals(1,newMap.findContinent("testContinent2").getCountryList().size());	
 		//case 2:
@@ -495,7 +504,7 @@ public class RiskMapTest {
 		assertEquals(3,newMap.getAdjacencyList().size());
 		//case 1:
 		newMap.setModified(false);
-		assertTrue(newMap.addConnection("testCountry", "testCountry2").isResult());
+		assertTrue(newMap.addConnections("testCountry", "testCountry2").isResult());
 		assertTrue(newMap.isModified());
 		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
 		assertTrue(newMap.getAdjacencyList().get(country1).contains(country2));
@@ -503,30 +512,32 @@ public class RiskMapTest {
 		assertTrue(newMap.getAdjacencyList().get(country2).contains(country1));
 		assertEquals(0,newMap.getAdjacencyList().get(country3).size());
 		//case 2:
-		assertEquals(3,newMap.addConnection("testCountry", "testCountry2").getResult());
+		newMap.setModified(false);
+		assertEquals(0,newMap.addConnections("testCountry", "testCountry2").getResult());
+		assertFalse(newMap.isModified());
 		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
 		assertTrue(newMap.getAdjacencyList().get(country1).contains(country2));
 		assertEquals(1,newMap.getAdjacencyList().get(country2).size());
 		assertTrue(newMap.getAdjacencyList().get(country2).contains(country1));
 		//case 3:
-		assertEquals(2,newMap.addConnection("testCountry", "testCountry").getResult());
-		assertEquals(2,newMap.addConnection("testCountry2", "testCountry2").getResult());
-		assertEquals(2,newMap.addConnection("testCountry3", "testCountry3").getResult());
+		assertEquals(2,newMap.addConnections("testCountry", "testCountry").getResult());
+		assertEquals(2,newMap.addConnections("testCountry2", "testCountry2").getResult());
+		assertEquals(2,newMap.addConnections("testCountry3", "testCountry3").getResult());
 		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
 		assertTrue(newMap.getAdjacencyList().get(country1).contains(country2));
 		assertEquals(1,newMap.getAdjacencyList().get(country2).size());
 		assertTrue(newMap.getAdjacencyList().get(country2).contains(country1));
 		//case 4:
-		assertEquals(1,newMap.addConnection("testCountry4", "testCountry5").getResult());		
-		assertEquals(1,newMap.addConnection("testCountry", "testCountry4").getResult());
-		assertEquals(1,newMap.addConnection("testCountry4", "testCountry2").getResult());
+		assertEquals(1,newMap.addConnections("testCountry4", "testCountry5").getResult());		
+		assertEquals(1,newMap.addConnections("testCountry", "testCountry4").getResult());
+		assertEquals(1,newMap.addConnections("testCountry4", "testCountry2").getResult());
 		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
 		assertTrue(newMap.getAdjacencyList().get(country1).contains(country2));
 		assertEquals(1,newMap.getAdjacencyList().get(country2).size());
 		assertTrue(newMap.getAdjacencyList().get(country2).contains(country1));	
 		//case 5:
-		assertTrue(newMap.addConnection("testCountry", "testCountry3").isResult());		
-		assertTrue(newMap.addConnection("testCountry2", "testCountry3").isResult());
+		assertTrue(newMap.addConnections("testCountry", "testCountry3").isResult());		
+		assertTrue(newMap.addConnections("testCountry2", "testCountry3").isResult());
 		assertEquals(2,newMap.getAdjacencyList().get(country1).size());
 		assertTrue(newMap.getAdjacencyList().get(country1).contains(country2));
 		assertTrue(newMap.getAdjacencyList().get(country1).contains(country3));
@@ -540,12 +551,12 @@ public class RiskMapTest {
 		newMap.removeAllConnection();
 		newMap.getAdjacencyList().get(country1).add(country2);
 		newMap.setModified(false);
-		assertEquals(4,newMap.addConnection("testCountry", "testCountry2").getResult());		
+		assertEquals(0,newMap.addConnections("testCountry", "testCountry2").getResult());		
 		assertTrue(newMap.isModified());
-		assertEquals(0,newMap.getAdjacencyList().get(country1).size());
+		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
 		newMap.setModified(false);
-		assertTrue(newMap.addConnection("testCountry", "testCountry2").isResult());		
-		assertTrue(newMap.isModified());
+		assertTrue(newMap.addConnections("testCountry", "testCountry2").isResult());		
+		assertFalse(newMap.isModified());
 		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
 		assertEquals(1,newMap.getAdjacencyList().get(country2).size());
 		System.out.println("RiskMap Test: addConnection(String, String), isModified() finished.");
@@ -618,8 +629,8 @@ public class RiskMapTest {
 		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
 		assertFalse(newMap.getAdjacencyList().get(country1).contains(country2));
 		assertTrue(newMap.getAdjacencyList().get(country1).contains(country3));
-		assertEquals(1,newMap.getAdjacencyList().get(country2).size());
-		assertFalse(newMap.getAdjacencyList().get(country2).contains(country1));		
+		assertEquals(2,newMap.getAdjacencyList().get(country2).size());
+		assertTrue(newMap.getAdjacencyList().get(country2).contains(country1));		
 		assertTrue(newMap.getAdjacencyList().get(country2).contains(country3));	
 		assertEquals(2,newMap.getAdjacencyList().get(country3).size());
 		//case 2:
@@ -627,7 +638,7 @@ public class RiskMapTest {
 		assertTrue(newMap.removeConnection("testCountry", "testCountry2").isResult());
 		assertFalse(newMap.isModified());		
 		assertEquals(1,newMap.getAdjacencyList().get(country1).size());
-		assertEquals(1,newMap.getAdjacencyList().get(country2).size());
+		assertEquals(2,newMap.getAdjacencyList().get(country2).size());
 		assertEquals(2,newMap.getAdjacencyList().get(country3).size());
 		//case 3:
 		newMap.getAdjacencyList().get(country1).add(country2);
@@ -640,6 +651,7 @@ public class RiskMapTest {
 		assertEquals(2,newMap.removeConnection("testCountry2", "testCountry2").getResult());
 		assertFalse(newMap.isModified());
 		//case 5:
+		newMap.removeConnection("testCountry2", "testCountry");
 		newMap.getAdjacencyList().get(country2).add(country2);
 		assertEquals(2,newMap.getAdjacencyList().get(country2).size());
 		newMap.setModified(false);
@@ -652,6 +664,11 @@ public class RiskMapTest {
 		//case 7:
 		assertTrue(newMap.removeConnection("testCountry", "testCountry3").isResult());
 		assertTrue(newMap.removeConnection("testCountry3", "testCountry2").isResult());
+		assertEquals(0,newMap.getAdjacencyList().get(country1).size());
+		assertEquals(1,newMap.getAdjacencyList().get(country2).size());
+		assertEquals(1,newMap.getAdjacencyList().get(country3).size());	
+		assertTrue(newMap.removeConnection("testCountry3", "testCountry").isResult());
+		assertTrue(newMap.removeConnection("testCountry2", "testCountry3").isResult());
 		assertEquals(0,newMap.getAdjacencyList().get(country1).size());
 		assertEquals(0,newMap.getAdjacencyList().get(country2).size());
 		assertEquals(0,newMap.getAdjacencyList().get(country3).size());	
@@ -688,18 +705,21 @@ public class RiskMapTest {
 		assertEquals(3,newMap.findPath(newMap.getAdjacencyList(),country3));
 		//case 2:
 		newMap.removeConnection("testCountry", "testCountry2");
+		newMap.removeConnection("testCountry2", "testCountry");
 		assertTrue(newMap.checkConnection(newMap.getAdjacencyList()));
 		assertEquals(3,newMap.findPath(newMap.getAdjacencyList(),country1));
 		assertEquals(3,newMap.findPath(newMap.getAdjacencyList(),country2));
 		assertEquals(3,newMap.findPath(newMap.getAdjacencyList(),country3));
 		//case 3:
 		newMap.removeConnection("testCountry2", "testCountry3");
+		newMap.removeConnection("testCountry3", "testCountry2");
 		assertFalse(newMap.checkConnection(newMap.getAdjacencyList()));
 		assertEquals(2,newMap.findPath(newMap.getAdjacencyList(),country1));
 		assertEquals(1,newMap.findPath(newMap.getAdjacencyList(),country2));
 		assertEquals(2,newMap.findPath(newMap.getAdjacencyList(),country3));	
 		//case 4:
 		newMap.removeConnection("testCountry", "testCountry3");
+		newMap.removeConnection("testCountry3", "testCountry");
 		assertFalse(newMap.checkConnection(newMap.getAdjacencyList()));
 		assertEquals(1,newMap.findPath(newMap.getAdjacencyList(),country1));
 		assertEquals(1,newMap.findPath(newMap.getAdjacencyList(),country2));
@@ -734,7 +754,7 @@ public class RiskMapTest {
 				+ "Error: The continent <testContinent> is not a connected graph.\n"
 				+ "Error: The continent <testContinent2> has no country in it.\n"));
 		//case 3��
-		newMap.addConnection("testCountry", "testCountry2");
+		newMap.addConnections("testCountry", "testCountry2");
 		assertEquals(1,(errorMsg=newMap.checkErrors()).getResult());
 		assertTrue(errorMsg.getMsg().equals("Error: The continent <testContinent2> has no country in it.\n"));
 		//case 4:
@@ -743,18 +763,20 @@ public class RiskMapTest {
 		assertTrue(errorMsg.getMsg().equals("Error: The whole map is not a connected graph.\n"));
 		//case 5:
 		newMap.addCountry("testCountry4","testContinent2", 1,1);
-		newMap.addConnection("testCountry3", "testCountry4");
+		newMap.addConnections("testCountry3", "testCountry4");
 		assertEquals(1,(errorMsg=newMap.checkErrors()).getResult());
 		assertTrue(errorMsg.getMsg().equals("Error: The whole map is not a connected graph.\n"));
 		//case 6:
-		newMap.addConnection("testCountry", "testCountry3");
-		newMap.addConnection("testCountry2", "testCountry4");
+		newMap.addConnections("testCountry", "testCountry3");
+		newMap.addConnections("testCountry2", "testCountry4");
 		newMap.removeConnection("testCountry", "testCountry2");
+		newMap.removeConnection("testCountry2", "testCountry");
 		assertEquals(1,(errorMsg=newMap.checkErrors()).getResult());
 		assertTrue(errorMsg.getMsg().equals("Error: The continent <testContinent> is not a connected graph.\n"));		
 		//case 7:
-		newMap.addConnection("testCountry", "testCountry2");
+		newMap.addConnections("testCountry", "testCountry2");
 		newMap.removeConnection("testCountry", "testCountry3");
+		newMap.removeConnection("testCountry3", "testCountry");
 		assertTrue(newMap.checkErrors().isResult());
 		System.out.println("RiskMap Test: checkErrors() finished.");					
 	}
@@ -892,6 +914,7 @@ public class RiskMapTest {
 		assertEquals(0,existingMap.checkWarnings());	
 		//case 4:
 		newMap.removeConnection("testCountry", "testCountry3");
+		newMap.removeConnection("testCountry3", "testCountry");
 		assertTrue(newMap.saveToFile("./src/map/test/test.map").isResult());
 		existingMap = null;
 		existingMap = new RiskMapModel();
@@ -923,8 +946,9 @@ public class RiskMapTest {
 	 * case 18: create map file with duplicated countries in adjacency list, load file, check return value and relative value.<br>
 	 * case 19: create map file with non-existing country in adjacency list, load file, check return value and relative value.<br>
 	 * case 20: create map file with self-connection, load file, check return value and relative value.<br>
-	 * case 21: create map file with unpaired connection, load file, check return value and relative value.<br>
-	 * case 22: create map file with a unconnected graph, load file, check return value and relative value.
+	 * case 21: create map file with one-way connection, load file, check return value and relative value.<br>
+	 * case 22: create map file with a unconnected graph, load file, check return value and relative value.<br>
+	 * case 23: create map file with lower case letters for country name and continent name in adjacency list. 
 	 */
 	@Test	
 	public void loadMapFileTest() {
@@ -1403,7 +1427,7 @@ public class RiskMapTest {
 		}
 		existingMap = null;
 		existingMap = new RiskMapModel();
-		assertEquals(11,existingMap.loadMapFile("./src/map/test/test21.map").getResult());
+		assertEquals(0,existingMap.loadMapFile("./src/map/test/test21.map").getResult());
 		
 		System.out.println("RiskMap Test: loadMapFile(String) finished.");	
 		//case 22:
@@ -1432,6 +1456,32 @@ public class RiskMapTest {
 		existingMap = new RiskMapModel();
 		assertTrue(existingMap.loadMapFile("./src/map/test/test22.map").isResult());
 		assertFalse(existingMap.checkErrors().isResult());
+		
+		//case 23:
+		outputFile = new File("./src/map/test/test23.map");
+		fw = null;
+		try{
+			if (outputFile.exists()&&outputFile.isFile()) {
+				outputFile.delete();
+			}
+			outputFile.createNewFile();
+			fw = new FileWriter(outputFile.getAbsoluteFile(),false);
+			fw.write("[Map]\r\nauthor=testAuthor\r\nwarn=yes\r\nimage=none\r\nwrap=no\r\nscroll=none\r\n\r\n");
+			fw.write("[Continents]\r\ntestContinent=12\r\ntestContinent2=24\r\n\r\n");
+			fw.write("[Territories]\r\ntestCountry,1,1,testcontinent,testcountry2\r\ntestCountry2,1,1,testcontinent2,testcountry\r\n");
+			fw.close();
+		}catch (IOException e) {
+			//e.printStackTrace();	
+		} finally {
+			try {
+				if (fw != null)fw.close();
+			} catch (IOException ex) {
+				//ex.printStackTrace();
+			}
+		}
+		existingMap = null;
+		existingMap = new RiskMapModel();
+		assertEquals(0,existingMap.loadMapFile("./src/map/test/test23.map").getResult());	
 		
 		System.out.println("RiskMap Test: loadMapFile(String) finished.");
 	}

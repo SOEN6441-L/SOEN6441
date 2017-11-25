@@ -2,13 +2,10 @@ package test;
 import static org.junit.Assert.*;
 
 import java.awt.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import gamemodels.PlayerModel;
 import gamemodels.RiskGameModel;
-import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
 import mapmodels.RiskMapModel;
 import org.junit.Before;
@@ -21,7 +18,6 @@ public class PlayerModelTest {
     private PlayerModel player,player2;
     private RiskGameModel game;
     private RiskMapModel map;
-    private ContinentModel continent,continent2;
     CountryModel country1;
     CountryModel country2;
     CountryModel country3;
@@ -35,7 +31,7 @@ public class PlayerModelTest {
     	game = new RiskGameModel();
         map = new RiskMapModel();
         map.initMapModel("testMap");
-        game.gameMap = map;
+        game.setGameMap(map);
         map.addContinent("test1", 10);
         map.addContinent("test2", 5);
         map.addCountry("A", "test1",0,0);
@@ -113,9 +109,9 @@ public class PlayerModelTest {
         country3.setOwner(player);
         country4.setOwner(player);
         country5.setOwner(player);
-        map.addConnection("A","B");
-        map.addConnection("B","D");
-        map.addConnection("A","C");
+        map.addConnections("A","B");
+        map.addConnections("B","D");
+        map.addConnections("A","C");
         //map.addConnection("A","E");
         assertTrue(map.getAdjacencyList().get(country1).contains(country2));
         //test same owner

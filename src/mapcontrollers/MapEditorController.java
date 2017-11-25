@@ -134,8 +134,8 @@ public class MapEditorController implements ActionListener {
 			String continents[]= new String[myMapModel.getContinents().size()];
 			int loopcount = 0, defaultIndex = 0;
 			for (ContinentModel loopContinent : myMapModel.getContinents()) {
-				continents[loopcount++]=loopContinent.getName();
-				if (loopContinent.getName().equals(lastUsedContinent)) defaultIndex = loopcount-1; 
+				continents[loopcount++]=loopContinent.getShowName();
+				if (loopContinent.getShowName().equals(lastUsedContinent)) defaultIndex = loopcount-1; 
 			}
 			JComboBox<Object> continentInput = new JComboBox<Object>(continents);
 			Object[] message = {
@@ -438,12 +438,12 @@ public class MapEditorController implements ActionListener {
 		int loopcount = 0;
 		for (ContinentModel loopContinent : myMapModel.getContinents()) {
 			if (!loopContinent.getName().equals(oldContinent.getName())){
-				continents[loopcount++]=loopContinent.getName();
+				continents[loopcount++]=loopContinent.getShowName();
 			}	
 		}
 		JComboBox<Object> continentInput = new JComboBox<Object>(continents);
 		Object[] message = {
-			"Move country <"+selectedName+"> from <"+oldContinent.getName()+"> to:  ", continentInput
+			"Move country <"+selectedName+"> from <"+oldContinent.getShowName()+"> to:  ", continentInput
 		};    	
 		boolean retry = true;
 		while (retry){

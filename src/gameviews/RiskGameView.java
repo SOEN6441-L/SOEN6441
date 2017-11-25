@@ -24,9 +24,11 @@ import basicclasses.MyTable;
 import basicclasses.MyTree;
 import basicclasses.RowHeaderTable;
 import gamecontrollers.RiskGameController;
+import gamemodels.PlayerModel;
 import gamemodels.RiskGameModel;
 import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
+import mapmodels.RiskMapModel;
 
 /**
  * The class is used to create a window for player to edit maps of games
@@ -345,21 +347,22 @@ public class RiskGameView extends JFrame implements Observer{
 	private void reloadContinents(){	
 		//configuration
 		DefaultMutableTreeNode myTreeRoot;
-		if (myGame.getGameMap()==null){
+		RiskMapModel myMap = myGame.getGameMap();
+		if (myMap==null){
 			labelContinent.setText("Continents (0):");
 			myTreeRoot = new DefaultMutableTreeNode("Map - Untitled ");		
 		}
 		else{
-			labelContinent.setText("Continents ("+String.valueOf(myGame.getGameMap().getContinents().size())+"):");
-			myTreeRoot = new DefaultMutableTreeNode("Map - "+myGame.getGameMap().getRiskMapName()+" ");
+			labelContinent.setText("Continents ("+String.valueOf(myMap.getContinents().size())+"):");
+			myTreeRoot = new DefaultMutableTreeNode("Map - "+myMap.getRiskMapName()+" ");
 
-			for (ContinentModel loopContinent : myGame.getGameMap().getContinents()) { 
+			for (ContinentModel loopContinent : myMap.getContinents()) { 
 				ArrayList<CountryModel> loopCountriesList = loopContinent.getCountryList();
-				DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
+				DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getShowName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
 				for (CountryModel loopCountry:loopCountriesList){
 					if (loopCountry.getOwner()!=null)
-						loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" ("+loopCountry.getOwner().getName()+", "+loopCountry.getArmyNumber()+" armies) "));						
-					else loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" ("+loopCountry.getArmyNumber()+" armies) "));
+						loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getShowName()+" ("+loopCountry.getOwner().getName()+", "+loopCountry.getArmyNumber()+" armies) "));						
+					else loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getShowName()+" ("+loopCountry.getArmyNumber()+" armies) "));
 				}
 				myTreeRoot.add(loopContinentNode);
 			}
@@ -380,7 +383,7 @@ public class RiskGameView extends JFrame implements Observer{
 				}
 			}
 		}); 		
-		treeContinent.setCellRenderer(new ContinentNodeRenderer(myGame.getGameMap()));
+		treeContinent.setCellRenderer(new ContinentNodeRenderer(myMap));
 		scrollPaneForContinent.getViewport().removeAll();
 		scrollPaneForContinent.getViewport().add(treeContinent);
 		TreeNode root = (TreeNode) treeContinent.getModel().getRoot();
@@ -402,25 +405,26 @@ public class RiskGameView extends JFrame implements Observer{
 	private void reloadPlayers(){	
 		//configuration
 		DefaultMutableTreeNode myTreeRoot;
-		if (myGame.getPlayers()==null){
+		PlayerModel [] players = myGame.getPlayers();
+		if (players == null){
 			labelPlayer.setText("Players (Total 0):");
 			myTreeRoot = new DefaultMutableTreeNode("Players ");		
 		}
 		else{
-			labelPlayer.setText("Players (Total "+String.valueOf(myGame.getPlayers().length)+", and "+String.valueOf(myGame.getValidPlayers())+" still in game):");
+			labelPlayer.setText("Players (Total "+String.valueOf(players.length)+", and "+String.valueOf(myGame.getValidPlayers())+" still in game):");
 			myTreeRoot = new DefaultMutableTreeNode("Players ");
 
-			for (int i=0;i<myGame.getPlayers().length;i++) { 
-				DefaultMutableTreeNode loopPlayerNode =  new DefaultMutableTreeNode(myGame.getPlayers()[i].getName()+" ("+myGame.getPlayers()[i].getCountries().size()
-						+" Countries, "+myGame.getPlayers()[i].getTotalArmies()+" armies, "+myGame.getPlayers()[i].getCardsString(0)+" cards) "); 
-				for (CountryModel loopCountry:myGame.getPlayers()[i].getCountries()){
-					loopPlayerNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" (In "+loopCountry.getBelongTo().getName()+", "+loopCountry.getArmyNumber()+" armies) "));						
+			for (int i=0;i<players.length;i++) { 
+				DefaultMutableTreeNode loopPlayerNode =  new DefaultMutableTreeNode(players[i].getName()+" ("+players[i].getCountries().size()
+						+" Countries, "+players[i].getTotalArmies()+" armies, "+players[i].getCardsString(0)+" cards) "); 
+				for (CountryModel loopCountry:players[i].getCountries()){
+					loopPlayerNode.add(new DefaultMutableTreeNode(loopCountry.getShowName()+" (In "+loopCountry.getBelongTo().getShowName()+", "+loopCountry.getArmyNumber()+" armies) "));						
 				}
 				myTreeRoot.add(loopPlayerNode);
 			}
 		}	
 		treePlayer= new MyTree(myTreeRoot); 
-		if  (myGame.getPlayers()!=null){
+		if  (players!=null){
 			treePlayer.addMouseListener( new  MouseAdapter(){
 				public void mousePressed(MouseEvent e){
 					int selRow = treePlayer.getRowForLocation(e.getX(), e.getY());
@@ -438,7 +442,7 @@ public class RiskGameView extends JFrame implements Observer{
 			});
 		}
 		
-		treePlayer.setCellRenderer(new PlayerNodeRenderer(myGame.getPlayers()));
+		treePlayer.setCellRenderer(new PlayerNodeRenderer(players));
 		scrollPaneForPlayers.getViewport().removeAll();
 		scrollPaneForPlayers.getViewport().add(treePlayer);
 		TreeNode root = (TreeNode) treePlayer.getModel().getRoot();
@@ -461,7 +465,9 @@ public class RiskGameView extends JFrame implements Observer{
 		DefaultTableModel matrixModel;
 		Object[][] newDataVector;
 		Object[] newIdentifiers = null;
-		if (myGame.getGameMap()==null){
+		RiskMapModel myMap = myGame.getGameMap();
+		int countryNum = 0;
+		if (myMap==null){
 			labelCountry.setText("Countries (0) and Adjacency Matrix:");
 			matrixModel = new DefaultTableModel(0,0);
 			adjacencyMatrix = new MyTable(matrixModel){
@@ -472,23 +478,28 @@ public class RiskGameView extends JFrame implements Observer{
 			};
 		}
 		else{
-			labelCountry.setText("Countries ("+String.valueOf(myGame.getGameMap().getCountryNum())+") and Adjacency Matrix:"); 
-			matrixModel = new DefaultTableModel(myGame.getGameMap().getCountryNum(),myGame.getGameMap().getCountryNum());
+			countryNum = myMap.getCountryNum();
+			labelCountry.setText("Countries ("+String.valueOf(countryNum)+") and Adjacency Matrix:"); 
+			matrixModel = new DefaultTableModel(countryNum, countryNum);
 		
-			newDataVector = new String[myGame.getGameMap().getCountryNum()][myGame.getGameMap().getCountryNum()];
-			newIdentifiers = new String[myGame.getGameMap().getCountryNum()];
+			newDataVector = new String[countryNum][countryNum];
+			newIdentifiers = new String[countryNum];
 			int i =0;
-			for (ContinentModel loopContinent : myGame.getGameMap().getContinents()) { 
+			for (ContinentModel loopContinent : myMap.getContinents()) { 
 				ArrayList<CountryModel> loopCountriesList = loopContinent.getCountryList();
 				for (CountryModel loopCountry:loopCountriesList){
-					newIdentifiers[i++] = loopCountry.getName();
+					newIdentifiers[i++] = loopCountry.getShowName();
 				}
 			}
-			for (i=0;i<myGame.getGameMap().getCountryNum();i++){
-				ArrayList<CountryModel> adjacentCountryList = myGame.getGameMap().getAdjacencyList().get(myGame.getGameMap().findCountry((String)newIdentifiers[i]));
-				for (int j=0;j<myGame.getGameMap().getCountryNum();j++){
-					if (adjacentCountryList.contains(myGame.getGameMap().findCountry((String)newIdentifiers[j]))){
-						newDataVector[i][j] = "X";
+			for (i=0;i<countryNum;i++){
+				ArrayList<CountryModel> adjacentCountryList = myMap.getAdjacencyList().get(myMap.findCountry((String)newIdentifiers[i]));
+				for (int j=0;j<countryNum;j++){
+					if (adjacentCountryList.contains(myMap.findCountry((String)newIdentifiers[j]))){
+						if (myMap.getAdjacencyList().get(myMap.findCountry((String)newIdentifiers[j]))
+								.contains(myMap.findCountry((String)newIdentifiers[i]))){
+							newDataVector[i][j] = "X";
+						}
+						else newDataVector[i][j] = "Y";
 					}
 					else{
 						newDataVector[i][j] = "";
@@ -502,14 +513,14 @@ public class RiskGameView extends JFrame implements Observer{
 					return false;
 				}//table not allow to be modified
 			};
-			if (myGame.getGameMap().getCountryNum()>0) adjacencyMatrix.setRowHeight(adjacencyMatrix.getTableHeader().getPreferredSize().height);
-			int continentNum = myGame.getGameMap().getContinents().size();
+			if (countryNum>0) adjacencyMatrix.setRowHeight(adjacencyMatrix.getTableHeader().getPreferredSize().height);
+			int continentNum = myMap.getContinents().size();
 			int[] areaContinents = new int[continentNum+1];
 			areaContinents[0] = 0;
 			for (i=0;i<continentNum;i++){
-				areaContinents[i+1] = areaContinents[i]+myGame.getGameMap().getContinents().get(i).getCountryList().size();
+				areaContinents[i+1] = areaContinents[i]+myMap.getContinents().get(i).getCountryList().size();
 			}
-			adjacencyMatrix.setDefaultRenderer(Object.class,new MatrixRenderer(areaContinents));
+			adjacencyMatrix.setDefaultRenderer(Object.class,new MatrixRenderer(areaContinents,myMap));
 		}
 		//adjacencyMatrix.setColumnSelectionAllowed(true);
 		adjacencyMatrix.setCellSelectionEnabled(true);
@@ -529,9 +540,9 @@ public class RiskGameView extends JFrame implements Observer{
 		scrollPaneForMatrix.getViewport().add(adjacencyMatrix);
 		scrollPaneForMatrix.setRowHeaderView(new RowHeaderTable(adjacencyMatrix,Math.max(70,maxWidth+10),newIdentifiers));
 		
-		adjustWidthBtn.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().getCountryNum()>0);
-		setWidthBtn.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().getCountryNum()>0);
-		colWidthEdit.setEnabled((myGame.getGameMap()==null)?false:myGame.getGameMap().getCountryNum()>0);
+		adjustWidthBtn.setEnabled((myMap==null)?false:countryNum>0);
+		setWidthBtn.setEnabled((myMap==null)?false:countryNum>0);
+		colWidthEdit.setEnabled((myMap==null)?false:countryNum>0);
 	}
 	/**
 	 * Method to be called by Observable's notifyObservers method.

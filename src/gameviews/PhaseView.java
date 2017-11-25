@@ -56,7 +56,7 @@ public class PhaseView extends JFrame implements Observer{
 	private JScrollPane[] scrollPaneForPlayers;
 	private int continentExpandMode = 1;//1-expand 2-collapse
 	private int[] playerExpandMode = {2,2,2,2,2,2};//1-expand 2-collapse
-    private int width= 380,height = 560;
+	private int width= 380,height = 560;
     
 	private RiskGameModel myGame;
 	
@@ -66,7 +66,9 @@ public class PhaseView extends JFrame implements Observer{
 	public PhaseView(){
 		setTitle("Risk Game - Phase View");
 		setSize(width,height);
-		setLocation(5, 5);  
+		int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
+		//setLocation(screenWidth+5, 5);  
+		setLocation(5, 5); 
 		//set exit program when close the window  
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
@@ -174,11 +176,11 @@ public class PhaseView extends JFrame implements Observer{
 
 			for (ContinentModel loopContinent : myGame.getGameMap().getContinents()) { 
 				ArrayList<CountryModel> loopCountriesList = loopContinent.getCountryList();
-				DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
+				DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getShowName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
 				for (CountryModel loopCountry:loopCountriesList){
 					if (loopCountry.getOwner()!=null)
-						loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" ("+loopCountry.getOwner().getName()+", "+loopCountry.getArmyNumber()+" armies) "));						
-					else loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" ("+loopCountry.getArmyNumber()+" armies) "));
+						loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getShowName()+" ("+loopCountry.getOwner().getName()+", "+loopCountry.getArmyNumber()+" armies) "));						
+					else loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getShowName()+" ("+loopCountry.getArmyNumber()+" armies) "));
 				}
 				myTreeRoot.add(loopContinentNode);
 			}
@@ -235,8 +237,8 @@ public class PhaseView extends JFrame implements Observer{
 				myGame.getPlayers()[index].getCardsString(0)+" cards)");
 		myTreeRoot = new DefaultMutableTreeNode("Countries ("+myGame.getPlayers()[index].getCountries().size()+")");		
 		for (CountryModel loopCountry:myGame.getPlayers()[index].getCountries()){
-			DefaultMutableTreeNode loopPlayerNode =  new DefaultMutableTreeNode(loopCountry.getName()+
-					" (In "+loopCountry.getBelongTo().getName()+", "+loopCountry.getArmyNumber()+" armies) "); 
+			DefaultMutableTreeNode loopPlayerNode =  new DefaultMutableTreeNode(loopCountry.getShowName()+
+					" (In "+loopCountry.getBelongTo().getShowName()+", "+loopCountry.getArmyNumber()+" armies) "); 
 			myTreeRoot.add(loopPlayerNode);
 		}
 		treePlayers[index]= new MyTree(myTreeRoot); 
@@ -340,7 +342,6 @@ public class PhaseView extends JFrame implements Observer{
 	public void addModel(RiskGameModel myGame){
 		this.myGame = myGame;
 		treeContinent.setCellRenderer(new ContinentNodeRenderer(myGame.getGameMap()));
-		//treePlayer.setCellRenderer(new PlayerNodeRenderer(myGame.getPlayers()));
 	}
 
 	/**
@@ -361,27 +362,29 @@ public class PhaseView extends JFrame implements Observer{
 		Dimension size;
 		int type = (Integer) x;
 		if (type == 0){//update for top level phase information. startup and game started
-			phaseNameLabel.setText(((RiskGameModel)obs).getPhaseString());
+			addModel((RiskGameModel)obs);
+			phaseNameLabel.setText(myGame.getPhaseString());
 			size = phaseNameLabel.getPreferredSize();
 			phaseNameLabel.setBounds(15,15,size.width,size.height); 
 		}
 		else if (type == 1){//update detail step information.
-			if (((RiskGameModel)obs).getGameStage()>=1000){ //special for assigning countries process
-				gameStageLabel3.setText("Step 3 - Assign "+myGame.getGameMap().findCountryByID(((RiskGameModel)obs).getGameStage()/1000).getName()+
-						" to Player"+String.valueOf(((RiskGameModel)obs).getGameStage()%1000+1));
+			int stage = myGame.getGameStage();
+			if (stage>=1000){ //special for assigning countries process
+				gameStageLabel3.setText("Step 3 - Assign "+myGame.getGameMap().findCountryByID(stage/1000).getShowName()+
+						" to Player"+String.valueOf(stage%1000+1));
 				size = gameStageLabel3.getPreferredSize();
 				gameStageLabel3.setBounds(25,110,size.width,size.height); 
 				reloadContinents();
-				reloadPlayers(((RiskGameModel)obs).getGameStage()%1000);
+				reloadPlayers(stage%1000);
 				return;
 			}
-			else if (((RiskGameModel)obs).getGameStage()>=230){ //special for assigning countries process
-				gameStageLabel3.setText("Step 3 - Start with Player"+String.valueOf(((RiskGameModel)obs).getGameStage()-230+1)+" ...");
+			else if (stage>=230){ //special for assigning countries process
+				gameStageLabel3.setText("Step 3 - Start with Player"+String.valueOf(stage-230+1)+" ...");
 				size = gameStageLabel3.getPreferredSize();
 				gameStageLabel3.setBounds(25,110,size.width,size.height); 
 				return;
 			}
-			switch (((RiskGameModel)obs).getGameStage()){
+			switch (stage){
 				case 0://initial status, no map, no players, when beginning or back from 10
 					reloadContinents();
 					gameStageLabel1.setForeground(Color.RED);
@@ -505,7 +508,7 @@ public class PhaseView extends JFrame implements Observer{
 					setPlayersView(myGame.getCurPlayer());
 					break;
 			}
-			if (((RiskGameModel)obs).getGameStage()<50){ //adjust size for display information correctly
+			if (stage<50){ //adjust size for display information correctly
 				size = gameStageLabel1.getPreferredSize();
 				gameStageLabel1.setBounds(25,50,size.width,size.height); 
 				size = gameStageLabel2.getPreferredSize();
@@ -524,13 +527,13 @@ public class PhaseView extends JFrame implements Observer{
 			}
 		}
 		else if (type == 2){//update turn info
-			turnLabel.setText("Turn  "+((RiskGameModel)obs).getTurn());
+			turnLabel.setText("Turn  "+myGame.getTurn());
 			turnLabel.setVisible(true);
 			size = turnLabel.getPreferredSize();
 			turnLabel.setBounds(350-size.width,10,size.width,size.height); 	
 		}
 		else if (type == 3){//update player info
-			int curPlayer = ((RiskGameModel)obs).getCurPlayer();
+			int curPlayer = myGame.getCurPlayer();
 			playerLabel.setText("Player"+(curPlayer+1)+":");
 			playerLabel.setForeground(((RiskGameModel)obs).getPlayers()[curPlayer].getMyColor());
 			playerLabel.setVisible(true);
@@ -593,6 +596,10 @@ public class PhaseView extends JFrame implements Observer{
 		}
 		else if (type == 9){//update attack info
 			gameStageLabel1.setText(((PlayerModel)obs).getAttackInfo());
+			gameStageLabel1.setVisible(true);
+			gameStageLabel1.setForeground(Color.RED);
+			size = gameStageLabel1.getPreferredSize();
+			gameStageLabel1.setBounds(25,90,size.width,size.height);
 		}
 		else if (type == 10){//update attack info
 			gameStageLabel2.setText(((PlayerModel)obs).getAttackStepInfo());
@@ -622,7 +629,10 @@ public class PhaseView extends JFrame implements Observer{
  */
 class ObserverLabel extends JLabel implements Observer {
 	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * Constructor of class
+	 * @param text initial text
+	 */
 	public ObserverLabel (String text){
 		super(text);
 	}
@@ -632,7 +642,6 @@ class ObserverLabel extends JLabel implements Observer {
 	 * @param arg0 the observable object
 	 * @param arg1 an argument passed by the notifyObservers method.
 	 */	
-	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		this.setText(String.valueOf(arg1));

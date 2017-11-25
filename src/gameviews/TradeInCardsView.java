@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * 
+ * Class to monitor the trade cards process
+ *
+ */
 public class TradeInCardsView extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
@@ -19,6 +24,9 @@ public class TradeInCardsView extends JFrame implements Observer {
     JLabel Label3; 
     
 	SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+		/**
+		 * Method to define background job
+		 */
 		@Override
 		protected Void doInBackground() {
 			try {
@@ -29,19 +37,26 @@ public class TradeInCardsView extends JFrame implements Observer {
 			}
 			return null;
 		}
+		/**
+		 * Method to handle process
+		 * @param chunks the info
+		 */
 		@Override
 		protected void process(List<Integer> chunks) {
 		}
+		/**
+		 * Method to handle done
+		 */
 		@Override
 		protected void done() {
 			dispose();
 		}
 	};
-
+	
 	/**
-	 * This is view window for trading in cards
+	 * Constructor for trading in cards View
 	 */
-	public TradeInCardsView(){
+    public TradeInCardsView(){
         //this.setLocation((screenWidth-500)/3, (screenHeight-300)/3);
         this.setSize(400,230);
         this.setLayout(null);
@@ -69,13 +84,13 @@ public class TradeInCardsView extends JFrame implements Observer {
 
         this.setVisible(false);
     }
-
+    
 	/**
 	 * Rewrite update method.
-	 * @param obs observable
-	 * @param x observed object
+	 * @param obs observable object
+	 * @param x an argument passed by the notifyObservers method.
 	 */
-	public void update(Observable obs, Object x){
+    public void update(Observable obs, Object x){
     	int type = (Integer) x;
     	if (type == 4){//update player phase info
     		Label1.setText(MessageFormat.format("{0} now has {1}",((PlayerModel)obs).getName(),((PlayerModel)obs).getCardsString(1)));
@@ -108,17 +123,4 @@ public class TradeInCardsView extends JFrame implements Observer {
        		worker.execute();
     	}
     }
-
-	/**
-	 * This is to close trade in cards view
-	 */
-	public void closeTradeInCardsView(){
-        try {
-            Thread.sleep(6000);
-            this.dispose();
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-    }
-
 }

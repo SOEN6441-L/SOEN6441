@@ -22,13 +22,21 @@ import mapmodels.RiskMapModel;
  */
 class MatrixRenderer implements TableCellRenderer{     
 	private int[] areaContinents;
+	private RiskMapModel myMap;
 	
-	public MatrixRenderer(int[] area){
+	public static final DefaultTableCellRenderer DEFAULT_RENDERER =new DefaultTableCellRenderer(); 
+	
+	/**
+	 * Constructor of class
+	 * @param area upper and lower bounds of each continents 
+	 * @param myMap the map object
+	 */
+	public MatrixRenderer(int[] area, RiskMapModel myMap){
 		this.areaContinents = area;
+		this.myMap = myMap;
 	}
 
-	public static final DefaultTableCellRenderer DEFAULT_RENDERER =new DefaultTableCellRenderer();     
-	
+
 	/**
 	 * Method to get cells in matrix and render every cell, highlight the areas for each continent, 
 	 * use different colors to display connections in matrix (upper_right light-gray, lower_left red). 
@@ -52,7 +60,10 @@ class MatrixRenderer implements TableCellRenderer{
 		renderer.setPreferredSize(renderer.getPreferredSize());
 		if (row == column) {     
 			//foreground = Color.YELLOW;     
-			background = new Color(210,210,210);   
+			background = new Color(210,210,210); 
+			PlayerModel player = (myMap.findCountry(table.getColumnName(column)).getOwner());
+			if (player==null) background = new Color(210,210,210);
+			else background = player.getMyColor();
 			//renderer.setForeground(foreground);     
 			renderer.setBackground(background);   
 		} 
@@ -64,10 +75,13 @@ class MatrixRenderer implements TableCellRenderer{
 					break;
 				}
 			}
-			if (row > column){
-				renderer.setForeground(Color.RED); 
+			if (table.getValueAt(row, column).equals("X")){
+				if (row > column){
+					renderer.setForeground(Color.RED); 
+				}
+				else renderer.setForeground(Color.LIGHT_GRAY);
 			}
-			else renderer.setForeground(Color.LIGHT_GRAY);
+			else renderer.setForeground(Color.BLUE);
 		}
 		return renderer;
 	}     
@@ -83,6 +97,10 @@ class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
 	RiskMapModel myMap;
 	
+	/**
+	 * Constructor of class
+	 * @param map map object 
+	 */	
 	public ContinentNodeRenderer(RiskMapModel map){
 		myMap = map;
 	}
@@ -136,7 +154,11 @@ class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
 	ImageIcon playerIcon = new ImageIcon("src/images/player.png");
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
 	PlayerModel[] myPlayer;
-	
+
+	/**
+	 * Constructor of class
+	 * @param player players array
+	 */
 	public PlayerNodeRenderer(PlayerModel[] player){
 		myPlayer = player;
 	}
@@ -189,6 +211,10 @@ class  CountryNodeRenderer  extends  DefaultTreeCellRenderer{
 	ImageIcon countryIcon = new ImageIcon("src/images/country.png");
 	Color myColor;
 	
+	/**
+	 * Constructor of class
+	 * @param color default color for the country 
+	 */
 	public CountryNodeRenderer(Color color){
 		this.myColor = color;
 	}

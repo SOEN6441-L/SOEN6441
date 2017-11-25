@@ -1,4 +1,3 @@
-
 package gamemodels;
 
 import java.awt.Color;
@@ -227,9 +226,9 @@ public class PlayerModel extends Observable {
         		continentNum++;
         		totalReinforcement+=loopContinent.getControlNum();
         		if (continentStr.isEmpty())
-        			continentStr =loopContinent.getName()+"("+loopContinent.getControlNum()+")";
+        			continentStr =loopContinent.getShowName()+"("+loopContinent.getControlNum()+")";
         		else
-        			continentStr += "+"+loopContinent.getName()+"("+loopContinent.getControlNum()+")";
+        			continentStr += "+"+loopContinent.getShowName()+"("+loopContinent.getControlNum()+")";
         	}
         }
     	if (continentNum>0){
@@ -296,6 +295,8 @@ public class PlayerModel extends Observable {
 	 */
 	public void reinforcementPhase(){
 		calculateArmyNumber();
+		myGame.myLog.setLogStr(this.getName()+" reinforcement phase begin.\n");
+		myGame.myLog.setLogStr("Totla reinforcement army is "+this.getTotalReinforcement()+"\n");		
 		this.setPhaseString("Reinforcement Phase");
 		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(this);
 		reinforcementPhase.setVisible(true);
@@ -423,23 +424,27 @@ public class PlayerModel extends Observable {
 	public String getPutArmyStr() {
 		return putArmyStr;
 	}
-
+	/**
+	 * The setter of PutArmyStr, used to set the army putting info
+	 * @param putArmyStr army putting info
+	 */	
 	public void setPutArmyStr(String putArmyStr) {
 		this.putArmyStr = putArmyStr;
 		setChanged();
 		notifyObservers(7);
 	}
+
 	/**
-	 * The setter of PutArmyStr, used to set the army putting info
-	 * @return current game object
-	 */	
+	 * Method to get game object of this player
+	 * @return game object
+	 */
 	public RiskGameModel getMyGame() {
 		return myGame;
 	}
-
+	
 	/**
 	 * This method is to get movable country
-	 * @return country number
+	 * @return count of movable country
 	 */
 	public int getMovableCountry() {
 		int count = 0;
@@ -448,10 +453,10 @@ public class PlayerModel extends Observable {
 		}
 		return count;
 	}
-
+	
 	/**
-	 * This method is to get attacking countries
-	 * @return Country number
+	 * This method is to get valid attacking countries
+	 * @return count of valid attacking countries
 	 */
 	public int getAttackingCountry() {
 		int count = 0;
@@ -471,16 +476,16 @@ public class PlayerModel extends Observable {
 
 	/**
 	 * This method is to get attack information
-	 * @return attack information
+	 * @return attack info
 	 */
 	public String getAttackInfo() {
 		return attackInfo;
 
 	}
 
-  /**
+	/**
 	 * This method is to set attack information
-	 * @param attackInfo
+	 * @param attackInfo attack info
 	 */
 	public void setAttackInfo(String attackInfo) {
 		this.attackInfo = attackInfo;
@@ -490,16 +495,16 @@ public class PlayerModel extends Observable {
 		}
 		else notifyObservers(9);
 	}
-   /**
-   * This method is to get attack step information
+
+	/**
+	 * This method is to get attack step information
 	 * @return step attack information
 	 */
-
 	public String getAttackStepInfo() {
 		return attackStepInfo;
 	}
 
-  /**
+	/**
 	 * This method is to set attack information
 	 * @param attackStepInfo attack step information
 	 */
@@ -508,11 +513,11 @@ public class PlayerModel extends Observable {
 		setChanged();
 		notifyObservers(10);
 	}
-
+	
 	/**
-	 * This method is to get move armies
+	 * This method is to move armies from one country to another
 	 * @param country1 armies moved to
-	 * @param country2 armies moved
+	 * @param country2 armies moved from
 	 * @param armies armies number
 	 */
 	public void moveArmies(CountryModel country1,CountryModel country2, int armies){

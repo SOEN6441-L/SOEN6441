@@ -3,7 +3,7 @@ package basicclasses;
 import javax.swing.JPopupMenu;
 
 /**
- * Class to extend JPopupMenu, add one new varible and relative methods
+ * Class to extend JPopupMenu, add one new variable and relative methods
  * @see JPopupMenu
  */
 public class MyPopupMenu extends JPopupMenu {
@@ -18,7 +18,7 @@ public class MyPopupMenu extends JPopupMenu {
 	}
 	
 	/**
-	 * Method to get the owner of this popupmenu.
+	 * Method to get the owner of this popup menu.
 	 * @return the owner's name
 	 */
 	public String getOwner() {
@@ -26,7 +26,7 @@ public class MyPopupMenu extends JPopupMenu {
 	}
 	
 	/**
-	 * Method to set the owner of this popupmenu
+	 * Method to set the owner of this popup menu
 	 * @param owner's name
 	 */
 	public void setOwner(String owner) {

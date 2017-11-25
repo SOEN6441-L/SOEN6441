@@ -231,6 +231,7 @@ public class RiskMapModel extends Observable{
 	 * @return continent that found or null if not exits
 	 */
 	public ContinentModel findContinent(String continentName) {
+		continentName = continentName.toLowerCase();
 		for (ContinentModel loopContinent:getContinents()){
 			if (loopContinent.getName().equals(continentName)){
 				return loopContinent;
@@ -432,7 +433,7 @@ public class RiskMapModel extends Observable{
 	 * @param countryNameTo name of the country that the connection is to
 	 * @return succeed or failed with an error message
 	 */
-	public ErrorMsg addConnection(String countryNameFrom,String countryNameTo){
+	public ErrorMsg addConnections(String countryNameFrom,String countryNameTo){
 		if (countryNameFrom.equals(countryNameTo)){
 			return new ErrorMsg(2, "Country  '"+countryNameFrom+"' can not have self-connection");			
 		}
@@ -446,13 +447,11 @@ public class RiskMapModel extends Observable{
 			return new ErrorMsg(1, "Country  '"+countryNameTo+"' does not exists");
 		}
 		if (getAdjacencyList().get(fromCountry).contains(toCountry)&&getAdjacencyList().get(toCountry).contains(fromCountry)){
-			return new ErrorMsg(3, "Connection from '"+countryNameFrom+" to "+countryNameTo+"' already exists");			
+			return new ErrorMsg(0, "Connection from '"+countryNameFrom+" to "+countryNameTo+"' already exists");			
 		}
 		if (getAdjacencyList().get(fromCountry).contains(toCountry)||getAdjacencyList().get(toCountry).contains(fromCountry)){
 			getAdjacencyList().get(fromCountry).remove(toCountry);
 			getAdjacencyList().get(toCountry).remove(fromCountry);
-			this.setModified(true);
-			return new ErrorMsg(4, "Connection from '"+countryNameFrom+" to "+countryNameTo+"' is not paired, connection removed.");			
 		}
 		getAdjacencyList().get(fromCountry).add(toCountry);
 		getAdjacencyList().get(toCountry).add(fromCountry);
@@ -501,7 +500,7 @@ public class RiskMapModel extends Observable{
 		}
 				
 		if (getAdjacencyList().get(fromCountry).remove(toCountry)) this.setModified(true);
-		if (getAdjacencyList().get(toCountry).remove(fromCountry)) this.setModified(true);
+		//if (getAdjacencyList().get(toCountry).remove(fromCountry)) this.setModified(true);
 		return new ErrorMsg(0, null);
 	}
 
@@ -579,9 +578,9 @@ public class RiskMapModel extends Observable{
 			for (ContinentModel loopContinent: getContinents()){
 				if (loopContinent.getCountryList().size()==0){
 					if (errorMessage == null)
-						errorMessage = "Error: The continent <"+loopContinent.getName()+"> has no country in it.\n";
+						errorMessage = "Error: The continent <"+loopContinent.getShowName()+"> has no country in it.\n";
 					else
-						errorMessage += "Error: The continent <"+loopContinent.getName()+"> has no country in it.\n";
+						errorMessage += "Error: The continent <"+loopContinent.getShowName()+"> has no country in it.\n";
 					continue;
 				}
 				Map<CountryModel,ArrayList<CountryModel>> loopAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
@@ -595,8 +594,8 @@ public class RiskMapModel extends Observable{
 				}
 				if (!checkConnection(loopAdjacencyList)){
 					if (errorMessage == null)
-						errorMessage="Error: The continent <"+loopContinent.getName()+"> is not a connected graph.\n";
-					else errorMessage+="Error: The continent <"+loopContinent.getName()+"> is not a connected graph.\n";
+						errorMessage="Error: The continent <"+loopContinent.getShowName()+"> is not a connected graph.\n";
+					else errorMessage+="Error: The continent <"+loopContinent.getShowName()+"> is not a connected graph.\n";
 				}
 			}
 		}
@@ -675,16 +674,16 @@ public class RiskMapModel extends Observable{
 			fw.write("\r\n");
 			fw.write("[Continents]\r\n");
 			for (ContinentModel loopContinent : getContinents()){
-				fw.write(loopContinent.getName()+"="+loopContinent.getControlNum()+"\r\n");
+				fw.write(loopContinent.getShowName()+"="+loopContinent.getControlNum()+"\r\n");
 			}
 			fw.write("\r\n");
 			fw.write("[Territories]\r\n");
 			for (ContinentModel loopContinent : getContinents()){
 				for (CountryModel loopCountry : loopContinent.getCountryList()){
 					ArrayList<CountryModel> neighbours = getAdjacencyList().get(loopCountry);
-					fw.write(loopCountry.getName()+","+loopCountry.getCoordinate()[0]+","+loopCountry.getCoordinate()[1]+","+loopContinent.getName());
+					fw.write(loopCountry.getShowName()+","+loopCountry.getCoordinate()[0]+","+loopCountry.getCoordinate()[1]+","+loopContinent.getShowName());
 					for (CountryModel neighbour : neighbours){
-						fw.write(","+neighbour.getName());
+						fw.write(","+neighbour.getShowName());
 					}
 					fw.write("\r\n");
 				}
@@ -818,11 +817,11 @@ public class RiskMapModel extends Observable{
 								if (!(errorMsg=this.addCountry(countryName,belongContinentName,Integer.parseInt(countryInfo[1].trim()),
 										Integer.parseInt(countryInfo[2].trim()))).isResult())									
 									return new ErrorMsg(7,"Fatal error in line "+rowNumber+": "+errorMsg.getMsg());									
-								countriesList.put(countryName, new ArrayList<String>());
+								countriesList.put(countryName.toLowerCase(), new ArrayList<String>());
 								for (int i=4;i<countryInfo.length;i++){
-									if (countriesList.get(countryName).contains(countryInfo[i].trim()))
+									if (countriesList.get(countryName.toLowerCase()).contains(countryInfo[i].trim().toLowerCase()))
 										return new ErrorMsg(8,"Fatal error in line "+rowNumber+": Duplicate record in adjacency list.");
-									countriesList.get(countryName).add(countryInfo[i].trim());
+									countriesList.get(countryName.toLowerCase()).add(countryInfo[i].trim().toLowerCase());
 								}
 							}
 							else{
@@ -854,8 +853,8 @@ public class RiskMapModel extends Observable{
 					return new ErrorMsg(12, "Fatal error: Country <"+loopCountry+"> can't have self-connection.");
 				if (!countriesList.containsKey(loopNeighbour))
 					return new ErrorMsg(10, "Fatal error: Country <"+loopNeighbour+"> in <"+loopCountry+">'s adjacency list is not exist.");
-				if (!countriesList.get(loopNeighbour).contains(loopCountry))
-					return new ErrorMsg(11, "Fatal error: The connection between country <"+loopCountry+"> and <"+loopNeighbour+"> is not paired.");
+				//if (!countriesList.get(loopNeighbour).contains(loopCountry))
+				//	return new ErrorMsg(11, "Fatal error: The connection between country <"+loopCountry+"> and <"+loopNeighbour+"> is not paired.");
 				getAdjacencyList().get(findCountry(loopCountry)).add(findCountry(loopNeighbour));
 			}
 		}
@@ -865,7 +864,7 @@ public class RiskMapModel extends Observable{
 
 	/**
 	 * method to generate notify
-	 */
+	 */	
 	public void generateNotify() {
 		setChanged();
 		notifyObservers(2);

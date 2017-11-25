@@ -1,7 +1,5 @@
 package gameviews;
 
-
-
 import javax.swing.*;
 
 import gamemodels.PlayerModel;
@@ -12,22 +10,23 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Created by liarthur on 03/11/2017.
+ * Class to display the domination status
  */
 public class DominationView implements Observer{
-    private PlayerModel[] players;
-    JFrame frame;
+	private PlayerModel[] players;
+	JFrame frame;
 
-    /**
-     * This is the constructor of class DominationView
-     */
-    public DominationView(){      
-        frame = new JFrame();
+	/**
+	 * This is the constructor of class DominationView
+	 */
+	public DominationView(){      
+    	frame = new JFrame();
         //frame.getContentPane().add(new DominationChart(null);
         frame.setSize(300, 300);
         frame.setTitle("Domination View");
-		int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
-		frame.setLocation(screenWidth-300,0);  
+        int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
+        //setLocation(2*screenWidth-300,0);  
+        frame.setLocation(screenWidth-300,0);  
         frame.setVisible(true);
     }
 
@@ -62,12 +61,18 @@ public class DominationView implements Observer{
 
         /**
          * This method is to paint graph
-         * @param g
+         * @param g the graphic object
          */
         public void paint(Graphics g) {
             drawPie((Graphics2D) g, getBounds(), slice);
         }
 
+        /**
+         * This is for update the state of the char
+         * @param g the graphic object
+         * @param area rectangle area
+         * @param slice slice array
+         */
         void drawPie(Graphics2D g, Rectangle area, Slice[] slice) {
             double total = 0.0D;
 
@@ -100,7 +105,5 @@ public class DominationView implements Observer{
     			frame.getContentPane().validate();
     		}	
     	}	
-        //frame.setSize(300, 300);
-        //frame.setVisible(true);
     }
 }

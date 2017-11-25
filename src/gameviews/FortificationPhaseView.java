@@ -69,7 +69,8 @@ public class FortificationPhaseView extends JDialog{
         this.myGame = player.getMyGame();
 
         setTitle("Fortification Phase");
-
+        myGame.myLog.setLogStr(player.getName()+" fortification begin.\n");
+        player.setAttackInfo("fortification begin.");
         setSize(width,height);
         int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
         int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
@@ -90,7 +91,7 @@ public class FortificationPhaseView extends JDialog{
         int j = 0;
         for (CountryModel loopCountry:player.getCountries()){
         	if (loopCountry.getArmyNumber()>1)
-        		localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
+        		localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
         }
         
 		localAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
@@ -132,8 +133,8 @@ public class FortificationPhaseView extends JDialog{
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
             CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+                    +" (In "+loopCountry.getBelongTo().getShowName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountryFrom = new JTree(myTreeRoot);
         treeCountryFrom.addMouseListener( new  MouseAdapter(){
@@ -228,8 +229,8 @@ public class FortificationPhaseView extends JDialog{
         for (CountryModel loopCountry : player.getCountries()){
         	if (loopCountry.isFlagDFS()&&loopCountry!=curCountry){
         		countriesAvailable++;
-        		myTreeRootTo.add(new DefaultMutableTreeNode(loopCountry.getName()
-                        +" (In "+loopCountry.getBelongTo().getName()+", "+loopCountry.getArmyNumber()+" armies)"));
+        		myTreeRootTo.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+                        +" (In "+loopCountry.getBelongTo().getShowName()+", "+loopCountry.getArmyNumber()+" armies)"));
         	}
         }
         countryLabelTo.setText("Territories have a path ("+countriesAvailable+"):");
@@ -252,6 +253,11 @@ public class FortificationPhaseView extends JDialog{
            					if (armyNumberCombo.getSelectedIndex()!=-1){
            						myGame.getGameMap().findCountry(selCountryNameFrom).setArmyNumber(myGame.getGameMap().findCountry(selCountryNameFrom).getArmyNumber() - (armyNumberCombo.getSelectedIndex()+1));
            						myGame.getGameMap().findCountry(selCountryNameTo).setArmyNumber(myGame.getGameMap().findCountry(selCountryNameTo).getArmyNumber() + (armyNumberCombo.getSelectedIndex()+1));
+           						
+           						myGame.myLog.setLogStr(player.getName()+" move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".\n");
+           				        player.setAttackStepInfo("Move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".");
+           						myGame.myLog.setLogStr(player.getName()+" fortification finished.\n");
+           				        player.setAttackInfo("fortification finished.");
            						state=1;
            						setVisible(false);
            					}
@@ -272,13 +278,14 @@ public class FortificationPhaseView extends JDialog{
      * Class to define the action of enter Button 
      */
     private class enterBtnHandler implements ActionListener {
+		/**
+		 * Method to define action performed according to different users' action.
+		 * @param arg0 the action event of user.
+		 */	
 		@Override
-		/*
-		 * (non-Javadoc)
-		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-		 */
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
+			myGame.myLog.setLogStr(player.getName()+" fortification finished.\n");
 			setVisible(false);
 		}
     }

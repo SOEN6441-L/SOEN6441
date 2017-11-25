@@ -63,10 +63,13 @@ class MatrixRenderer implements TableCellRenderer{
 					break;
 				}
 			}
-			if (row > column){
-				renderer.setForeground(Color.RED); 
+			if (table.getValueAt(row, column).equals("X")){
+				if (row > column){
+					renderer.setForeground(Color.RED); 
+				}
+				else renderer.setForeground(Color.LIGHT_GRAY);
 			}
-			else renderer.setForeground(Color.LIGHT_GRAY);
+			else renderer.setForeground(Color.BLUE);
 		}
 		return renderer;
 	}     

@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 
 import gamemodels.RiskGameModel;
-import gameviews.putInitialArmyView;
-import mapmodels.RiskMapModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,8 +12,6 @@ import org.junit.Test;
  */
 public class RiskGameModalTest {
     private RiskGameModel game;
-    private RiskMapModel map;
-    private putInitialArmyView startupPhase;
 
     /**
      * set up environment

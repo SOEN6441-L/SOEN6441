@@ -98,7 +98,7 @@ public class ReinforcePhaseView extends JDialog{
         localCountries = new NodeRecord[player.getCountries().size()];
         int j = 0;
         for (CountryModel loopCountry:player.getCountries()){
-            localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
+            localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
         }
 
         turnLabel = new JLabel("TURN "+myGame.getTurn()+": ");
@@ -140,8 +140,8 @@ public class ReinforcePhaseView extends JDialog{
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
             CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+                    +" (In "+loopCountry.getBelongTo().getShowName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountry= new JTree(myTreeRoot);
         treeCountry.addMouseListener( new  MouseAdapter(){
@@ -157,6 +157,7 @@ public class ReinforcePhaseView extends JDialog{
                             leftArmies-=armyNumberCombo.getSelectedIndex()+1;
                             localCountries[selRow-1].setNumber(localCountries[selRow-1].getNumber() + armyNumberCombo.getSelectedIndex()+1);
                             player.setPutArmyStr("Places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName());
+                            myGame.myLog.setLogStr(player.getName()+" places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName()+"\n");
                             reloadGUI();
                         }
                     }
@@ -245,8 +246,8 @@ public class ReinforcePhaseView extends JDialog{
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
             CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+                    +" (In "+loopCountry.getBelongTo().getShowName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountry = null;
         treeCountry= new JTree(myTreeRoot);
@@ -263,6 +264,7 @@ public class ReinforcePhaseView extends JDialog{
                             leftArmies-=armyNumberCombo.getSelectedIndex()+1;
                             localCountries[selRow-1].setNumber(localCountries[selRow-1].getNumber() + armyNumberCombo.getSelectedIndex()+1);
                             player.setPutArmyStr("Places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName());
+                            myGame.myLog.setLogStr(player.getName()+" places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName()+"\n");
                             reloadGUI();
                         }
                     }
@@ -276,16 +278,6 @@ public class ReinforcePhaseView extends JDialog{
     }
 
     /**
-     * To add action listener to the cancel button
-     */
-    /*private class cancelBtnHandler implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            state = 0;
-            setVisible(false);
-        }
-    }*/
-
-    /**
      * To add action listener to the enter button
      */
     private class enterBtnHandler implements ActionListener {
@@ -297,6 +289,7 @@ public class ReinforcePhaseView extends JDialog{
                     }
                 }
             }
+            myGame.myLog.setLogStr(player.getName()+" reinforcement finished.\n");
             setVisible(false);
         }
     }
@@ -307,6 +300,8 @@ public class ReinforcePhaseView extends JDialog{
     private class exchangeHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             player.setExchangeStatus("Exchanging Cards ...");
+    		myGame.myLog.setLogStr(player.getName()+ " begin to exhanging cards ...\n");
+    		myGame.myLog.setLogStr(player.getName()+ " now have "+player.getCardsString(1)+"\n");
             TradeInCards exchangeView = new TradeInCards(player);
             exchangeView.setVisible(true);
             cardsLabel.setText(player.getCardsString(1));
@@ -318,6 +313,8 @@ public class ReinforcePhaseView extends JDialog{
             }
             armyNumberCombo.setSelectedIndex(leftArmies-1);
             exchangeView.dispose();
+            myGame.myLog.setLogStr(player.getName()+ " now have "+player.getCardsString(1)+"\n");
+            myGame.myLog.setLogStr(player.getName()+ " now reinforcement armies = "+player.getTotalReinforcement()+"\n");
             player.setExchangeStatus("Exchange Cards ... finished.");
         }
     }

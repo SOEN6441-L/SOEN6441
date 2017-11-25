@@ -11,6 +11,7 @@ import javax.swing.filechooser.FileFilter;
 
 import gamemodels.RiskGameModel;
 import gameviews.DominationView;
+import gameviews.LogWindow;
 import gameviews.PhaseView;
 import gameviews.RiskGameView;
 import mapmodels.ErrorMsg;
@@ -96,13 +97,16 @@ public class RiskGameController implements ActionListener {
 		if (inputFileName.trim().isEmpty()){
 			myGameModel.setGameStage(2);
 			JOptionPane.showMessageDialog(null,"Map file name invalid");
+			myGameModel.myLog.setLogStr("Map file name invalid\n");
 		}
 		else{
 			ErrorMsg errorMdg = null;
 			if (!(errorMdg = myGameModel.loadMapFile(inputFileName.trim())).isResult()){
 				myGameModel.setGameStage(2);
 				JOptionPane.showMessageDialog(null,errorMdg.getMsg());
+				myGameModel.myLog.setLogStr(errorMdg.getMsg()+"\n");
 			}
+			else myGameModel.myLog.setLogStr("Load Map file "+inputFileName.trim() +" succeed\n");
 		}
 	}
 
@@ -230,10 +234,13 @@ public class RiskGameController implements ActionListener {
 		RiskGameView gameView = new RiskGameView();
 		PhaseView phaseView = new PhaseView();
 		DominationView domiView = new DominationView();
+		LogWindow logWindow = new LogWindow();
+		
 		RiskGameModel gameModel = new RiskGameModel();
+		gameModel.addLog(logWindow);
 		RiskGameController gameController = new RiskGameController();
 		//add model and controller to views
-		phaseView.addModel(gameModel);
+		//phaseView.addModel(gameModel);
 		gameView.addModel(gameModel);
 		gameView.addController(gameController);
 		//add model to controller

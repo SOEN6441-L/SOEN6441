@@ -15,7 +15,6 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -67,13 +66,15 @@ public class AttackPhaseView extends JDialog{
         this.myGame = player.getMyGame();
 
         setTitle("Attack Phase");
+        
+        myGame.myLog.setLogStr(player.getName()+" attack phase begin\n");
 
         setSize(width,height);
         int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
         int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
         setLocation((screenWidth-width)/2, (screenHeight-height)/2);
         //set exit program when close the window
-        this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         //not capable adjust windows size
         setResizable(false);
@@ -86,6 +87,7 @@ public class AttackPhaseView extends JDialog{
         
         if (attackingCountry == 0){
         	player.setAttackInfo("No more territories can attack, attack phase finished");
+        	myGame.myLog.setLogStr(player.getName()+", no more territories can attack, attack phase finished\n");
         	this.dispose();
         }
         else {
@@ -99,7 +101,7 @@ public class AttackPhaseView extends JDialog{
 				ArrayList<CountryModel> neighbors = myGame.getGameMap().getAdjacencyList().get(loopCountry);
 				for (CountryModel neighbor:neighbors){
 					if (neighbor.getBelongTo()!=loopCountry.getBelongTo()){
-						localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
+						localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
 						break;
 					}
 				}	
@@ -145,8 +147,8 @@ public class AttackPhaseView extends JDialog{
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
             CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+                    +" (In "+loopCountry.getBelongTo().getShowName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountryFrom = new JTree(myTreeRoot);
         treeCountryFrom.addMouseListener( new  MouseAdapter(){
@@ -179,7 +181,7 @@ public class AttackPhaseView extends JDialog{
         add(attackBtn);
         attackBtn.setEnabled(false);
         attackBtn.setBounds(scrollPaneForCountryFrom.getBounds().x+scrollPaneForCountryFrom.getSize().width+10,260,size.width+20,size.height);
-        attackBtn.addActionListener(new attackBtnHandler());
+        attackBtn.addActionListener(new ButtonHandler());
         
         countryLabelTo = new JLabel("Territories can be attacked (0):");
         add(countryLabelTo);
@@ -199,21 +201,19 @@ public class AttackPhaseView extends JDialog{
         enterBtn = new JButton("Finish");
         add(enterBtn);
         size = enterBtn.getPreferredSize();
-        enterBtn.setBounds(815,540,size.width,size.height);
-        enterBtn.addActionListener(new enterBtnHandler());
-        
-        
+        enterBtn.setBounds(scrollPaneForCountryTo.getBounds().x+scrollPaneForCountryTo.getSize().width-size.width,488,size.width,size.height);
+        enterBtn.addActionListener(new ButtonHandler());
     }
 
     /**
-     * The method to refresh the UI
+     * The method to refresh the attacked countries
      */
     public void reloadAttacked(){
         DefaultMutableTreeNode myTreeRootTo = new DefaultMutableTreeNode("Countries");
         int countriesAvailable = 0;
         for (CountryModel loopCountry : localAdjacencyList.get(myGame.getGameMap().findCountry(selCountryNameFrom))){
        		countriesAvailable++;
-       		myTreeRootTo.add(new DefaultMutableTreeNode(loopCountry.getName()
+       		myTreeRootTo.add(new DefaultMutableTreeNode(loopCountry.getShowName()
                         +" (Owned by "+loopCountry.getOwner().getName()+", "+loopCountry.getArmyNumber()+" armies)"));
        	}
         countryLabelTo.setText("Territories can be attacked ("+countriesAvailable+"):");
@@ -248,7 +248,7 @@ public class AttackPhaseView extends JDialog{
 
 
     /**
-     * This method is to reload Gui
+     * This method is to reload GUI
      */
     public void reloadGUI(){
 
@@ -256,6 +256,7 @@ public class AttackPhaseView extends JDialog{
         
         if (attackingCountry==0){
         	player.setAttackInfo("No more territories can attack, attack phase finished");
+        	myGame.myLog.setLogStr(player.getName()+", no more territories can attack, attack phase finished\n");
         	setVisible(false);
         }
         else {
@@ -269,7 +270,7 @@ public class AttackPhaseView extends JDialog{
 				ArrayList<CountryModel> neighbors = myGame.getGameMap().getAdjacencyList().get(loopCountry);
 				for (CountryModel neighbor:neighbors){
 					if (neighbor.getBelongTo()!=loopCountry.getBelongTo()){
-						localCountries[j++] = new NodeRecord(loopCountry.getName(), loopCountry.getArmyNumber());
+						localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
 						break;
 					}
 				}	
@@ -291,8 +292,8 @@ public class AttackPhaseView extends JDialog{
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
             CountryModel loopCountry = myGame.getGameMap().findCountry(localCountries[i].getName());
-            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getName()
-                    +" (In "+loopCountry.getBelongTo().getName()+", "+localCountries[i].getNumber()+" armies)"));
+            myTreeRoot.add(new DefaultMutableTreeNode(loopCountry.getShowName()
+                    +" (In "+loopCountry.getBelongTo().getShowName()+", "+localCountries[i].getNumber()+" armies)"));
         }
         treeCountryFrom = new JTree(myTreeRoot);
         treeCountryFrom.addMouseListener( new  MouseAdapter(){
@@ -332,42 +333,35 @@ public class AttackPhaseView extends JDialog{
         scrollPaneForCountryTo.getViewport().removeAll();
         scrollPaneForCountryTo.getViewport().add(treeCountryTo);
     }
-    /**
-     * 
-     * Class to define the action when user finish attack phase
-     *
-     */
-    private class enterBtnHandler implements ActionListener {
-    	/**
-    	 * Method to define action performed according to different users' action.
-    	 * @param e the action event of user.
-    	 */	
-		@Override
-        public void actionPerformed(ActionEvent e) {
-			player.setAttackInfo("Attack phase terminated.");
-            setVisible(false);
-        }
-    }
-    /**
-     * 
-     * Class to define the action when user begin to attack
-     *
-     */   
-    private class attackBtnHandler implements ActionListener {
-    	/**
-    	 * Method to define action performed according to different users' action.
-    	 * @param e the action event of user.
-    	 */	
-		@Override
-        public void actionPerformed(ActionEvent e) {
-			player.setAttackInfo(selCountryNameFrom+" attacking "+selCountryNameTo);
-			AttackDiceView diceView = new AttackDiceView(myGame.getGameMap().findCountry(selCountryNameFrom),
-					myGame.getGameMap().findCountry(selCountryNameTo));
-			diceView.setVisible(true);
-            //setVisible(false);
-            reloadGUI();
-        }
-    }
+    
+	/**
+	 * Class to define action Listener.
+	 */
+	private class ButtonHandler implements ActionListener { 
+		/**
+		 * Method to define action performed according to different users' action.
+		 * @param e the action event of user.
+		 */	
+		public void actionPerformed(ActionEvent e) {
+
+			String buttonName = e.getActionCommand();
+			switch (buttonName){
+			case "Finish":
+				player.setAttackInfo("Attack phase terminated.");
+				myGame.myLog.setLogStr("Attack phase terminated.\n");	
+	            setVisible(false);
+				break;	
+			case "Attack":  
+				player.setAttackInfo(selCountryNameFrom+" attacking "+selCountryNameTo);
+				AttackDiceView diceView = new AttackDiceView(myGame.getGameMap().findCountry(selCountryNameFrom),
+						myGame.getGameMap().findCountry(selCountryNameTo));
+				diceView.setVisible(true);
+	            //setVisible(false);
+	            reloadGUI();
+	            break;
+			}
+		}
+	}
 }
 
 

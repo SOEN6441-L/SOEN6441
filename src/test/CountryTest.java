@@ -35,7 +35,8 @@ public class CountryTest {
 	@Test
 	public void constructorTest(){
 		//case 1:
-		assertEquals("testCountry",country.getName());
+		assertEquals("testCountry",country.getShowName());
+		assertEquals("testcountry",country.getName());
 		assertEquals(continent,country.getBelongTo());
 		assertEquals(null,country.getOwner());
 		assertFalse(country.isFlagDFS());
@@ -45,7 +46,8 @@ public class CountryTest {
 		String name= "testCountry"+(int)(Math.random()*10);
 		ContinentModel continent2 = new ContinentModel("testContinent2");
 		country = new CountryModel(2,name,continent2);
-		assertEquals(name,country.getName());
+		assertEquals(name,country.getShowName());
+		assertEquals(name.toLowerCase(),country.getName());
 		assertEquals(continent2,country.getBelongTo());
 		assertEquals(null,country.getOwner());
 		assertFalse(country.isFlagDFS());
@@ -62,17 +64,19 @@ public class CountryTest {
 	@Test
 	public void setNameTest(){
 		//case 1:
-		assertEquals("testCountry",country.getName());
+		assertEquals("testCountry",country.getShowName());
+		assertEquals("testcountry",country.getName());
 		//case 2:
 		country.setName("changeName");
-		assertEquals("changeName",country.getName());
+		assertEquals("changeName",country.getShowName());
+		assertEquals("changename",country.getName());
 		System.out.println("Country Test: setName(String) finished.");
 	}
 	
 	/**
 	 * Test setBelongTo(Continent), getBelongTo().<br>
 	 * case 1: check continent that the country belongs to right after create.<br>
-	 * case 2： call setBelongTo(Continent) to assign country to another continent, then check again.
+	 * case 2: call setBelongTo(Continent) to assign country to another continent, then check again.
 	 */	
 	@Test
 	public void setBelongToTest(){

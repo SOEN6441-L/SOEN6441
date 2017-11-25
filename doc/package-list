@@ -1,6 +1,8 @@
-gamecontroller
-gameelements
-gameelementstest
-mapeditor
-mapelements
-mapelementstest
+basicclasses
+gamecontrollers
+gamemodels
+gameviews
+mapcontrollers
+mapmodels
+mapviews
+test

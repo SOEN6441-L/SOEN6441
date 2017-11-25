@@ -41,14 +41,16 @@ public class ContinentTest {
 	@Test
 	public void constructorTest() {
 		//case 1:
-		assertEquals("testContinent",continent.getName());
+		assertEquals("testContinent",continent.getShowName());
+		assertEquals("testcontinent",continent.getName());
 		assertEquals(0,continent.getControlNum());
 		assertEquals(null,continent.getOwner());
 		assertEquals(0,continent.getCountryList().size());
 		//case 2:
 		String name = "testContinent"+(int)(Math.random()*10);
 		continent = new ContinentModel(name);
-		assertEquals(name,continent.getName());
+		assertEquals(name,continent.getShowName());
+		assertEquals(name.toLowerCase(),continent.getName());
 		assertEquals(0,continent.getControlNum());
 		assertEquals(null,continent.getOwner());
 		assertEquals(0,continent.getCountryList().size());
@@ -63,10 +65,12 @@ public class ContinentTest {
 	@Test
 	public void setNameTest() {
 		//case 1:
-		assertEquals("testContinent",continent.getName());
+		assertEquals("testContinent",continent.getShowName());
+		assertEquals("testcontinent",continent.getName());
 		//case 2:
 		continent.setName("testContinent2");
-		assertEquals("testContinent2",continent.getName());
+		assertEquals("testContinent2",continent.getShowName());
+		assertEquals("testcontinent2",continent.getName());
 		System.out.println("Continent Test: setName(String) finished.");		
 	}	
 	

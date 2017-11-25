@@ -10,6 +10,7 @@ import gamemodels.PlayerModel;
 public class CountryModel{
 	private int countryId;
 	private String countryName;//country's name, unique and can be changed.
+	private String showName;
 	/**continent which contains this country*/
 	private ContinentModel belongTo;
 	/**player who owns this country*/
@@ -50,7 +51,8 @@ public class CountryModel{
 	 * @param countryName country's new name
 	 */
 	public void setName(String countryName) {
-		this.countryName = countryName;
+		this.showName = countryName;
+		this.countryName = countryName.toLowerCase();
 	}
 	
 	/**
@@ -161,5 +163,13 @@ public class CountryModel{
 	 */
 	public void setCountryId(int countryId) {
 		this.countryId = countryId;
-	}		
+	}
+
+	/**
+	 * Method to get show name
+	 * @return show name
+	 */
+	public String getShowName() {
+		return showName;
+	}
 }

@@ -8,6 +8,7 @@ import java.util.Observer;
 
 import javax.swing.SwingWorker;
 
+import basicclasses.Log;
 import gameviews.PhaseView;
 import gameviews.TradeInCardsView;
 import gameviews.putInitialArmyView;
@@ -20,7 +21,7 @@ import mapmodels.RiskMapModel;
  * This is the Class RiskGame to represent and control a game
  */
 public class RiskGameModel extends Observable {
-	public RiskMapModel gameMap;
+	private RiskMapModel gameMap;
     private PlayerModel[] players;
 	private String phaseString = "";
     private int gameStage; //0-blank 1-with map 2-with players 3-after startup 4-in game
@@ -37,9 +38,22 @@ public class RiskGameModel extends Observable {
 	private Observer AssignCountryLabel;
 	private ObservableNodes localCountries;
 	private PhaseView phaseView;
+	public Log myLog = new Log();
     
+	/**
+	 * Method to get the map object of the game
+	 * @return map object
+	 */
     public RiskMapModel getGameMap() {
         return gameMap;
+    }
+    
+    /**
+     * Method to set the map object of the game
+     * @param gameMap map object
+     */
+    public void setGameMap(RiskMapModel gameMap) {
+        this.gameMap = gameMap;
     }
 
     /**
@@ -157,6 +171,7 @@ public class RiskGameModel extends Observable {
         for (int i=0;i<players.length;i++)
             players[i] = new PlayerModel("Player"+String.valueOf(i+1),colors[i%colors.length],this);
         setGameStage(20);
+        myLog.setLogStr("Create "+playerNum+" Players\n");
         this.changeDominationView();
     }
 
@@ -191,6 +206,7 @@ public class RiskGameModel extends Observable {
 										loopCountry.setArmyNumber(1);
 										setGameStage(loopCountry.getCountryId()*1000+(curPlayerIndex%players.length));
 								        changeDominationView();
+								        myLog.setLogStr("Assign "+loopCountry.getShowName()+" to "+players[curPlayerIndex%players.length].getName()+"\n");
 										publish(1);
 										curPlayerIndex++;
 										toAssigned--;
@@ -299,7 +315,7 @@ public class RiskGameModel extends Observable {
         	localCountries.initDimensionY(i, getPlayers()[i].getCountries().size());
         	int y=0;
         	for(CountryModel loopCountry:getPlayers()[i].getCountries()){
-        		localCountries.initValue(i,y++,loopCountry.getName(),loopCountry.getArmyNumber());
+        		localCountries.initValue(i,y++,loopCountry.getShowName(),loopCountry.getArmyNumber());
         	}
         }
         localCountries.addObserver(AssignCountryLabel);
@@ -318,6 +334,7 @@ public class RiskGameModel extends Observable {
         	localCountries.deleteObservers();
         	localCountries = null;
         	setGameStage(40);
+	        myLog.setLogStr("Put initial armies succeed\n");
         }
         return (state==1);
     }
@@ -478,12 +495,22 @@ public class RiskGameModel extends Observable {
     public int CalExchangeArmies(){
     	return 5*(++changeCardTimes);
     }  
-    /*
+    /**
      * changeDominationView
      */
     public void changeDominationView() {
     	setChanged();
     	notifyObservers(111);
     }   
+    /**
+     * Method to connect to log window
+     * @param logWindow log observer 
+     */
+    public void addLog(Observer logWindow){
+    	myLog.addObserver(logWindow);
+    	myLog.setLogStr("Game Started\n");
+    }
+    
     
 }
+

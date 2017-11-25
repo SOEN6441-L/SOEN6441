@@ -12,6 +12,7 @@ import gamemodels.PlayerModel;
  */
 public class ContinentModel {
 	private String continentName;//continent's name, unique and can be changed.
+	private String showName;
 	private int controlNum;//Bonus armies during reinforcement phase when the whole continent is owned by one player.
 	private PlayerModel owner;//The player who owns the whole continent.
 	private ArrayList<CountryModel> countryList;
@@ -40,7 +41,8 @@ public class ContinentModel {
 	 * @param continentName continent's name
 	 */
 	public void setName(String continentName) {
-		this.continentName = continentName;
+		this.showName = continentName;
+		this.continentName = continentName.toLowerCase();
 	}
 
 	/**
@@ -120,6 +122,7 @@ public class ContinentModel {
 	 * @return the country object found in this continent or null if can't find
 	 */	
 	public CountryModel findCountry(String countryName){
+		countryName = countryName.toLowerCase();
 		for (CountryModel loopCountry:countryList){
 			if (loopCountry.getName().equals(countryName)){
 				return loopCountry;
@@ -140,5 +143,14 @@ public class ContinentModel {
 			}	
 		}
 		return null;
-	}	
+	}
+
+	/**
+	 * Method to get show name
+	 * @return show name
+	 */
+	public String getShowName() {
+		return showName;
+	}
+
 }

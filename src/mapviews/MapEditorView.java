@@ -314,9 +314,9 @@ public class MapEditorView extends JFrame implements Observer {
 		DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Map - "+myMapModel.getRiskMapName()+" ");
 		for (ContinentModel loopContinent : myMapModel.getContinents()) { 
 			ArrayList<CountryModel> loopCountriesList = loopContinent.getCountryList();
-			DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
+			DefaultMutableTreeNode loopContinentNode =  new DefaultMutableTreeNode(loopContinent.getShowName()+" ("+loopContinent.getControlNum()+") ("+loopCountriesList.size()+" countries) "); 
 			for (CountryModel loopCountry:loopCountriesList){
-				loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getName()+" "));
+				loopContinentNode.add(new DefaultMutableTreeNode(loopCountry.getShowName()+" "));
 			}
 			myTreeRoot.add(loopContinentNode);
 		}	
@@ -374,14 +374,18 @@ public class MapEditorView extends JFrame implements Observer {
 		for (ContinentModel loopContinent : myMapModel.getContinents()) { 
 			ArrayList<CountryModel> loopCountriesList = loopContinent.getCountryList();
 			for (CountryModel loopCountry:loopCountriesList){
-				identifiers[i++] = loopCountry.getName();
+				identifiers[i++] = loopCountry.getShowName();
 			}
 		}
 		for (i=0;i<myMapModel.getCountryNum();i++){
 			ArrayList<CountryModel> adjacentCountryList =myMapModel.getAdjacencyList().get(myMapModel.findCountry((String)identifiers[i]));
 			for (int j=0;j<myMapModel.getCountryNum();j++){
 				if (adjacentCountryList.contains(myMapModel.findCountry((String)identifiers[j]))){
-					dataVector[i][j] = "X";
+					if (myMapModel.getAdjacencyList().get(myMapModel.findCountry((String)identifiers[j]))
+							.contains(myMapModel.findCountry((String)identifiers[i]))){
+						dataVector[i][j] = "X";
+					}
+					else dataVector[i][j] = "Y";
 				}
 				else{
 					dataVector[i][j] = "";
@@ -409,16 +413,22 @@ public class MapEditorView extends JFrame implements Observer {
 						if (row!=col){
 							String cellValue = (String) (matrixModel.getValueAt(row, col));
 							if (cellValue.isEmpty()) {
-								if ((errorMsg = myMapModel.addConnection((String)identifiers[row],(String)identifiers[col])).isResult()){
+								if ((errorMsg = myMapModel.addConnections((String)identifiers[row],(String)identifiers[col])).isResult()){
 									matrixModel.setValueAt("X", row, col);
 									matrixModel.setValueAt("X", col, row);									
 								}
 								else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
-							}	
+							}
+							else if (cellValue.equals("X")){
+								if ((errorMsg=myMapModel.removeConnection((String)identifiers[row],(String)identifiers[col])).isResult()){
+									matrixModel.setValueAt("", row, col);
+									matrixModel.setValueAt("Y", col, row);
+								}
+								else JOptionPane.showMessageDialog(null, errorMsg.getMsg());								
+							}
 							else {
 								if ((errorMsg=myMapModel.removeConnection((String)identifiers[row],(String)identifiers[col])).isResult()){
 									matrixModel.setValueAt("", row, col);
-									matrixModel.setValueAt("", col, row);
 								}
 								else JOptionPane.showMessageDialog(null, errorMsg.getMsg());
 							}

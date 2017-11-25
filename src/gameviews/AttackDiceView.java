@@ -1,14 +1,8 @@
 package gameviews;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,18 +10,10 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
-import gamemodels.NodeRecord;
 import gamemodels.PlayerModel;
 import gamemodels.RiskGameModel;
-import mapmodels.ContinentModel;
 import mapmodels.CountryModel;
-import mapmodels.ErrorMsg;
 
 /**
  * This class is the implementation of attack dice in the Risk.
@@ -86,7 +72,7 @@ public class AttackDiceView extends JDialog{
         int attackingArmy = country1.getArmyNumber()-1;
         int attackedArmy = country2.getArmyNumber();        
 
-        playerLabel1 =  new JLabel(country1.getName()+" ("+attackingArmy+" armies) owned by "+player1.getName());
+        playerLabel1 =  new JLabel(country1.getShowName()+" ("+attackingArmy+" armies) owned by "+player1.getName());
         add(playerLabel1);
         playerLabel1.setFont(new java.awt.Font("dialog",1,18));
         playerLabel1.setForeground(player1.getMyColor());
@@ -99,7 +85,7 @@ public class AttackDiceView extends JDialog{
         size = VSLabel.getPreferredSize();
         VSLabel.setBounds(playerLabel1.getBounds().x+playerLabel1.getSize().width+40,15,size.width,size.height);
         
-        playerLabel2 =  new JLabel(country2.getName()+" ("+attackedArmy+" armies) owned by "+player2.getName());
+        playerLabel2 =  new JLabel(country2.getShowName()+" ("+attackedArmy+" armies) owned by "+player2.getName());
         add(playerLabel2);
         playerLabel2.setFont(new java.awt.Font("dialog",1,18));
         playerLabel2.setForeground(player2.getMyColor());
@@ -128,7 +114,7 @@ public class AttackDiceView extends JDialog{
         }
         attackingDices.setSelectedIndex(-1);
         add(attackingDices);
-        attackingDices.addActionListener(new attackingHandler());
+        attackingDices.addActionListener(new ButtonHandler());
         
         for (int i=0;i<2;i++){
         	attackedDice[i] = new JLabel("");
@@ -148,20 +134,23 @@ public class AttackDiceView extends JDialog{
         }
         attackedDices.setSelectedIndex(-1);
         add(attackedDices);
-        attackedDices.addActionListener(new attackedHandler());
+        attackedDices.addActionListener(new ButtonHandler());
         
         attackBtn = new JButton("Begin");
         add(attackBtn);
         attackBtn.setEnabled(false);
-        attackBtn.addActionListener(new attackHandler());  
+        attackBtn.addActionListener(new ButtonHandler());  
         attackBtn.setBounds(VSLabel.getBounds().x+(VSLabel.getSize().width)/2-50,191,100,30);
         
-        enterBtn = new JButton("finish");
+        enterBtn = new JButton("Finish");
         add(enterBtn);
         enterBtn.setBounds(attackBtn.getBounds().x,231,100,30);
-        enterBtn.addActionListener(new enterHandler());  
-    }
-    
+        enterBtn.addActionListener(new ButtonHandler());  
+    }    
+  
+    /**
+     * Method to reload GUI 
+     */
     private void reloadGUI(){
         Dimension size;    
         
@@ -170,6 +159,8 @@ public class AttackDiceView extends JDialog{
         
 		if (attackingArmy==0){
 			JOptionPane.showMessageDialog(null, player1.getName()+" failed.");
+			myGame.myLog.setLogStr(player1.getName()+" failed.\n");
+			player1.setAttackInfo(player1.getName()+" failed.");
 			setVisible(false);
     	}
     	else if (attackedArmy==0){
@@ -178,7 +169,8 @@ public class AttackDiceView extends JDialog{
     		player2.removeCountry(country2);
     		myGame.changeDominationView();
     		if (!player2.getState()) player1.addCards(player2.getCards());
-			JOptionPane.showMessageDialog(null, player1.getName()+" grasps "+country2.getName()+" owned by "+player2.getName());
+			JOptionPane.showMessageDialog(null, player1.getName()+" grasps "+country2.getShowName()+" owned by "+player2.getName());
+			myGame.myLog.setLogStr(player1.getName()+" grasps "+country2.getShowName()+" owned by "+player2.getName()+"\n");
 			
 			String [] choice = new String [country1.getArmyNumber()-lastDice];
 			int index=0;
@@ -193,7 +185,7 @@ public class AttackDiceView extends JDialog{
 			boolean retry = true;
 			while (retry){
 				int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
-				if (armyInput.getSelectedIndex()==-1){
+				if (option!=JOptionPane.OK_OPTION||armyInput.getSelectedIndex()==-1){
 					JOptionPane.showMessageDialog(null,"You must left some armies on the new conquared country.");
 				}
 				else {
@@ -206,13 +198,13 @@ public class AttackDiceView extends JDialog{
 			setVisible(false);
     	}
 
-        playerLabel1.setText(country1.getName()+" ("+attackingArmy+" armies) owned by "+player1.getName());
+        playerLabel1.setText(country1.getShowName()+" ("+attackingArmy+" armies) owned by "+player1.getName());
         size = playerLabel1.getPreferredSize();
         playerLabel1.setBounds(15,15,size.width,size.height);
         size = VSLabel.getPreferredSize();
         VSLabel.setBounds(playerLabel1.getBounds().x+playerLabel1.getSize().width+40,15,size.width,size.height);
        
-        playerLabel2.setText(country2.getName()+" ("+attackedArmy+" armies) owned by "+player2.getName());
+        playerLabel2.setText(country2.getShowName()+" ("+attackedArmy+" armies) owned by "+player2.getName());
         size = playerLabel2.getPreferredSize();
         playerLabel2.setBounds(VSLabel.getBounds().x+VSLabel.getSize().width+40,15,size.width,size.height);
    
@@ -242,125 +234,143 @@ public class AttackDiceView extends JDialog{
         enterBtn.setBounds(attackBtn.getBounds().x,231,100,30);
     }
     
-    class attackingHandler implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			if (attackingDices.getSelectedIndex()!=-1){
-				int selected = attackingDices.getSelectedIndex();
-				for (int i=0;i<3;i++){
-		            attackingDice[i].setEnabled(selected>(1-i));
+	/**
+	 * Class to define action Listener.
+	 */
+	private class ButtonHandler implements ActionListener { 
+		/**
+		 * Method to define action performed according to different users' action.
+		 * @param e the action event of user.
+		 */	
+		public void actionPerformed(ActionEvent e) {
+
+			if (e.getSource()==attackingDices){
+				if (attackingDices.getSelectedIndex()!=-1){
+					int selected = attackingDices.getSelectedIndex();
+					for (int i=0;i<3;i++){
+			            attackingDice[i].setEnabled(selected>(1-i));
+					}
+					if (attackedDices.getSelectedIndex()!=-1) attackBtn.setEnabled(true);
 				}
-				if (attackedDices.getSelectedIndex()!=-1) attackBtn.setEnabled(true);
+				return;
+			}
+			else if (e.getSource()==attackedDices){
+				if (attackedDices.getSelectedIndex()!=-1){
+					int selected = attackedDices.getSelectedIndex();
+					for (int i=0;i<2;i++){
+			            attackedDice[i].setEnabled(selected>(0-i));
+					}
+					if (attackingDices.getSelectedIndex()!=-1) attackBtn.setEnabled(true);
+				}		
+				return;
+			}
+			String buttonName = e.getActionCommand();
+			switch (buttonName){
+			case "Begin":
+				attackOnce();
+				break;	
+			case "Finish":
+				JOptionPane.showMessageDialog(null, player1.getName()+" betrayed.");
+				myGame.myLog.setLogStr(player1.getName()+" betrayed.");
+				player1.setAttackInfo(player1.getName()+" betrayed.");
+				setVisible(false);
+				break;				
 			}
 		}
-    }
-
-    class attackedHandler implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			if (attackedDices.getSelectedIndex()!=-1){
-				int selected = attackedDices.getSelectedIndex();
-				for (int i=0;i<2;i++){
-		            attackedDice[i].setEnabled(selected>(0-i));
-				}
-				if (attackingDices.getSelectedIndex()!=-1) attackBtn.setEnabled(true);
-			}
-		}
-    }
-
-    class attackHandler implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			int [] attacking = new int[]{0,0,0};
-			int [] attacked = new int[]{0,0};
-
-			if (attackedDices.getSelectedIndex()!=-1&&attackingDices.getSelectedIndex()!=-1){
-				int attackingArmy = attackingDices.getSelectedIndex()+1;
-				lastDice = attackingArmy;
-				int attackedArmy = attackedDices.getSelectedIndex()+1;
-				for (int i=3-attackingArmy;i<3;i++){
-					attacking[i] = (int)(Math.random()*6)+1;
-					attackingDice[i].setIcon(diceIcons[attacking[i]-1]);
-				}
-				for (int i=2-attackedArmy;i<2;i++){
-					attacked[i] = (int)(Math.random()*6)+1;
-					attackedDice[i].setIcon(diceIcons[attacked[i]-1]);
-				}	
-				int biggestAttacking = attacking[2];
-				int biggestAttackingIndex=2;
-				if (attacking[1]>biggestAttacking) {
-					biggestAttacking = attacking[1];
-					biggestAttackingIndex = 1;
-				}
-				if (attacking[0]>biggestAttacking) {
-					biggestAttacking = attacking[0];
-					biggestAttackingIndex = 0;
-				}
-				
-				int biggestAttacked = attacked[1];
-				int biggestAttackedIndex=1;
-				if (attacked[0]>biggestAttacked) {
-					biggestAttacked = attacked[0];
-					biggestAttackedIndex = 0;
-				}
-				PlayerModel firstLoser=null;
-				PlayerModel secondLoser=null;
-				if (biggestAttacking>biggestAttacked){//attacked lost one army
-					country2.lostArmy();					
-					firstLoser = player2;
-				}
-				else{//attacking lost one army
-					country1.lostArmy();	
-					firstLoser = player1;
-				}
-				
-				if (attackedArmy == 2 && attackingArmy>1){ //
-					int secondAttacked = attacked[1-biggestAttackedIndex];
-					int secondAttacking = 0;
-					switch (biggestAttackingIndex) {
-					case 0: 
-						secondAttacking = Math.max(attacking[1],attacking[2]);
-						break;
-					case 1:
-						secondAttacking = Math.max(attacking[0],attacking[2]);
-						break;
-					case 2:
-						secondAttacking = Math.max(attacking[0],attacking[1]);
-						break;								
-					}
-					if (secondAttacking>secondAttacked){//attacked lost one more army
-						secondLoser = player2;
-						country2.lostArmy();
-					}
-					else{//attacking lost one more army
-						secondLoser = player1;
-						country1.lostArmy();
-					}
-				}
-				
-				if (secondLoser==null)
-					JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army.");
-				else {
-					if (firstLoser==secondLoser){
-						JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost 2 armies.");
-					}
-					else JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.");
-				}
-					
-					
-				reloadGUI();
-			}
-		}	
-    }
+	}	
 
 	/**
-	 * This method is to add listener
+	 * Method to implement one attack
 	 */
-	class enterHandler implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			JOptionPane.showMessageDialog(null, player1.getName()+" betrayed.");
-			setVisible(false);
+    public void attackOnce(){
+		int [] attacking = new int[]{0,0,0};
+		int [] attacked = new int[]{0,0};
+
+		if (attackedDices.getSelectedIndex()!=-1&&attackingDices.getSelectedIndex()!=-1){
+			int attackingArmy = attackingDices.getSelectedIndex()+1;
+			lastDice = attackingArmy;
+			int attackedArmy = attackedDices.getSelectedIndex()+1;
+			
+			//generate dice result randomly
+			for (int i=3-attackingArmy;i<3;i++){
+				attacking[i] = (int)(Math.random()*6)+1;
+				attackingDice[i].setIcon(diceIcons[attacking[i]-1]);
+			}
+			for (int i=2-attackedArmy;i<2;i++){
+				attacked[i] = (int)(Math.random()*6)+1;
+				attackedDice[i].setIcon(diceIcons[attacked[i]-1]);
+			}	
+			//begin to analyze dice result for the max dice
+			int biggestAttacking = attacking[2];
+			int biggestAttackingIndex=2;
+			if (attacking[1]>biggestAttacking) {
+				biggestAttacking = attacking[1];
+				biggestAttackingIndex = 1;
+			}
+			if (attacking[0]>biggestAttacking) {
+				biggestAttacking = attacking[0];
+				biggestAttackingIndex = 0;
+			}
+			
+			int biggestAttacked = attacked[1];
+			int biggestAttackedIndex=1;
+			if (attacked[0]>biggestAttacked) {
+				biggestAttacked = attacked[0];
+				biggestAttackedIndex = 0;
+			}
+			PlayerModel firstLoser=null;
+			PlayerModel secondLoser=null;
+			if (biggestAttacking>biggestAttacked){//attacked lost one army
+				country2.lostArmy();					
+				firstLoser = player2;
+			}
+			else{//attacking lost one army
+				country1.lostArmy();	
+				firstLoser = player1;
+			}
+			//begin to analyze the second dice result
+			if (attackedArmy == 2 && attackingArmy>1){ //
+				int secondAttacked = attacked[1-biggestAttackedIndex];
+				int secondAttacking = 0;
+				switch (biggestAttackingIndex) {
+				case 0: 
+					secondAttacking = Math.max(attacking[1],attacking[2]);
+					break;
+				case 1:
+					secondAttacking = Math.max(attacking[0],attacking[2]);
+					break;
+				case 2:
+					secondAttacking = Math.max(attacking[0],attacking[1]);
+					break;								
+				}
+				if (secondAttacking>secondAttacked){//attacked lost one more army
+					secondLoser = player2;
+					country2.lostArmy();
+				}
+				else{//attacking lost one more army
+					secondLoser = player1;
+					country1.lostArmy();
+				}
+			}
+			
+			if (secondLoser==null){
+				JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army.");
+	        	myGame.myLog.setLogStr(firstLoser.getName()+" lost one army.\n");
+	        	player1.setAttackStepInfo(firstLoser.getName()+" lost one army.");
+			}	
+			else {
+				if (firstLoser==secondLoser){
+					JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost 2 armies.");
+					myGame.myLog.setLogStr(firstLoser.getName()+" lost 2 armies.\n");
+					player1.setAttackStepInfo(firstLoser.getName()+" lost 2 armies.");
+				}
+				else {
+					JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.");
+					myGame.myLog.setLogStr(firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.\n");
+					player1.setAttackStepInfo(firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.");
+				}
+			}
+			reloadGUI();
 		}
-    }
+	}
 }
