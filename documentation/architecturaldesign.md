@@ -1,6 +1,6 @@
 # Project Architectural Design
 
-This document provides a comprehensive architectural overview of the project, to depict different aspects of the project.
+The final document provides a comprehensive architectural overview of the whole project, to depict different aspects .
 
 The Graph below is the modular organization diagram.
 
