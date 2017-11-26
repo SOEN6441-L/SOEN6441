@@ -1,11 +1,13 @@
 package basicclasses;
 
+import java.io.Serializable;
 import java.util.Observable;
 /**
  * Class for define a observable log string
  * @see Observable
  */
-public class Log extends Observable{
+public class Log extends Observable implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String logStr;
 
 	/**
