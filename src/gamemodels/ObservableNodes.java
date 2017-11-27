@@ -7,6 +7,7 @@ import java.util.Observable;
  *
  */
 public class ObservableNodes extends Observable{
+
 	private NodeRecord[][] localNodes;
 	/**
 	 * Initialize  x dimension of array

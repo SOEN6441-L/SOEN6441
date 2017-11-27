@@ -3,6 +3,17 @@ package gamecontrollers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.rmi.Naming;
+import java.rmi.server.RMISocketFactory;
+import java.util.Date;
 
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -21,15 +32,12 @@ import mapmodels.ErrorMsg;
  * to define action performed according to different users' action.
  */
 public class RiskGameController implements ActionListener {
-	private RiskGameModel myGameModel;
-	
-	/**
-	 * Method to add a game model to this controller.
-	 * @param m model
-	 */
-	public void addModel(RiskGameModel m){
-		this.myGameModel = m;
-	}
+	private static RiskGameModel myGameModel;
+	private static RiskGameView gameView;
+	private static MonitorInterface server = null;
+	private static PhaseView phaseView;
+	private static DominationView domiView;
+	private static LogWindow logWindow;
 	
 	/**
 	 * Method to define action performed according to different users' action.
@@ -62,7 +70,101 @@ public class RiskGameController implements ActionListener {
 		case "New Game":
 			newGame();
 			break;				
+		case "Save Game":
+			saveGame();
+			break;				
+		case "Load Game":
+			loadGame();
+			break;
+		}	
+	}	
+    
+	/**
+	 * Method to save current game to disk
+	 */
+	public void saveGame(){
+		ObjectOutputStream output = null;
+		try {
+			String fileName = null;
+			if (myGameModel.getGameMap()!=null)
+				fileName = "game"+myGameModel.getGameMap().getRiskMapName()+myGameModel.getGameStage()+new Date().getTime()+".bin";
+			else
+				fileName = "game"+myGameModel.getGameStage()+new Date().getTime()+".bin";
+			output = new ObjectOutputStream(new FileOutputStream("./save/"+fileName));
+			output.writeObject(myGameModel);
+			JOptionPane.showMessageDialog(null,"Successfully save game to <"+fileName+">.  ");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				output.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}	
+		}	
+	}	
+
+	/**
+	 * Method to load game from disk
+	 */
+	public void loadGame(String inputFile){
+		ObjectInputStream input = null;
+		try {
+		    input = new ObjectInputStream(new FileInputStream(inputFile));
+		    myGameModel = (RiskGameModel)input.readObject();   
+
+		} catch (Exception e) {
+		    //e.printStackTrace();
+		}finally{
+			try{
+				input.close();
+			}catch (Exception e) {
+			    //e.printStackTrace();
+			}			
 		}
+	    myGameModel.addLog(logWindow,1);
+	    myGameModel.addObserver(phaseView);
+	    myGameModel.addObserver(domiView);
+	    myGameModel.setPhaseView(phaseView,server);
+	    myGameModel.setObserverLabel(phaseView.getAssignCountryLable());
+	    myGameModel.addObserver(gameView);
+	    gameView.addModel(myGameModel);
+	    myGameModel.setGameStage(myGameModel.getGameStage());
+		myGameModel.myLog.setLogStr("Load saved game "+inputFile.trim() +" succeed\n");
+	}
+	
+	/**
+	 * Handler used to load files.
+	 */
+	private void loadGame() { 
+		String inputFileName;
+		JFileChooser chooser;
+		chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File("./save"));
+		chooser.setDialogTitle("Choose saved game file");
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setFileFilter(new FileFilter(){
+			@Override
+			public boolean accept(File f){
+				if(f.getName().endsWith(".bin")||f.isDirectory())
+					return true;
+				else return false;
+			}
+			public String getDescription(){
+				return "Saved game files(*.bin)";
+			}
+		});
+		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			inputFileName = chooser.getSelectedFile().getAbsolutePath();
+			if (inputFileName.trim().isEmpty()){
+				JOptionPane.showMessageDialog(null,"File name invalid");
+			}
+			else{
+				loadGame(inputFileName.trim());
+			}
+		}			
 	}
 	
 	/**
@@ -114,7 +216,7 @@ public class RiskGameController implements ActionListener {
 	 * Handler used to handling previous actions
 	 */
 	private void previousStep() { 
-		if (myGameModel.getGameStage()>=40){//already finish puting initial armies, want to re-do it.
+		if (myGameModel.getGameStage()>=40){//already finish putting initial armies, want to re-do it.
 			myGameModel.resetPlayersInfo();	
 			myGameModel.setGameStage(30);	
 		}
@@ -231,33 +333,64 @@ public class RiskGameController implements ActionListener {
 	 */	
 	public static void main(String[] args) {
 		//create two views, one model and one controller
-		RiskGameView gameView = new RiskGameView();
-		PhaseView phaseView = new PhaseView();
-		DominationView domiView = new DominationView();
-		LogWindow logWindow = new LogWindow();
+		gameView = new RiskGameView();
+		server = null;
+		try {
+			//Obtain server reference according the server name and server host (which are determined by manager id)
+			//System.setSecurityManager(new SecurityManager());
+			//System.setProperty("java.security.policy", "D:\\Wangxt\\Programs\\javaworkspace\\Staff Management\\");
+			final int timeoutMillis = 500;            
+			/**
+			 * Rewrite the RMISocketFactory
+			 */
+			RMISocketFactory.setSocketFactory( new RMISocketFactory() {
+				/*
+				 * (non-Javadoc)
+				 * @see java.rmi.server.RMISocketFactory#createSocket(java.lang.String, int)
+				 */
+				public Socket createSocket( String host, int port ) throws IOException {
+					Socket socket = new Socket();
+					socket.setSoTimeout(timeoutMillis);
+					socket.connect(new InetSocketAddress(host, port), timeoutMillis);
+					return socket;
+				}
+				/*
+				 * (non-Javadoc)
+				 * @see java.rmi.server.RMISocketFactory#createServerSocket(int)
+				 */
+				public ServerSocket createServerSocket( int port ) throws IOException {
+					return new ServerSocket( port );
+				}
+			} );
+			server = (MonitorInterface)Naming.lookup("rmi://172.168.1.252:2020/Monitor");		
+		}catch (Exception e){
+			//e.printStackTrace();
+		}	
+		phaseView = new PhaseView(server);
+		domiView = new DominationView(server);
+		logWindow = new LogWindow(server);
 		
-		RiskGameModel gameModel = new RiskGameModel();
-		gameModel.addLog(logWindow);
+		myGameModel = new RiskGameModel();
+		myGameModel.addLog(logWindow,0);
+		
 		RiskGameController gameController = new RiskGameController();
 		//add model and controller to views
 		//phaseView.addModel(gameModel);
-		gameView.addModel(gameModel);
+		gameView.addModel(myGameModel);
 		gameView.addController(gameController);
-		//add model to controller
-		gameController.addModel(gameModel);
+
 		//add phase view to model
-		gameModel.addObserver(phaseView);
-		gameModel.addObserver(domiView);
-		gameModel.setPhaseView(phaseView);
-		gameModel.setObserverLabel(phaseView.getAssignCountryLable());
+		myGameModel.addObserver(phaseView);
+		myGameModel.addObserver(domiView);
+		myGameModel.setPhaseView(phaseView,server);
+		myGameModel.setObserverLabel(phaseView.getAssignCountryLable());
 		//initialize model
-		gameModel.setPhaseString("Start Up Phase");
-		gameModel.setGameStage(0);
+		myGameModel.setPhaseString("Start Up Phase");
+		myGameModel.setGameStage(0);
 		//add game view to model
-		gameModel.addObserver(gameView);
+		myGameModel.addObserver(gameView);
 
 		//start application
 		gameView.setVisible(true);
-		phaseView.setVisible(true);
 	}
 }

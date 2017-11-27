@@ -1,7 +1,10 @@
 package gamemodels;
 
+
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -9,6 +12,7 @@ import java.util.Observer;
 import javax.swing.SwingWorker;
 
 import basicclasses.Log;
+import gamecontrollers.MonitorInterface;
 import gameviews.PhaseView;
 import gameviews.TradeInCardsView;
 import gameviews.putInitialArmyView;
@@ -20,7 +24,9 @@ import mapmodels.RiskMapModel;
 /**
  * This is the Class RiskGame to represent and control a game
  */
-public class RiskGameModel extends Observable {
+public class RiskGameModel extends Observable implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private RiskMapModel gameMap;
     private PlayerModel[] players;
 	private String phaseString = "";
@@ -35,11 +41,13 @@ public class RiskGameModel extends Observable {
     private int turn, curPlayer;
 	private int changeCardTimes;
     private int initialArmyNum;
-	private Observer AssignCountryLabel;
-	private ObservableNodes localCountries;
-	private PhaseView phaseView;
+	
+    private transient Observer AssignCountryLabel;
+	private transient ObservableNodes localCountries;
+	private transient PhaseView phaseView;
+	private transient MonitorInterface server;
 	public Log myLog = new Log();
-    
+ 	
 	/**
 	 * Method to get the map object of the game
 	 * @return map object
@@ -122,7 +130,7 @@ public class RiskGameModel extends Observable {
     };
 
     /**
-     * The function to reset player's information, used when re-assigning initial armies to players.
+     * The function to reset player's information, used when re-puttinging initial armies to players.
      */
     public void resetPlayersInfo() {
         for (int i=0;i<players.length;i++){
@@ -253,7 +261,7 @@ public class RiskGameModel extends Observable {
     
     
     /**
-     * The function to assign countries to players randomly.
+     * The function to assign countries to players randomly, only for test.
      */
     public void assignCountriesManual(){
 		setGameStage(21);
@@ -330,8 +338,8 @@ public class RiskGameModel extends Observable {
     					gameMap.findCountry(localCountries.getNodes()[i][j].getName()).setArmyNumber(localCountries.getNodes()[i][j].getNumber());
     				}
     			}
-    		}
-        	localCountries.deleteObservers();
+    		}        	
+    		localCountries.deleteObservers();
         	localCountries = null;
         	setGameStage(40);
 	        myLog.setLogStr("Put initial armies succeed\n");
@@ -372,14 +380,13 @@ public class RiskGameModel extends Observable {
         
         players[curPlayer].addObserver(phaseView);
         
-        TradeInCardsView cardView = new TradeInCardsView();
         int x = 380+(curPlayer/2)*360;
-        int y = 36+(1-curPlayer%2)*252;
-        cardView.setLocation(phaseView.getLocation().x+x,phaseView.getLocation().y+y);
+        int y = 36+(1-curPlayer%2)*252;  
+        TradeInCardsView cardView = new TradeInCardsView(server,x,y);
 
         players[curPlayer].addObserver(cardView);
         
-        cardView.setVisible(true);
+        //cardView.setVisible(true);
         ErrorMsg errorMsg = players[curPlayer].playTurn();
         checkContinentOwner();
         players[curPlayer].deleteObservers();
@@ -475,9 +482,11 @@ public class RiskGameModel extends Observable {
 	/**
 	 * Set observer label
 	 * @param phaseView the phase view object
+	 * @param server MonitorInterface object
 	 */
-	public void setPhaseView(PhaseView phaseView) {
+	public void setPhaseView(PhaseView phaseView, MonitorInterface server) {
 		this.phaseView = phaseView;
+		this.server = server;
 	}
 	
     /**
@@ -505,12 +514,14 @@ public class RiskGameModel extends Observable {
     /**
      * Method to connect to log window
      * @param logWindow log observer 
+     * @param mode 0-normal, 1-reconnect
      */
-    public void addLog(Observer logWindow){
+    public void addLog(Observer logWindow, int mode){
     	myLog.addObserver(logWindow);
-    	myLog.setLogStr("Game Started\n");
-    }
-    
-    
+    	if (mode==0)
+    		myLog.setLogStr("\n*********************************    New Game Started   ********************************* \n");
+    	else 
+    		myLog.setLogStr("\n****************************************************************************************\n");
+    }   	
 }
 

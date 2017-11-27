@@ -1,6 +1,7 @@
 package gamemodels;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -13,7 +14,9 @@ import mapmodels.*;
  *   This is class for defining player.
  *   A player belongs to a RiskGame object, has amount of armies, can own several countries.
  */
-public class PlayerModel extends Observable {
+public class PlayerModel extends Observable  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private String name;
     private Color myColor;
 	private int[] cards;
