@@ -1,0 +1,11 @@
+author=testAuthor
+warn=yes
+image=none
+wrap=no
+scroll=no
+
+[Continents]
+testContinent=3
+
+[Territories]
+testCountry,1,1,testContinent

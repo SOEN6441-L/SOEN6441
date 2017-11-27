@@ -1,0 +1,17 @@
+[Map]
+author=Invincible Team Four
+warn=yes
+image=none
+wrap=no
+scroll=none
+
+[Continents]
+ewqe=0
+xcdc=0
+
+[Territories]
+qwewqe,0,0,ewqe,qwewqeq,qwe
+
+qwe,0,0,xcdc,qwewqeq,qwewqe
+qwewqeq,0,0,xcdc,qwewqe,qwe
+
