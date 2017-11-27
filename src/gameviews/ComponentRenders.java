@@ -64,7 +64,7 @@ class MatrixRenderer implements TableCellRenderer{
 			PlayerModel player = (myMap.findCountry(table.getColumnName(column)).getOwner());
 			if (player==null) background = new Color(210,210,210);
 			else background = player.getMyColor();
-			//renderer.setForeground(foreground);     
+			renderer.setForeground(Color.WHITE);     
 			renderer.setBackground(background);   
 		} 
 		else{

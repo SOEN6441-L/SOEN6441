@@ -1,15 +1,13 @@
 package gamemodels;
 
-import java.io.Serializable;
 import java.util.Observable;
 
 /**
  * This is a base class used to record brief information of 
  * a country, is used in all phases of a game.
  */
-public class NodeRecord extends Observable implements Serializable{
+public class NodeRecord extends Observable{
 
-	private static final long serialVersionUID = 1L;
 	private String name;
 	private int Number;
 	

@@ -176,8 +176,10 @@ public class RiskGameModel extends Observable implements Serializable{
      */
     public void createPlayers(int playerNum){
         players = new PlayerModel[playerNum];
-        for (int i=0;i<players.length;i++)
+        for (int i=0;i<players.length;i++){
             players[i] = new PlayerModel("Player"+String.valueOf(i+1),colors[i%colors.length],this);
+            players[i].setStrategy(new Aggressive());
+        }    
         setGameStage(20);
         myLog.setLogStr("Create "+playerNum+" Players\n");
         this.changeDominationView();

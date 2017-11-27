@@ -112,7 +112,7 @@ public class AttackDiceView extends JDialog{
         for (int i=1;i<=Math.min(3,attackingArmy);i++) {
         	attackingDices.addItem(i);
         }
-        attackingDices.setSelectedIndex(-1);
+        attackingDices.setSelectedIndex(attackingDices.getItemCount()-1);
         add(attackingDices);
         attackingDices.addActionListener(new ButtonHandler());
         
@@ -132,13 +132,13 @@ public class AttackDiceView extends JDialog{
         for (int i=1;i<=Math.min(2,attackedArmy);i++) {
         	attackedDices.addItem(i);
         }
-        attackedDices.setSelectedIndex(-1);
+        attackedDices.setSelectedIndex(attackedDices.getItemCount()-1);
         add(attackedDices);
         attackedDices.addActionListener(new ButtonHandler());
         
         attackBtn = new JButton("Begin");
         add(attackBtn);
-        attackBtn.setEnabled(false);
+        attackBtn.setEnabled(true);
         attackBtn.addActionListener(new ButtonHandler());  
         attackBtn.setBounds(VSLabel.getBounds().x+(VSLabel.getSize().width)/2-50,191,100,30);
         
@@ -212,7 +212,7 @@ public class AttackDiceView extends JDialog{
         for (int i=1;i<=Math.min(3,attackingArmy);i++) {
         	attackingDices.addItem(i);
         }
-        attackingDices.setSelectedIndex(-1);        
+        attackingDices.setSelectedIndex(attackingDices.getItemCount()-1);        
         for (int i=0;i<3;i++){
             attackingDice[i].setEnabled(attackingArmy>(2-i));
             attackingDice[i].setBounds(playerLabel1.getBounds().x+playerLabel1.getSize().width-(3-i)*77+10,65,57,57);
@@ -222,13 +222,13 @@ public class AttackDiceView extends JDialog{
         for (int i=1;i<=Math.min(2,attackedArmy);i++) {
         	attackedDices.addItem(i);
         }
-        attackedDices.setSelectedIndex(-1);        
+        attackedDices.setSelectedIndex(attackedDices.getItemCount()-1);        
         for (int i=0;i<2;i++){
             attackedDice[i].setEnabled(attackedArmy>(1-i));
             attackedDice[i].setBounds(playerLabel2.getBounds().x+10+i*77,65,57,57);
         }        
            
-        attackBtn.setEnabled(false);
+        attackBtn.setEnabled(true);
         attackBtn.setBounds(VSLabel.getBounds().x+(VSLabel.getSize().width)/2-50,191,100,30);
         
         enterBtn.setBounds(attackBtn.getBounds().x,231,100,30);

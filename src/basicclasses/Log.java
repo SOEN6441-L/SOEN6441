@@ -7,7 +7,7 @@ import java.util.Observable;
  * @see Observable
  */
 public class Log extends Observable implements Serializable{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6L;
 	private String logStr;
 
 	/**

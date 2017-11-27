@@ -12,7 +12,7 @@ import gamemodels.PlayerModel;
  * contains all information of a continent.</p>
  */
 public class ContinentModel  implements Serializable{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3L;
 	private String continentName;//continent's name, unique and can be changed.
 	private String showName;
 	private int controlNum;//Bonus armies during reinforcement phase when the whole continent is owned by one player.
