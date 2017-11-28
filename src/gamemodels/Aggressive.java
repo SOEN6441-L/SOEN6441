@@ -2,11 +2,14 @@ package gamemodels;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import gameviews.AttackPhaseView;
 import gameviews.FortificationPhaseView;
 import gameviews.ReinforcePhaseView;
 import mapmodels.CountryModel;
+import mapmodels.RiskMapModel;
 
 public class Aggressive implements Strategy,Serializable{
 	private static final long serialVersionUID = 8L;
@@ -50,16 +53,55 @@ public class Aggressive implements Strategy,Serializable{
 	}
 
 	@Override
-	public void attackPhase(PlayerModel player) {
+	public int attackPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
-        AttackPhaseView attackPhase = new AttackPhaseView(player);
-        attackPhase.setVisible(true);
-        attackPhase.dispose();		
+		if (player.getAttackingCountry().size()==0){
+        	player.setAttackInfo("No more territories can attack, attack phase finished");
+        	return 1;
+		}
+        AttackPhaseView attackPhase = new AttackPhaseView(player,1);
+        int max = 0;
+        int maxArmy = attackPhase.localCountries[0].getNumber();
+        for (int i=1;i<attackPhase.localCountries.length;i++){
+        	if (attackPhase.localCountries[i].getNumber()>maxArmy){
+        		max = i;
+        		maxArmy = attackPhase.localCountries[i].getNumber();
+        	}
+        }
+        RiskMapModel myMap = player.getMyGame().getGameMap();
+        attackPhase.selCountryNameFrom = attackPhase.localCountries[max].getName();
+        attackPhase.reloadAttacked();
+        while (true) {
+        	attackPhase.selCountryNameTo = attackPhase.localAdjacencyList.
+        			get(myMap.findCountry(attackPhase.selCountryNameFrom)).get(0).getShowName();
+        	attackPhase.attackOneCountry(1);
+        	Boolean found = false;
+        	for (int i=0;i<attackPhase.localCountries.length;i++){
+        		if (attackPhase.localCountries[i].getName().equals(attackPhase.selCountryNameFrom)){
+        			found = true;
+        			break;
+        		}
+        	}
+        	if (!found){  
+        		break;
+        	}
+        }
+        attackPhase.dispose();	
+        return 0;
 	}
 
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
+		Map <String[], Integer> candidate = new HashMap<String[], Integer>();
+		if (player.getAttackingCountry().size()==0){
+			
+		}
+		else {
+			
+		}
+		
+		
         FortificationPhaseView fortiPhase = new FortificationPhaseView(player);
         fortiPhase.setVisible(true);
         fortiPhase.dispose();			
