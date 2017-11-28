@@ -5,9 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import gameviews.AttackPhaseView;
-import gameviews.FortificationPhaseView;
-import gameviews.ReinforcePhaseView;
 import mapmodels.*;
 
 /**
@@ -16,7 +13,7 @@ import mapmodels.*;
  */
 public class PlayerModel extends Observable  implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5L;
 	private String name;
     private Color myColor;
 	private int[] cards;
@@ -30,6 +27,8 @@ public class PlayerModel extends Observable  implements Serializable {
     private String phaseString="", exchangeStatus = "";
     private String reinforcementStr="", baseReinforceStr="", exchangeCardStr="", putArmyStr="";
     private String attackInfo="", attackStepInfo="";
+    
+    public Strategy strategy;
 
 
     /**
@@ -281,6 +280,7 @@ public class PlayerModel extends Observable  implements Serializable {
      * @return succeed of failed with error message
      */	
 	public ErrorMsg playTurn(){
+		myGame.setGameStage(50);
 		reinforcementPhase();
 		myGame.setGameStage(51);
         attackPhase();
@@ -294,6 +294,14 @@ public class PlayerModel extends Observable  implements Serializable {
 	}
 	
 	/**
+	 * Method to set player's strategy
+	 * @param strategy
+	 */
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
+	
+	/**
      * The function to judge if complete reinforcement phase
 	 */
 	public void reinforcementPhase(){
@@ -301,9 +309,7 @@ public class PlayerModel extends Observable  implements Serializable {
 		myGame.myLog.setLogStr(this.getName()+" reinforcement phase begin.\n");
 		myGame.myLog.setLogStr("Totla reinforcement army is "+this.getTotalReinforcement()+"\n");		
 		this.setPhaseString("Reinforcement Phase");
-		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(this);
-		reinforcementPhase.setVisible(true);
-		reinforcementPhase.dispose();
+		strategy.reinforcementPhase(this);
 	}
 
     /**
@@ -311,18 +317,14 @@ public class PlayerModel extends Observable  implements Serializable {
      */
     public void attackPhase(){
 		this.setPhaseString("Attack Phase");
-        AttackPhaseView attackPhase = new AttackPhaseView(this);
-        attackPhase.setVisible(true);
-        attackPhase.dispose();
+		strategy.attackPhase(this);
     }
     /**
      * The function to judge if complete fortification phase
      */
     public void fortificationPhase(){
 		this.setPhaseString("Fortification Phase");
-        FortificationPhaseView fortiPhase = new FortificationPhaseView(this);
-        fortiPhase.setVisible(true);
-        fortiPhase.dispose();
+		strategy.fortificationPhase(this);
     }
 	/**
 	 * The getter of PhaseString, used to return phase info
@@ -459,23 +461,23 @@ public class PlayerModel extends Observable  implements Serializable {
 	
 	/**
 	 * This method is to get valid attacking countries
-	 * @return count of valid attacking countries
+	 * @return valid attacking countries
 	 */
-	public int getAttackingCountry() {
-		int count = 0;
+	public ArrayList<CountryModel> getAttackingCountry() {
+		ArrayList<CountryModel> countryList = new ArrayList<CountryModel>();
 		for(CountryModel loopCountry:this.getCountries()){
 			if (loopCountry.getArmyNumber()>1){
 				ArrayList<CountryModel> neighbors = myGame.getGameMap().getAdjacencyList().get(loopCountry);
 				for (CountryModel neighbor:neighbors){
-					if (neighbor.getBelongTo()!=loopCountry.getBelongTo()){
-						count++;
+					if (neighbor.getOwner()!=loopCountry.getOwner()){
+						countryList.add(loopCountry);
 						break;
 					}
 				}
 			}
 		}
-		return count;
-	}
+		return countryList;
+	}	
 
 	/**
 	 * This method is to get attack information

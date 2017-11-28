@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public class RiskMapModel extends Observable implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	/**indicate if the map has been changed since last save*/
 	private boolean modified;
     private String riskMapName; 

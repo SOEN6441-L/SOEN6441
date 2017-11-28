@@ -10,7 +10,7 @@ import gamemodels.PlayerModel;
  * <p> This class contains all information of a country.</p>
  */
 public class CountryModel implements Serializable{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4L;
 	private int countryId;
 	private String countryName;//country's name, unique and can be changed.
 	private String showName;

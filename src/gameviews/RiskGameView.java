@@ -473,6 +473,8 @@ public class RiskGameView extends JFrame implements Observer{
 						newDataVector[i][j] = "";
 					}
 				}
+				if (myGame.getGameStage()>=30) 
+					newDataVector[i][i] = String.valueOf(myMap.findCountry((String)newIdentifiers[i]).getArmyNumber());
 			}
 			matrixModel.setDataVector(newDataVector, newIdentifiers);
 			adjacencyMatrix = new MyTable(matrixModel){
@@ -583,21 +585,29 @@ public class RiskGameView extends JFrame implements Observer{
 				break;
 			case 50://game started
 				previousBtn.setVisible(false);
+				functionsBtn.setEnabled(false);
+				saveBtn.setEnabled(false);
+				loadBtn.setEnabled(false);
 				break;	
 			case 51://in game - after reinforcement
 				reloadContinents();
 				reloadPlayers();
+				reloadMatrix();
 				break;					
 			case 52://in game - after attack
 				reloadContinents();
 				reloadPlayers();
+				reloadMatrix();
 				break;					
 			case 53://in game - after fortification
 				reloadContinents();
 				reloadPlayers();
 				reloadMatrix();
 				functionsBtn.setText("Next Player");
+				functionsBtn.setEnabled(true);
 				previousBtn.setVisible(false);
+				saveBtn.setEnabled(true);
+				loadBtn.setEnabled(true);
 				break;					
 			}
 		}	

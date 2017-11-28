@@ -37,7 +37,8 @@ public class TradeInCards extends JDialog{
 
     //To test if Label is empty
     boolean[] isAvailiable = new boolean[]{true,true,true};
-
+    int mode;
+    
     //Array to store cards
     private int[] myCards = new int[3];
     private PlayerModel player;
@@ -45,9 +46,11 @@ public class TradeInCards extends JDialog{
     /**
      *  This method is to set layout if GUI
      *	@param player player object
+     *	@param mode 0-normal 1-silent
      */
-    public TradeInCards(PlayerModel player){
+    public TradeInCards(PlayerModel player,int mode){
     	this.player = player;
+    	this.mode = mode;
     	player.copyCards(myCards);
         ContentPanel.setLayout(null);
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -252,7 +255,7 @@ public class TradeInCards extends JDialog{
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(exitButton.isVisible()){
-        			if (player.canExchange()){
+        			if (mode==0&&player.canExchange()){
         				if (JOptionPane.showConfirmDialog(null,
         						"You can still exchange cards, do you really want exit and keep these cards for next turn?",
         						"Confirm", JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)

@@ -83,9 +83,9 @@ public class AttackPhaseView extends JDialog{
         setVisible(false);
 
         Dimension size;    
-        int attackingCountry = player.getAttackingCountry();
+        ArrayList<CountryModel> attackingCountry = player.getAttackingCountry();
         
-        if (attackingCountry == 0){
+        if (attackingCountry.size() == 0){
         	player.setAttackInfo("No more territories can attack, attack phase finished");
         	myGame.myLog.setLogStr(player.getName()+", no more territories can attack, attack phase finished\n");
         	this.dispose();
@@ -94,18 +94,10 @@ public class AttackPhaseView extends JDialog{
         	player.setAttackInfo("");
         }
 
-        localCountries = new NodeRecord[attackingCountry];
+        localCountries = new NodeRecord[attackingCountry.size()];
         int j = 0;
-        for (CountryModel loopCountry:player.getCountries()){
-        	if (loopCountry.getArmyNumber()>1){
-				ArrayList<CountryModel> neighbors = myGame.getGameMap().getAdjacencyList().get(loopCountry);
-				for (CountryModel neighbor:neighbors){
-					if (neighbor.getBelongTo()!=loopCountry.getBelongTo()){
-						localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
-						break;
-					}
-				}	
-        	}
+        for (CountryModel loopCountry:attackingCountry){
+        	localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
         }
         
 		localAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
@@ -138,7 +130,7 @@ public class AttackPhaseView extends JDialog{
         size = phaseLabel.getPreferredSize();
         phaseLabel.setBounds(20,60,size.width,size.height);        
 
-        countryLabelFrom = new JLabel("Territories can attacking ("+attackingCountry+"):");
+        countryLabelFrom = new JLabel("Territories can attacking ("+attackingCountry.size()+"):");
         add(countryLabelFrom);
         countryLabelFrom.setFont(new java.awt.Font("dialog",1,15));
         size = countryLabelFrom.getPreferredSize();
@@ -252,9 +244,9 @@ public class AttackPhaseView extends JDialog{
      */
     public void reloadGUI(){
 
-        int attackingCountry = player.getAttackingCountry();
+        ArrayList<CountryModel> attackingCountry = player.getAttackingCountry();
         
-        if (attackingCountry==0){
+        if (attackingCountry.size()==0){
         	player.setAttackInfo("No more territories can attack, attack phase finished");
         	myGame.myLog.setLogStr(player.getName()+", no more territories can attack, attack phase finished\n");
         	setVisible(false);
@@ -263,18 +255,10 @@ public class AttackPhaseView extends JDialog{
         	player.setAttackInfo("");
         }
         
-        localCountries = new NodeRecord[attackingCountry];
+        localCountries = new NodeRecord[attackingCountry.size()];
         int j = 0;
-        for (CountryModel loopCountry:player.getCountries()){
-        	if (loopCountry.getArmyNumber()>1){
-				ArrayList<CountryModel> neighbors = myGame.getGameMap().getAdjacencyList().get(loopCountry);
-				for (CountryModel neighbor:neighbors){
-					if (neighbor.getBelongTo()!=loopCountry.getBelongTo()){
-						localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
-						break;
-					}
-				}	
-        	}
+        for (CountryModel loopCountry:attackingCountry){
+			localCountries[j++] = new NodeRecord(loopCountry.getShowName(), loopCountry.getArmyNumber());
         }
         
 		localAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
@@ -287,7 +271,7 @@ public class AttackPhaseView extends JDialog{
 			}
 		}  
 
-        countryLabelFrom.setText("Territories can attacking ("+attackingCountry+"):");
+        countryLabelFrom.setText("Territories can attacking ("+attackingCountry.size()+"):");
 
         DefaultMutableTreeNode myTreeRoot = new DefaultMutableTreeNode("Countries");
         for (int i=0;i<localCountries.length;i++) {
