@@ -1,10 +1,12 @@
 package gamemodels;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import gameviews.AttackPhaseView;
 import gameviews.FortificationPhaseView;
 import gameviews.ReinforcePhaseView;
+import mapmodels.CountryModel;
 
 public class Human implements Strategy,Serializable{
 	private static final long serialVersionUID = 7L;
@@ -18,11 +20,17 @@ public class Human implements Strategy,Serializable{
 	}
 
 	@Override
-	public void attackPhase(PlayerModel player) {
+	public int attackPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
-        AttackPhaseView attackPhase = new AttackPhaseView(player);
+		ArrayList<CountryModel> attackingCountry = player.getAttackingCountry();
+		if (attackingCountry.size()==0){
+        	player.setAttackInfo("No more territories can attack, attack phase finished");
+        	return 1;
+		}
+        AttackPhaseView attackPhase = new AttackPhaseView(player,0);
         attackPhase.setVisible(true);
         attackPhase.dispose();
+        return 0;
 	}
 
 	@Override
