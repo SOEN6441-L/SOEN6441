@@ -39,16 +39,18 @@ public class AttackDiceView extends JDialog{
     private CountryModel country1,country2;
     private RiskGameModel myGame;
     private int lastDice = 0;
+    private int mode;
 
     /**
      * Constructor of class ReinforcePhaseView to generate reinforce phase UI
      * @param country1 The player that who is in turn
      * @param country2 The game reinforce phase is in
      */
-    public AttackDiceView(CountryModel country1, CountryModel country2){
+    public AttackDiceView(CountryModel country1, CountryModel country2, int mode){
         player1 = country1.getOwner();
         player2 = country2.getOwner();
         myGame = player1.getMyGame();
+        this.mode = mode;
         this.country1 = country1;
         this.country2 = country2;
 
@@ -158,8 +160,10 @@ public class AttackDiceView extends JDialog{
         int attackedArmy = country2.getArmyNumber();        
         
 		if (attackingArmy==0){
-			JOptionPane.showMessageDialog(null, player1.getName()+" failed.");
-			myGame.myLog.setLogStr(player1.getName()+" failed.\n");
+			if (mode==0) JOptionPane.showMessageDialog(null, player1.getName()+" failed.");
+			myGame.myLog.setLogStr("    "+player1.getName()+" attack failed.\n");
+			myGame.myLog.setLogStr("    Now, "+country1.getOwner().getName()+" ("+country1.getShowName()+" "+country1.getArmyNumber()+
+					" armies) and "+country2.getOwner().getName()+" ("+country2.getShowName()+" "+country2.getArmyNumber()+" armies)\n");
 			player1.setAttackInfo(player1.getName()+" failed.");
 			setVisible(false);
     	}
@@ -169,32 +173,42 @@ public class AttackDiceView extends JDialog{
     		player2.removeCountry(country2);
     		myGame.changeDominationView();
     		if (!player2.getState()) player1.addCards(player2.getCards());
-			JOptionPane.showMessageDialog(null, player1.getName()+" grasps "+country2.getShowName()+" owned by "+player2.getName());
-			myGame.myLog.setLogStr(player1.getName()+" grasps "+country2.getShowName()+" owned by "+player2.getName()+"\n");
+    		
+			if (mode == 0) JOptionPane.showMessageDialog(null, player1.getName()+" grasps "+country2.getShowName()+" owned by "+player2.getName());
 			
-			String [] choice = new String [country1.getArmyNumber()-lastDice];
-			int index=0;
-			for (int i=lastDice;i<country1.getArmyNumber();i++) {
-				choice[index] = String.valueOf(i);
-			}
-			JComboBox<Object> armyInput = new JComboBox<Object>(choice);
-			Object[] message = {
-					"How many armies you want to left on new country:", armyInput
-			};  
+			if (mode==0){
+				String [] choice = new String [country1.getArmyNumber()-lastDice];
+				int index=0;
+				for (int i=lastDice;i<country1.getArmyNumber();i++) {
+					choice[index] = String.valueOf(i);
+				}
+				JComboBox<Object> armyInput = new JComboBox<Object>(choice);
+				Object[] message = {
+						"How many armies you want to left on new country:", armyInput
+				};  
 
-			boolean retry = true;
-			while (retry){
-				int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
-				if (option!=JOptionPane.OK_OPTION||armyInput.getSelectedIndex()==-1){
-					JOptionPane.showMessageDialog(null,"You must left some armies on the new conquared country.");
-				}
-				else {
-					int armyNum = Integer.parseInt((String)armyInput.getItemAt(armyInput.getSelectedIndex()));
-					player1.moveArmies(country2,country1,armyNum);
-					retry = false;
+				boolean retry = true;
+				while (retry){
+					int option = JOptionPane.showConfirmDialog(null, message, "Input", JOptionPane.OK_CANCEL_OPTION);
+					if (option!=JOptionPane.OK_OPTION||armyInput.getSelectedIndex()==-1){
+						JOptionPane.showMessageDialog(null,"You must left some armies on the new conquared country.");
+					}
+					else {
+						int armyNum = Integer.parseInt((String)armyInput.getItemAt(armyInput.getSelectedIndex()));
+						player1.moveArmies(country2,country1,armyNum);
+						myGame.myLog.setLogStr("        "+player1.getName()+" puts "+armyNum+" armies on "+country2.getShowName()+"\n");
+						retry = false;
+					}
 				}
 			}
+			else if (mode == 1){
+				player1.moveArmies(country2,country1,lastDice);
+				myGame.myLog.setLogStr("        "+player1.getName()+" puts "+lastDice+" armies on "+country2.getShowName()+"\n");
+			}			
 			
+			myGame.myLog.setLogStr("    "+player1.getName()+" grasps "+country2.getShowName()+" owned by "+player2.getName()+" before\n");
+			myGame.myLog.setLogStr("    Now, "+country1.getOwner().getName()+" ("+country1.getShowName()+" "+country1.getArmyNumber()+
+					" armies) and "+country2.getOwner().getName()+" ("+country2.getShowName()+" "+country2.getArmyNumber()+" armies)\n");
 			setVisible(false);
     	}
 
@@ -270,8 +284,10 @@ public class AttackDiceView extends JDialog{
 				attackOnce();
 				break;	
 			case "Finish":
-				JOptionPane.showMessageDialog(null, player1.getName()+" betrayed.");
-				myGame.myLog.setLogStr(player1.getName()+" betrayed.");
+				if (mode==0) JOptionPane.showMessageDialog(null, player1.getName()+" betrayed.");
+				myGame.myLog.setLogStr("    "+player1.getName()+" betrayed.");
+				myGame.myLog.setLogStr("    Now, "+country1.getOwner().getName()+" ("+country1.getShowName()+" "+country1.getArmyNumber()+
+						" armies) and "+country2.getOwner().getName()+" ("+country2.getShowName()+" "+country2.getArmyNumber()+" armies)\n");
 				player1.setAttackInfo(player1.getName()+" betrayed.");
 				setVisible(false);
 				break;				
@@ -292,14 +308,18 @@ public class AttackDiceView extends JDialog{
 			int attackedArmy = attackedDices.getSelectedIndex()+1;
 			
 			//generate dice result randomly
+			String attackingStr = "";
 			for (int i=3-attackingArmy;i<3;i++){
 				attacking[i] = (int)(Math.random()*6)+1;
+				attackingStr += String.valueOf(attacking[i]+" ");
 				attackingDice[i].setIcon(diceIcons[attacking[i]-1]);
 			}
+			String attackedStr = "";
 			for (int i=2-attackedArmy;i<2;i++){
 				attacked[i] = (int)(Math.random()*6)+1;
+				attackedStr += String.valueOf(attacked[i]+" ");
 				attackedDice[i].setIcon(diceIcons[attacked[i]-1]);
-			}	
+			}
 			//begin to analyze dice result for the max dice
 			int biggestAttacking = attacking[2];
 			int biggestAttackingIndex=2;
@@ -353,20 +373,24 @@ public class AttackDiceView extends JDialog{
 				}
 			}
 			
+			
 			if (secondLoser==null){
-				JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army.");
-	        	myGame.myLog.setLogStr(firstLoser.getName()+" lost one army.\n");
+				if (mode ==0) JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army.");
+	        	myGame.myLog.setLogStr("        The dices result: "+player1.getName()+" ( "+attackingStr+"), "+player2.getName()+" ( "+attackedStr+"), "
+	        			+firstLoser.getName()+" lost one army.\n");
 	        	player1.setAttackStepInfo(firstLoser.getName()+" lost one army.");
 			}	
 			else {
 				if (firstLoser==secondLoser){
-					JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost 2 armies.");
-					myGame.myLog.setLogStr(firstLoser.getName()+" lost 2 armies.\n");
+					if (mode ==0) JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost 2 armies.");
+		        	myGame.myLog.setLogStr("        The dices result: "+player1.getName()+" ( "+attackingStr+"), "+player2.getName()+" ( "+attackedStr+"), "
+		        			+firstLoser.getName()+" lost 2 armies.\n");
 					player1.setAttackStepInfo(firstLoser.getName()+" lost 2 armies.");
 				}
 				else {
-					JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.");
-					myGame.myLog.setLogStr(firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.\n");
+					if (mode ==0) JOptionPane.showMessageDialog(null, firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.");
+		        	myGame.myLog.setLogStr("        The dices result: "+player1.getName()+" ( "+attackingStr+"), "+player2.getName()+" ( "+attackedStr+"), "
+		        			+firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.\n");
 					player1.setAttackStepInfo(firstLoser.getName()+" lost one army, "+secondLoser.getName()+" lost one army.");
 				}
 			}
