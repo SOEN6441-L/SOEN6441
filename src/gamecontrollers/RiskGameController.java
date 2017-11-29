@@ -112,10 +112,11 @@ public class RiskGameController implements ActionListener {
 				e.printStackTrace();
 			}	
 		}	
-	}	
+	}
 
 	/**
 	 * Method to load game from disk
+	 * @param inputFile The file that need to be loaded
 	 */
 	public void loadGame(String inputFile){
 		ObjectInputStream input = null;
