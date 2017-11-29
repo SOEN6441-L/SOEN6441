@@ -10,11 +10,18 @@ import gameviews.ReinforcePhaseView;
 import mapmodels.CountryModel;
 import mapmodels.RiskMapModel;
 
+/**
+ * Benevolent strategy in reinforcement and attack and fortification phase
+ */
 public class Benevolent implements Strategy,Serializable{
 
 	private static final long serialVersionUID = 9L;
 	private String country;
 
+	/**
+	 * Benevolent strategy in reinforcement phase.
+	 * @param player
+	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -39,6 +46,11 @@ public class Benevolent implements Strategy,Serializable{
 		reinforcementPhase.dispose();
 	}
 
+	/**
+	 * Benevolent strategy in attack phase.
+	 * @param player
+	 * @return 1 or 0
+	 */
 	@Override
 	public int attackPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -51,6 +63,10 @@ public class Benevolent implements Strategy,Serializable{
         return 0;
 	}
 
+	/**
+	 * Benevolent strategy in fortification phase.
+	 * @param player
+	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub

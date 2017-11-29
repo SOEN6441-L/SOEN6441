@@ -1,5 +1,8 @@
 package gamemodels;
 
+/**
+ * Interface of Strategy
+ */
 public interface Strategy {
 	/**
 	 * 

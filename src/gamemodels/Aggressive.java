@@ -10,10 +10,17 @@ import gameviews.ReinforcePhaseView;
 import mapmodels.CountryModel;
 import mapmodels.RiskMapModel;
 
+/**
+ * Aggressive strategy  in reinforcement and attack and fortification phase.
+ */
 public class Aggressive implements Strategy,Serializable{
 
 	private static final long serialVersionUID = 8L;
 
+	/**
+	 * Aggressive strategy  in reinforcement phase.
+	 * @param player
+	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -57,6 +64,11 @@ public class Aggressive implements Strategy,Serializable{
 		reinforcementPhase.dispose();
 	}
 
+	/**
+	 * Aggressive strategy  in attack phase.
+	 * @param player
+	 * @return 1 or 0
+	 */
 	@Override
 	public int attackPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -98,6 +110,10 @@ public class Aggressive implements Strategy,Serializable{
         return 0;
 	}
 
+	/**
+	 * Aggressive strategy  in fortification phase.
+	 * @param player
+	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub

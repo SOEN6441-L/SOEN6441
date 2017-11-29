@@ -10,10 +10,17 @@ import gameviews.ReinforcePhaseView;
 import mapmodels.CountryModel;
 import mapmodels.RiskMapModel;
 
+/**
+ * Random strategy in the reinforcement, attack and fortification phase.
+ */
 public class Random implements Strategy,Serializable{
 
 	private static final long serialVersionUID = 10L;
 
+	/**
+	 * Random strategy in the reinforcement phase
+	 * @param player
+	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -35,6 +42,11 @@ public class Random implements Strategy,Serializable{
 		reinforcementPhase.dispose();
 	}
 
+	/**
+	 * Random strategy in the attack phase
+	 * @param player
+	 * @return 0 or 1
+	 */
 	@Override
 	public int attackPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -63,6 +75,10 @@ public class Random implements Strategy,Serializable{
         return 0;
 	}
 
+	/**
+	 * Random strategy in the fortification phase
+	 * @param player
+	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
