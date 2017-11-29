@@ -41,7 +41,7 @@ Benevolent | Benevolent strategy in reinforcement and attack and fortification p
 Cheater | Cheater strategy in reinforcement, attack and fortification phase
 Human | Human strategy in reinforcement, attack and fortification phase
 Random | Random strategy in reinforcement, attack and fortification phase
-Strategy |
+Strategy | Interface of Strategy
 NodeRecord  | This is a base class used to record brief information of a country, is used in all phases of a game.
 ObservbleNodes  | User-defined observable array of nodes
 PlayerModel  | This is class for defining player. A player belongs to a RiskGame object, has amount of armies, can own several countries.
