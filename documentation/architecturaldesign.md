@@ -36,6 +36,12 @@ MapEditorController  | Class acting as the MapEditorView's controller, to define
 
 File_Name  | Description
 ------------- | -------------
+Aggressive | Aggressive strategy  in reinforcement and attack and fortification phase
+Benevolent | Benevolent strategy in reinforcement and attack and fortification phase
+Cheater | Cheater strategy in reinforcement, attack and fortification phase
+Human | Human strategy in reinforcement, attack and fortification phase
+Random | Random strategy in reinforcement, attack and fortification phase
+Strategy |
 NodeRecord  | This is a base class used to record brief information of a country, is used in all phases of a game.
 ObservbleNodes  | User-defined observable array of nodes
 PlayerModel  | This is class for defining player. A player belongs to a RiskGame object, has amount of armies, can own several countries.
@@ -63,11 +69,14 @@ TradeInCardsView  | This class is phase view using observer.
 File_Name  | Description
 ------------- | -------------
 RiskGameController  | Class acting as the RiskGameView's controller, to define action performed according to different users' action.
+MonitorInterface | The interface for the monitor
+RiskGameMonitor | The monitor interface of risk game
 
 ### 1.7 BasicClasses
 
 File_Name  | Description
 ------------- | -------------
+Log	 | Class for define a observable log string
 MyPopupMenu  | Class to extend JPopupMenu, add one new varible and relative methods
 MyTable  | Class to extend JTable, add two new methods.
 MyTree  | Class to extend JTable, add one new method.
