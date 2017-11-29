@@ -8,10 +8,17 @@ import gameviews.FortificationPhaseView;
 import gameviews.ReinforcePhaseView;
 import mapmodels.CountryModel;
 
+/**
+ * Human strategy in reinforcement and attack and fortification phase
+ */
 public class Human implements Strategy,Serializable{
 
 	private static final long serialVersionUID = 7L;
 
+	/**
+	 * Human strategy in reinforcement phase
+	 * @param player
+	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -25,6 +32,11 @@ public class Human implements Strategy,Serializable{
 		reinforcementPhase.dispose();
 	}
 
+	/**
+	 * Human strategy in attack phase
+	 * @param player
+	 * @return 1 or 0
+	 */
 	@Override
 	public int attackPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -39,6 +51,10 @@ public class Human implements Strategy,Serializable{
         return 0;
 	}
 
+	/**
+	 * Human strategy in fortification phase
+	 * @param player
+	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub

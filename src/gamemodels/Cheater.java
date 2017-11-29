@@ -5,10 +5,17 @@ import java.util.ArrayList;
 
 import mapmodels.CountryModel;
 
+/**
+ * Cheater strategy in reinforcement, attack and fortification phase.
+ */
 public class Cheater implements Strategy,Serializable{
 
 	private static final long serialVersionUID = 11L;
 
+	/**
+	 * Cheater strategy in reinforcement phase
+	 * @param player
+	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -21,6 +28,11 @@ public class Cheater implements Strategy,Serializable{
 		player.getMyGame().myLog.setLogStr("    "+player.getName()+" double the armies number on all his territories, now has "+player.getTotalArmies()+" armies\n");
 	}
 
+	/**
+	 * Cheater strategy in attack phase
+	 * @param player
+	 * @return 0
+	 */
 	@Override
 	public int attackPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
@@ -47,6 +59,10 @@ public class Cheater implements Strategy,Serializable{
 		return 0;
 	}
 
+	/**
+	 * Cheater strategy in fortification phase
+	 * @param player
+	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
