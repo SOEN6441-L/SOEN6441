@@ -20,7 +20,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
+import gamemodels.Aggressive;
+import gamemodels.Benevolent;
+import gamemodels.Cheater;
+import gamemodels.Human;
+import gamemodels.Random;
 import gamemodels.RiskGameModel;
+import gameviews.AssignPlayerStrategy;
 import gameviews.DominationView;
 import gameviews.LogWindow;
 import gameviews.PhaseView;
@@ -76,6 +82,9 @@ public class RiskGameController implements ActionListener {
 		case "Load Game":
 			loadGame();
 			break;
+		case "Run to end":
+			runToEnd();
+			break;			
 		}	
 	}	
     
@@ -131,7 +140,7 @@ public class RiskGameController implements ActionListener {
 	    myGameModel.addObserver(gameView);
 	    gameView.addModel(myGameModel);
 	    myGameModel.setGameStage(myGameModel.getGameStage());
-		myGameModel.myLog.setLogStr("Load saved game "+inputFile.trim() +" succeed\n");
+		myGameModel.myLog.setLogStr("\nLoad saved game "+inputFile.trim() +" succeed\n");
 	}
 	
 	/**
@@ -279,6 +288,30 @@ public class RiskGameController implements ActionListener {
 				else{
 					myGameModel.createPlayers(Math.min(playerInput.getSelectedIndex()+2,
 						myGameModel.getGameMap().getCountryNum()));
+					AssignPlayerStrategy strategyView = new AssignPlayerStrategy(myGameModel.getPlayers().length);
+					for (int i=0;i<myGameModel.getPlayers().length;i++){
+						int choice = strategyView.strategies[i].getSelectedIndex();
+						switch (choice){
+						case 0:
+							myGameModel.getPlayers()[i].setStrategy(new Human());
+							break;
+						case 1:
+							myGameModel.getPlayers()[i].setStrategy(new Aggressive());
+							break;
+						case 2:
+							myGameModel.getPlayers()[i].setStrategy(new Benevolent());
+							break;
+						case 3:
+							myGameModel.getPlayers()[i].setStrategy(new Random());
+							break;
+						case 4:
+							myGameModel.getPlayers()[i].setStrategy(new Cheater());
+							break;
+						}
+					}
+					myGameModel.setGameStage(20);
+					myGameModel.myLog.setLogStr("\nCreate "+myGameModel.getPlayers().length+" Players\n");
+					myGameModel.changeDominationView();
 					retry = false;
 				}
 			}
@@ -287,6 +320,8 @@ public class RiskGameController implements ActionListener {
 				myGameModel.setGameStage(12);
 			}
 		}
+		
+
 	}	
 	
 	/**
@@ -298,6 +333,29 @@ public class RiskGameController implements ActionListener {
 			myGameModel.setGameStage(32);//user canceled
 		}	
 	}
+
+	/**
+	 * Handler used to run game without stop
+	 */
+	private void runToEnd() { 
+		if (myGameModel.getGameStage()<50){
+			startGame();
+			if (myGameModel.getGameStage()==54) return;
+		}
+		int turn = myGameModel.getTurn()+30;
+		while (true){
+			nextPlayer();
+			if (myGameModel.getGameStage()==54) break;
+			if (myGameModel.getTurn() == turn){
+				if (JOptionPane.showConfirmDialog(null,
+						"Already runned for 30 turns, do you want to continue?",
+						"Confirm", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					turn += 30;
+				}
+				else break;
+			}
+		}
+	}	
 
 	/**
 	 * Handler used to start the game
@@ -315,6 +373,14 @@ public class RiskGameController implements ActionListener {
 	private void newGame() { 
 		myGameModel = null;
 		myGameModel = new RiskGameModel();
+	    myGameModel.addLog(logWindow,0);
+	    myGameModel.addObserver(phaseView);
+	    myGameModel.addObserver(domiView);
+	    myGameModel.setPhaseView(phaseView,server);
+	    myGameModel.setObserverLabel(phaseView.getAssignCountryLable());
+	    myGameModel.addObserver(gameView);
+	    gameView.addModel(myGameModel);
+	    myGameModel.setGameStage(0);
 	}
 	
 	/**
