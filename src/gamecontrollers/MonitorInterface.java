@@ -5,7 +5,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Observable;
 
-
+/**
+ * The interface for the monitor interface
+ */
 public interface MonitorInterface extends Remote {
 	/**
 	 * 

@@ -14,6 +14,9 @@ import gameviewsremote.LogWindowRemote;
 import gameviewsremote.PhaseViewRemote;
 import gameviewsremote.TradeInCardsViewRemote;
 
+/**
+ * The monitor interface of risk game
+ */
 public class RiskGameMonitor implements MonitorInterface{
 	private PhaseViewRemote phaseView;
 	private DominationViewRemote domiView;
@@ -29,7 +32,12 @@ public class RiskGameMonitor implements MonitorInterface{
 		logWindow = new LogWindowRemote();
 		phaseView.setVisible(true);
 	}
-	
+
+	/**
+	 * The Server for export location
+	 * @param location
+	 * @throws Exception
+	 */
 	public void exportServer(String location) throws Exception {
 		Remote obj = UnicastRemoteObject.exportObject(this, 2021);
 		Registry r;
@@ -52,7 +60,9 @@ public class RiskGameMonitor implements MonitorInterface{
 	}
 	/**
 	 * Implement the updatePhaseView method
-	 * @param 
+	 * @param arg0 the variable observer from observable class
+	 * @param current the number of current game
+	 * @param type the game type
 	 * @throws RemoteException remote error
 	 */
 	@Override
@@ -63,7 +73,9 @@ public class RiskGameMonitor implements MonitorInterface{
 	
 	/**
 	 * Implement the updatePhaseView method
-	 * @param 
+	 * @param info the information of phase need to update
+	 * @param color the color of the phase
+	 * @param type the type number of the phase
 	 * @throws RemoteException remote error
 	 */
 	@Override
@@ -72,8 +84,8 @@ public class RiskGameMonitor implements MonitorInterface{
 		phaseView.update(info,color, type);
 	}	
 	/**
-	 * Implement the updatePhaseView method
-	 * @param
+	 * Implement the updateLogWindow method
+	 * @param newLog the log window of the update information
 	 * @throws RemoteException 
 	 */	
 	@Override
@@ -83,7 +95,9 @@ public class RiskGameMonitor implements MonitorInterface{
 	}
 	/**
 	 * Implement the updatePhaseView method
-	 * @param
+	 * @param num the number of the domination view
+	 * @param size the size of the domination view
+	 * @param colors the color the domination view
 	 * @throws RemoteException 
 	 */	
 	@Override
@@ -92,8 +106,12 @@ public class RiskGameMonitor implements MonitorInterface{
 		domiView.update(num,size,colors);
 	}
 	/**
-	 * Implement the updatePhaseView method
-	 * @param
+	 * Implement the updateCardsView method
+	 * @param info1 the information of card 1
+	 * @param info2 the information of card 2
+	 * @param info3 the information of card 3
+	 * @param info4 the information of card 4
+	 * @param type the number of type
 	 * @throws RemoteException 
 	 */	
 	@Override
@@ -105,8 +123,9 @@ public class RiskGameMonitor implements MonitorInterface{
 		return false;
 	}
 	/**
-	 * Implement the updatePhaseView method
-	 * @param
+	 * Implement the createTradeInCardsView method
+	 * @param x the location x for the phase
+	 * @param y the location y for the phase
 	 * @throws RemoteException 
 	 */	
 	@Override
@@ -118,7 +137,7 @@ public class RiskGameMonitor implements MonitorInterface{
 	}
 	/**
 	 * Implement the updateLabel method
-	 * @param
+	 * @param info the information of the update label
 	 * @throws RemoteException 
 	 */	
 	@Override
