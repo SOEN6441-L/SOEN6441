@@ -63,6 +63,7 @@ RaskGameMainView  | The class is used to create a window for player to edit maps
 RiskGameView  | The class is used to create a window for player to edit maps of the game.
 TradeInCards  | This class is GUI for Exchange cards to armies.
 TradeInCardsView  | This class is phase view using observer.
+AssignPlayerStrategy | This class is the implementation of attack dice in the Risk.
 
 ### 1.6 Game Controllers
 
@@ -72,7 +73,16 @@ RiskGameController  | Class acting as the RiskGameView's controller, to define a
 MonitorInterface | The interface for the monitor
 RiskGameMonitor | The monitor interface of risk game
 
-### 1.7 BasicClasses
+### 1.7 Game Views Remote
+File_Name  | Description
+------------- | -------------
+DominationViewRemote | Class to display the domination status
+LogWindowRemote | Class to define log window
+PhaseViewRemote | PhaseView is the GUI for monitors to see the progress of a game
+TradeCardsViewRemote | Class to monitor the trade cards process
+ComponentRenders | Class to render components
+
+### 1.8 BasicClasses
 
 File_Name  | Description
 ------------- | -------------
@@ -82,7 +92,7 @@ MyTable  | Class to extend JTable, add two new methods.
 MyTree  | Class to extend JTable, add one new method.
 RowHeaderTable  | Class for row headers
 
-### 1.8 Tests
+### 1.9 Tests
 The module includes all unit tests about the project.
 
 File_Name  | Description
@@ -98,15 +108,15 @@ RiskMapTest  | Unit test case about risk map.
 TestStartupPhase  | Unit test case about startup phase.
 TestSuit  | Testsuit includes all the unit testcases
 
-### 1.9 Maps
+### 1.10 Maps
 The module is used to store map files.
 
-### 1.10 Images
+### 1.11 Images
 The module includes all resource files used in the risk game.
 
-### 1.11 JavaDoc
+### 1.12 JavaDoc
 The module includes JavaDoc generated from the project
 
-### 1.12 Documentation
+### 1.13 Documentation
 The module includes all the docments of the project
 
