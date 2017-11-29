@@ -112,6 +112,7 @@ public class RiskGameMonitor implements MonitorInterface{
 	 * @param info3 the information of card 3
 	 * @param info4 the information of card 4
 	 * @param type the number of type
+	 * @return whether it success or not
 	 * @throws RemoteException 
 	 */	
 	@Override
