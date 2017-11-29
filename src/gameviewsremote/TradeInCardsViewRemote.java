@@ -9,9 +9,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 /**
- * 
  * Class to monitor the trade cards process
- *
  */
 public class TradeInCardsViewRemote extends JFrame {
 
@@ -36,7 +34,7 @@ public class TradeInCardsViewRemote extends JFrame {
 		}
 		/**
 		 * Method to handle process
-		 * @param chunks the info
+		 * @param chunks the list of chunks
 		 */
 		@Override
 		protected void process(List<Integer> chunks) {

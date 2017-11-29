@@ -8,10 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 /**
- * 
  * Class to define log window
  * @see JFrame
- *
  */
 
 public class LogWindowRemote extends JFrame{
