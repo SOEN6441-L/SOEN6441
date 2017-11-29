@@ -232,9 +232,12 @@ public class PhaseViewRemote extends JFrame{
 	private void reloadPlayers(int index, PlayerModel player){
 		//configuration
 		DefaultMutableTreeNode myTreeRoot;
+		String strategy = player.strategy.getClass().getName();
+		strategy = strategy.substring(strategy.indexOf('.')+1);
+
 		labelPlayers[index].setText("Player"+(index+1)+" ("+
 				player.getTotalArmies()+" armies, "+
-				player.getCardsString(0)+" cards)");
+				player.getCardsString(0)+" cards) "+strategy);
 		myTreeRoot = new DefaultMutableTreeNode("Countries ("+player.getCountries().size()+")");		
 		for (CountryModel loopCountry:player.getCountries()){
 			DefaultMutableTreeNode loopPlayerNode =  new DefaultMutableTreeNode(loopCountry.getShowName()+
@@ -510,7 +513,9 @@ public class PhaseViewRemote extends JFrame{
 						scrollPaneForPlayers = new JScrollPane[playerNum];
 						DefaultMutableTreeNode myTreeRoot;
 						for (int i=0;i<playerNum;i++){
-							labelPlayers[i] = new JLabel("Player"+(i+1)+" (0 armies, 0 cards)");
+							String strategy = myGame.getPlayers()[i].strategy.getClass().getName();
+							strategy = strategy.substring(strategy.indexOf('.')+1);
+							labelPlayers[i] = new JLabel("Player"+(i+1)+" (0 armies, 0 cards)"+" "+strategy);
 							add(labelPlayers[i]);  
 							labelPlayers[i].setFont(new java.awt.Font("dialog",1,15));
 							labelPlayers[i].setForeground(myGame.getPlayers()[i].getMyColor());
