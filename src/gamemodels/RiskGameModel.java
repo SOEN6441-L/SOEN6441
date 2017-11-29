@@ -178,12 +178,8 @@ public class RiskGameModel extends Observable implements Serializable{
         players = new PlayerModel[playerNum];
         for (int i=0;i<players.length;i++){
             players[i] = new PlayerModel("Player"+String.valueOf(i+1),colors[i%colors.length],this);
-            players[i].setStrategy(new Aggressive());
         }    
-        setGameStage(20);
-        myLog.setLogStr("Create "+playerNum+" Players\n");
-        this.changeDominationView();
-    }
+    }    
 
     /**
      * The function to assign countries to players randomly.
@@ -216,7 +212,7 @@ public class RiskGameModel extends Observable implements Serializable{
 										loopCountry.setArmyNumber(1);
 										setGameStage(loopCountry.getCountryId()*1000+(curPlayerIndex%players.length));
 								        changeDominationView();
-								        myLog.setLogStr("Assign "+loopCountry.getShowName()+" to "+players[curPlayerIndex%players.length].getName()+"\n");
+								        myLog.setLogStr("    Assign "+loopCountry.getShowName()+" to "+players[curPlayerIndex%players.length].getName()+"\n");
 										publish(1);
 										curPlayerIndex++;
 										toAssigned--;
@@ -344,7 +340,7 @@ public class RiskGameModel extends Observable implements Serializable{
     		localCountries.deleteObservers();
         	localCountries = null;
         	setGameStage(40);
-	        myLog.setLogStr("Put initial armies succeed\n");
+	        myLog.setLogStr("\nPut initial armies succeed\n");
         }
         return (state==1);
     }
@@ -362,7 +358,11 @@ public class RiskGameModel extends Observable implements Serializable{
         increaseTurn();
         for (int i=0;i<players.length;i++){
         	if (players[i].winGame(gameMap.getCountryNum())){
+        		setGameStage(54);
+        		setPhaseString("Game Over");
+        		myLog.setLogStr("\n"+players[i].getName()+" has win the game!\n");
         		return new ErrorMsg(1,players[i].getName()+" has win the game!");
+
         	}
         }
         return playerTurn();
@@ -382,11 +382,13 @@ public class RiskGameModel extends Observable implements Serializable{
         
         players[curPlayer].addObserver(phaseView);
         
-        int x = 380+(curPlayer/2)*360;
-        int y = 36+(1-curPlayer%2)*252;  
-        TradeInCardsView cardView = new TradeInCardsView(server,x,y);
+        if (players[curPlayer].strategy.getClass().getName().indexOf("Cheater")==-1){
+        	int x = 380+(curPlayer/2)*360;
+        	int y = 36+(1-curPlayer%2)*252;  
+        	TradeInCardsView cardView = new TradeInCardsView(server,x,y);
 
-        players[curPlayer].addObserver(cardView);
+        	players[curPlayer].addObserver(cardView);
+        }	
         
         //cardView.setVisible(true);
         ErrorMsg errorMsg = players[curPlayer].playTurn();

@@ -27,6 +27,7 @@ public class PlayerModel extends Observable  implements Serializable {
     private String phaseString="", exchangeStatus = "";
     private String reinforcementStr="", baseReinforceStr="", exchangeCardStr="", putArmyStr="";
     private String attackInfo="", attackStepInfo="";
+    public boolean conquered;
     
     public Strategy strategy;
 
@@ -99,7 +100,7 @@ public class PlayerModel extends Observable  implements Serializable {
     		cards[i]+=source[i];
     		source[i]=0;
     	}       
-    }        
+    }  
     
     /**
      * Method to remove all the cards of this user.
@@ -286,6 +287,9 @@ public class PlayerModel extends Observable  implements Serializable {
         attackPhase();
 		myGame.setGameStage(52);
         if (winGame(myGame.getGameMap().getCountryNum())){
+    		myGame.setGameStage(54);
+    		setPhaseString("Game Over");
+    		myGame.myLog.setLogStr("\n"+getName()+" has win the game!\n");
             return new ErrorMsg(1,getName()+" has win the game!");
         }
         fortificationPhase();
@@ -304,12 +308,9 @@ public class PlayerModel extends Observable  implements Serializable {
 	/**
      * The function to judge if complete reinforcement phase
 	 */
-	public void reinforcementPhase(){
-		calculateArmyNumber();
-		myGame.myLog.setLogStr(this.getName()+" reinforcement phase begin.\n");
-		myGame.myLog.setLogStr("Totla reinforcement army is "+this.getTotalReinforcement()+"\n");		
-		this.setPhaseString("Reinforcement Phase");
+	public void reinforcementPhase(){	
 		strategy.reinforcementPhase(this);
+    	myGame.myLog.setLogStr(getName()+" reinforcement finished.\n");
 	}
 
     /**
@@ -317,7 +318,12 @@ public class PlayerModel extends Observable  implements Serializable {
      */
     public void attackPhase(){
 		this.setPhaseString("Attack Phase");
-		strategy.attackPhase(this);
+		myGame.myLog.setLogStr("\n"+getName()+" attack phase begin\n");
+		int result = strategy.attackPhase(this);
+		if (result == 1){
+        	setAttackInfo("No more territories can attack, attack phase finished");
+        	myGame.myLog.setLogStr(getName()+", no more territories can attack, attack phase finished\n");
+		}
     }
     /**
      * The function to judge if complete fortification phase
@@ -461,12 +467,13 @@ public class PlayerModel extends Observable  implements Serializable {
 	
 	/**
 	 * This method is to get valid attacking countries
+	 * @param 0- army number>1, 1- no army number limit
 	 * @return valid attacking countries
 	 */
-	public ArrayList<CountryModel> getAttackingCountry() {
+	public ArrayList<CountryModel> getAttackingCountry(int mode) {
 		ArrayList<CountryModel> countryList = new ArrayList<CountryModel>();
 		for(CountryModel loopCountry:this.getCountries()){
-			if (loopCountry.getArmyNumber()>1){
+			if (mode==1||loopCountry.getArmyNumber()>1){
 				ArrayList<CountryModel> neighbors = myGame.getGameMap().getAdjacencyList().get(loopCountry);
 				for (CountryModel neighbor:neighbors){
 					if (neighbor.getOwner()!=loopCountry.getOwner()){
