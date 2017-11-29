@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
                RiskGameModalTest.class,
                PlayerModelTest.class})
 /**
- * This is the test suite for testing cases
+ * This is the test suite for testing cases.
  */
 public class TestSuite {
 
