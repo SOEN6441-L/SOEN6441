@@ -46,13 +46,14 @@ public class AttackPhaseView extends JDialog{
     JButton enterBtn;
     private int width= 910,height = 560;
     
-    private String selCountryNameFrom,selCountryNameTo;
+    public String selCountryNameFrom,selCountryNameTo;
 
     private PlayerModel player;
     private RiskGameModel myGame;
 
-    private NodeRecord[] localCountries;
-    private Map<CountryModel,ArrayList<CountryModel>> localAdjacencyList;
+    private int mode;
+    public NodeRecord[] localCountries;
+    public Map<CountryModel,ArrayList<CountryModel>> localAdjacencyList;
 
 
     public int state=0; //0-Cancel, 1-confirm
@@ -60,14 +61,14 @@ public class AttackPhaseView extends JDialog{
     /**
      * Constructor of class ReinforcePhaseView to generate reinforce phase UI
      * @param player The player that who is in turn
+     * @param mode 0-normal 1-aggressive 3-random
      */
-    public AttackPhaseView(PlayerModel player){
+    public AttackPhaseView(PlayerModel player, int mode){
         this.player = player;
         this.myGame = player.getMyGame();
+        this.mode = mode;
 
         setTitle("Attack Phase");
-        
-        myGame.myLog.setLogStr(player.getName()+" attack phase begin\n");
 
         setSize(width,height);
         int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
@@ -81,18 +82,12 @@ public class AttackPhaseView extends JDialog{
         setLayout(null);
         setModal(true);
         setVisible(false);
+        
+        player.conquered = false;
 
         Dimension size;    
-        ArrayList<CountryModel> attackingCountry = player.getAttackingCountry();
-        
-        if (attackingCountry.size() == 0){
-        	player.setAttackInfo("No more territories can attack, attack phase finished");
-        	myGame.myLog.setLogStr(player.getName()+", no more territories can attack, attack phase finished\n");
-        	this.dispose();
-        }
-        else {
-        	player.setAttackInfo("");
-        }
+        ArrayList<CountryModel> attackingCountry = player.getAttackingCountry(0);
+       	player.setAttackInfo("");
 
         localCountries = new NodeRecord[attackingCountry.size()];
         int j = 0;
@@ -209,10 +204,9 @@ public class AttackPhaseView extends JDialog{
                         +" (Owned by "+loopCountry.getOwner().getName()+", "+loopCountry.getArmyNumber()+" armies)"));
        	}
         countryLabelTo.setText("Territories can be attacked ("+countriesAvailable+"):");
-        add(countryLabelTo);
-        countryLabelTo.setFont(new java.awt.Font("dialog",1,15));
         Dimension size = countryLabelTo.getPreferredSize();
         countryLabelTo.setBounds(attackBtn.getBounds().x+attackBtn.getSize().width+10,100,size.width,size.height);
+
         treeCountryTo = new JTree(myTreeRootTo);
         treeCountryTo.addMouseListener( new  MouseAdapter(){
         	public void mousePressed(MouseEvent e){
@@ -244,12 +238,13 @@ public class AttackPhaseView extends JDialog{
      */
     public void reloadGUI(){
 
-        ArrayList<CountryModel> attackingCountry = player.getAttackingCountry();
+        ArrayList<CountryModel> attackingCountry = player.getAttackingCountry(0);
         
         if (attackingCountry.size()==0){
         	player.setAttackInfo("No more territories can attack, attack phase finished");
         	myGame.myLog.setLogStr(player.getName()+", no more territories can attack, attack phase finished\n");
         	setVisible(false);
+        	return;
         }
         else {
         	player.setAttackInfo("");
@@ -318,6 +313,49 @@ public class AttackPhaseView extends JDialog{
         scrollPaneForCountryTo.getViewport().add(treeCountryTo);
     }
     
+    /**
+     * Method to finish attack phase
+     */
+    public void finishPhase(){
+    	player.setAttackInfo("Attack phase terminated.");
+    	myGame.myLog.setLogStr(player.getName()+" Attack phase terminated.\n");
+    }	
+    
+    /**
+     * Method to attack once;
+     * @param mode 0-human 1-aggressive 2-random
+     */
+    public void attackOneCountry(int mode){
+    	player.setAttackInfo(selCountryNameFrom+" attacking "+selCountryNameTo);
+    	CountryModel country1 = myGame.getGameMap().findCountry(selCountryNameFrom);
+    	CountryModel country2 = myGame.getGameMap().findCountry(selCountryNameTo);
+    	myGame.myLog.setLogStr("\n    "+player.getName()+" ("+selCountryNameFrom+" "+country1.getArmyNumber()+
+    			" armies) attacking "+country2.getOwner().getName()+" ("+selCountryNameTo+" "+country2.getArmyNumber()+" armies)\n");
+    	AttackDiceView diceView = new AttackDiceView(myGame.getGameMap().findCountry(selCountryNameFrom),
+    			myGame.getGameMap().findCountry(selCountryNameTo), mode);
+    	if (mode == 0) diceView.setVisible(true);
+    	else if (mode ==1){ //attack till end for aggressive
+    		while (myGame.getGameMap().findCountry(selCountryNameFrom).getArmyNumber()>1&&
+    				myGame.getGameMap().findCountry(selCountryNameTo).getArmyNumber()>0&&
+    				myGame.getGameMap().findCountry(selCountryNameFrom).getOwner()!=myGame.getGameMap().findCountry(selCountryNameTo).getOwner()){
+    			diceView.attackOnce();
+    		}	
+    	}
+    	else{//attack random for random
+    		while (myGame.getGameMap().findCountry(selCountryNameFrom).getArmyNumber()>1&&
+    				myGame.getGameMap().findCountry(selCountryNameTo).getArmyNumber()>0&&
+    				myGame.getGameMap().findCountry(selCountryNameFrom).getOwner()!=myGame.getGameMap().findCountry(selCountryNameTo).getOwner()){
+    			int randomNum = (int)(Math.random()*2);
+    			if (randomNum==1) diceView.attackOnce();
+    			else {
+    				diceView.betray();
+    				break;
+    			}
+    		}
+    	}
+    	reloadGUI();
+    }	
+    
 	/**
 	 * Class to define action Listener.
 	 */
@@ -330,18 +368,12 @@ public class AttackPhaseView extends JDialog{
 
 			String buttonName = e.getActionCommand();
 			switch (buttonName){
-			case "Finish":
-				player.setAttackInfo("Attack phase terminated.");
-				myGame.myLog.setLogStr("Attack phase terminated.\n");	
+			case "Finish":	
+				finishPhase();
 	            setVisible(false);
 				break;	
 			case "Attack":  
-				player.setAttackInfo(selCountryNameFrom+" attacking "+selCountryNameTo);
-				AttackDiceView diceView = new AttackDiceView(myGame.getGameMap().findCountry(selCountryNameFrom),
-						myGame.getGameMap().findCountry(selCountryNameTo));
-				diceView.setVisible(true);
-	            //setVisible(false);
-	            reloadGUI();
+				attackOneCountry(mode);
 	            break;
 			}
 		}

@@ -36,17 +36,17 @@ public class TradeInCards extends JDialog{
 
 
     //To test if Label is empty
-    boolean[] isAvailiable = new boolean[]{true,true,true};
-    int mode;
+    public boolean[] isAvailiable = new boolean[]{true,true,true};
+    public int mode;
     
     //Array to store cards
-    private int[] myCards = new int[3];
+    public int[] myCards = new int[3];
     private PlayerModel player;
 
     /**
      *  This method is to set layout if GUI
      *	@param player player object
-     *	@param mode 0-normal 1-silent
+     *	@param mode 0-normal others-silent
      */
     public TradeInCards(PlayerModel player,int mode){
     	this.player = player;
@@ -124,6 +124,112 @@ public class TradeInCards extends JDialog{
         }
         return null;
     }
+ 
+    public void exhangeAuto(){
+		if (Math.min(myCards[0], Math.min(myCards[1], myCards[2]))>=1){
+			b1Click();
+			b2Click();
+			b3Click();
+			submit();
+		}
+		else if (myCards[0]>=3){
+			b1Click();
+			b1Click();
+			b1Click();
+			submit();           			
+		}
+		else if (myCards[1]>=3){
+			b2Click();
+			b2Click();
+			b2Click();
+			submit();              			
+		}
+		else if (myCards[2]>=3){
+			b3Click();
+			b3Click();
+			b3Click();
+			submit();             			
+		}
+    }
+    
+    public void submit(){
+        if(submitButton.isEnabled()){
+        	player.setCards(myCards);                	
+        	int army = player.CalExchangeArmies();
+        	player.increaseTotalReinforcement(army);
+        	int card = IfLegal();
+        	String tempStr="";
+        	switch (card){
+        		case 0:tempStr= "3 infantries";
+        		break;
+        		case 1:tempStr= "3 cavalries";
+        		break;
+        		case 2:tempStr= "3 artilleries";
+        		break;
+        		case 3:tempStr= "3 different cards";
+        		break;
+        	}
+        	player.setExchangeCardStr(String.valueOf(army));
+        	player.setReinforcementStr(player.getBaseReinforceStr()
+        			+"<br>+"+player.getExchangeCardStr()+" } = "
+        			+player.getTotalReinforcement()+" armies</HTML>");
+        	player.setExchangeStatus("("+player.getMyGame().getChangeCardTimes()+" times), Exchange "+tempStr+" for "+army+" armies");
+        	
+        	ClearLabel();
+        	submitButton.setEnabled(false);
+        	if (player.ifForceExchange())
+        		if (mode==0) JOptionPane.showMessageDialog(null, "Exchange "+tempStr+" for "+army+" armies,\n"+
+        				"and you need to continue exchanging cards until less than 5.");	
+        	else if (player.canExchange()){
+        		if (mode==0) JOptionPane.showMessageDialog(null, "Exchange "+tempStr+" for "+army+" armies,\n"+
+        				"and you can continue exchanging cards or exit to finish this step.");
+        		exitButton.setVisible(true);
+        	}	
+        	else {
+        		if (mode==0) JOptionPane.showMessageDialog(null, "Exchange "+tempStr+" for "+army+" armies,\n"+
+            				"and no more cards can be exchanged.");
+           		setVisible(false);
+        	}	
+        }    	
+    }
+
+    public void b1Click(){
+   		if(b1.isEnabled()&&myCards[0] > 0){
+   			JLabel al = getAndSetAvailable();
+            if (al!=null){
+            	al.setIcon(infantryIcon);
+            	al.setText("infantry");
+            	myCards[0]--;
+            	SetButtonLabel();
+            }	
+   		}	
+    }
+    
+    public void b2Click(){
+        if(b2.isEnabled()&&myCards[1] > 0){
+            JLabel al = getAndSetAvailable();
+            if (al!=null){
+            	al.setIcon(cavalryIcon);
+            	al.setText("cavalry");
+            	myCards[1]--;
+            	SetButtonLabel();
+            }	
+        }	
+    }
+    
+    public void b3Click(){
+        if(b3.isEnabled()&&myCards[2] > 0){
+            JLabel al = getAndSetAvailable();
+            if (al!=null){
+            	al.setIcon(artilleryIcon);
+            	al.setText("artillery");
+            	myCards[2]--;
+            	SetButtonLabel();
+            }	
+        }  	
+    }
+
+
 
     /**
      *  This method is to Listen b1(infantry) b2(cavalry) b3(artillery")
@@ -132,43 +238,19 @@ public class TradeInCards extends JDialog{
     private void Mylistener(){
         b1.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-           		if(b1.isEnabled()&&myCards[0] > 0){
-           			JLabel al = getAndSetAvailable();
-                    if (al!=null){
-                    	al.setIcon(infantryIcon);
-                    	al.setText("infantry");
-                    	myCards[0]--;
-                    	SetButtonLabel();
-                    }	
-           		}	
+            	b1Click();
             }
         });
         b2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(b2.isEnabled()&&myCards[1] > 0){
-                    JLabel al = getAndSetAvailable();
-                    if (al!=null){
-                    	al.setIcon(cavalryIcon);
-                    	al.setText("cavalry");
-                    	myCards[1]--;
-                    	SetButtonLabel();
-                    }	
-                }
+            	b2Click();
             }
         });
         b3.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(b3.isEnabled()&&myCards[2] > 0){
-                    JLabel al = getAndSetAvailable();
-                    if (al!=null){
-                    	al.setIcon(artilleryIcon);
-                    	al.setText("artillery");
-                    	myCards[2]--;
-                    	SetButtonLabel();
-                    }	
-                }
+            	b3Click();
             }
         });
         Label1.addMouseListener(new MouseAdapter() {
@@ -211,43 +293,7 @@ public class TradeInCards extends JDialog{
         submitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(submitButton.isEnabled()){
-                	player.setCards(myCards);                	
-                	int army = player.CalExchangeArmies();
-                	player.increaseTotalReinforcement(army);
-                	int card = IfLegal();
-                	String tempStr="";
-                	switch (card){
-                		case 0:tempStr= "3 infantries";
-                		break;
-                		case 1:tempStr= "3 cavalries";
-                		break;
-                		case 2:tempStr= "3 artilleries";
-                		break;
-                		case 3:tempStr= "3 different cards";
-                		break;
-                	}
-                	player.setExchangeCardStr(String.valueOf(army));
-                	player.setReinforcementStr(player.getBaseReinforceStr()
-                			+"<br>+"+player.getExchangeCardStr()+" } = "
-                			+player.getTotalReinforcement()+" armies</HTML>");
-                	player.setExchangeStatus("("+player.getMyGame().getChangeCardTimes()+" times), Exchange "+tempStr+" for "+army+" armies");
-                	ClearLabel();
-                	submitButton.setEnabled(false);
-                	if (player.ifForceExchange())
-                		JOptionPane.showMessageDialog(null, "Exchange "+tempStr+" for "+army+" armies,\n"+
-                				"and you need to continue exchanging cards until less than 5.");	
-                	else if (player.canExchange()){
-                		JOptionPane.showMessageDialog(null, "Exchange "+tempStr+" for "+army+" armies,\n"+
-                				"and you can continue exchanging cards or exit to finish this step.");
-                		exitButton.setVisible(true);
-                	}	
-                	else {
-                   		JOptionPane.showMessageDialog(null, "Exchange "+tempStr+" for "+army+" armies,\n"+
-                    				"and no more cards can be exchanged.");
-                   		setVisible(false);
-                	}	
-                }
+            	submit();
             }    
         });
 

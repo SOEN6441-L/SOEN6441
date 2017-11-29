@@ -542,52 +542,77 @@ public class RiskGameView extends JFrame implements Observer{
 				reloadContinents();
 				reloadMatrix();
 				reloadPlayers();
+				saveBtn.setEnabled(true);
+				loadBtn.setEnabled(true);
 				previousBtn.setVisible(false);
 				functionsBtn.setText("Step 1 - Load A Risk Map");
+				functionsBtn.setEnabled(true);
 				break;
 			case 10://already load map
 				reloadContinents();
 				reloadPlayers();
 				reloadMatrix();
-				functionsBtn.setText("Step 2 - Create Players");
+				saveBtn.setEnabled(true);
+				loadBtn.setEnabled(true);
+				previousBtn.setText("<< Previous");
 				previousBtn.setVisible(true);
+				previousBtn.setEnabled(true);
+				functionsBtn.setText("Step 2 - Create Players");
+				functionsBtn.setEnabled(true);
 				break;	
 			case 20://already create players
 				reloadContinents();
 				reloadPlayers();
 				reloadMatrix();
-				functionsBtn.setText("Step 3 - Assign Countries");
+				saveBtn.setEnabled(true);
+				loadBtn.setEnabled(true);
+				previousBtn.setText("<< Previous");
 				previousBtn.setVisible(true);
+				previousBtn.setEnabled(true);
+				functionsBtn.setText("Step 3 - Assign Countries");
+				functionsBtn.setEnabled(true);
 				break;	
 			case 21://assign countries
-				previousBtn.setEnabled(false);
-				functionsBtn.setEnabled(false);
 				saveBtn.setEnabled(false);
 				loadBtn.setEnabled(false);
+				previousBtn.setText("<< Previous");
+				previousBtn.setVisible(true);
+				previousBtn.setEnabled(false);
+				functionsBtn.setText("Step 3 - Assign Countries");
+				functionsBtn.setEnabled(false);
 				break;
 			case 30://already assign countries
 				reloadContinents();
 				reloadPlayers();
 				reloadMatrix();
-				functionsBtn.setText("Step 4 - Put initial Armies");
-				previousBtn.setVisible(true);
-				previousBtn.setEnabled(true);
-				functionsBtn.setEnabled(true);
 				saveBtn.setEnabled(true);
 				loadBtn.setEnabled(true);
+				previousBtn.setText("<< Previous");
+				previousBtn.setVisible(true);
+				previousBtn.setEnabled(true);
+				functionsBtn.setText("Step 4 - Put initial Armies");
+				functionsBtn.setEnabled(true);
 				break;				
 			case 40://already put initial armies
 				reloadContinents();
 				reloadPlayers();
 				reloadMatrix();
+				saveBtn.setEnabled(true);
+				loadBtn.setEnabled(true);
+				previousBtn.setText("Run to end");
+				previousBtn.setVisible(true);
+				previousBtn.setEnabled(true);
 				functionsBtn.setText("Great ! Start Game");
-				previousBtn.setVisible(false);
+				functionsBtn.setEnabled(true);
 				break;
 			case 50://game started
-				previousBtn.setVisible(false);
-				functionsBtn.setEnabled(false);
 				saveBtn.setEnabled(false);
 				loadBtn.setEnabled(false);
+				previousBtn.setText("Run to end");
+				previousBtn.setVisible(true);
+				previousBtn.setEnabled(false);
+				functionsBtn.setText("Great ! Start Game");
+				functionsBtn.setEnabled(false);
 				break;	
 			case 51://in game - after reinforcement
 				reloadContinents();
@@ -603,12 +628,21 @@ public class RiskGameView extends JFrame implements Observer{
 				reloadContinents();
 				reloadPlayers();
 				reloadMatrix();
-				functionsBtn.setText("Next Player");
-				functionsBtn.setEnabled(true);
-				previousBtn.setVisible(false);
 				saveBtn.setEnabled(true);
 				loadBtn.setEnabled(true);
-				break;					
+				previousBtn.setText("Run to end");
+				previousBtn.setVisible(true);
+				previousBtn.setEnabled(true);
+				functionsBtn.setText("Next Player");
+				functionsBtn.setEnabled(true);
+				break;	
+			case 54://game over
+				saveBtn.setEnabled(true);
+				loadBtn.setEnabled(true);
+				previousBtn.setVisible(false);
+				functionsBtn.setText("New Game");
+				functionsBtn.setEnabled(true);
+				break;		
 			}
 		}	
 	}  

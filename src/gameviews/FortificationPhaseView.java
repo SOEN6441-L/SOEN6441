@@ -69,7 +69,7 @@ public class FortificationPhaseView extends JDialog{
         this.myGame = player.getMyGame();
 
         setTitle("Fortification Phase");
-        myGame.myLog.setLogStr(player.getName()+" fortification begin.\n");
+        myGame.myLog.setLogStr("\n"+player.getName()+" fortification begin.\n");
         player.setAttackInfo("fortification begin.");
         setSize(width,height);
         int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
@@ -251,10 +251,8 @@ public class FortificationPhaseView extends JDialog{
            					selCountryNameTo = selPath.getLastPathComponent().toString().trim();
            					selCountryNameTo = selCountryNameTo.substring(0, selCountryNameTo.indexOf("(")-1); 
            					if (armyNumberCombo.getSelectedIndex()!=-1){
-           						myGame.getGameMap().findCountry(selCountryNameFrom).setArmyNumber(myGame.getGameMap().findCountry(selCountryNameFrom).getArmyNumber() - (armyNumberCombo.getSelectedIndex()+1));
-           						myGame.getGameMap().findCountry(selCountryNameTo).setArmyNumber(myGame.getGameMap().findCountry(selCountryNameTo).getArmyNumber() + (armyNumberCombo.getSelectedIndex()+1));
-           						
-           						myGame.myLog.setLogStr(player.getName()+" move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".\n");
+           						player.moveArmies(myGame.getGameMap().findCountry(selCountryNameTo),myGame.getGameMap().findCountry(selCountryNameFrom),armyNumberCombo.getSelectedIndex()+1);
+           						myGame.myLog.setLogStr("    "+player.getName()+" move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".\n");
            				        player.setAttackStepInfo("Move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".");
            						myGame.myLog.setLogStr(player.getName()+" fortification finished.\n");
            				        player.setAttackInfo("fortification finished.");
