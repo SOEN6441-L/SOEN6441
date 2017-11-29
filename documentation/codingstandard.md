@@ -21,12 +21,14 @@ There are generally two reasons to insert a line break:
 We use the "one true brace style".
 Indent size is 2 columns.
 
-    // For example.
+    
+    // For example.
     if (this.player.ifForceExchange()){
             //change card
     }else{
             //do not change
     }
+
 
 Continuation indent is 4 columns.  Nested continuations may add 4 columns or 2 at each level.
 
