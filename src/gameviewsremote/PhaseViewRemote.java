@@ -30,8 +30,6 @@ import mapmodels.CountryModel;
 
 /**
  * PhaseView is the GUI for monitors to see the progress of a game
- * 
- * @see JFrame
  */
 public class PhaseViewRemote extends JFrame{
 	private static final long serialVersionUID = 1L;
@@ -228,6 +226,7 @@ public class PhaseViewRemote extends JFrame{
 	/**
 	 * The method is to reload one player tree
 	 * @param index the index of player
+	 * @param player the player of the game
 	 */
 	private void reloadPlayers(int index, PlayerModel player){
 		//configuration
@@ -340,8 +339,9 @@ public class PhaseViewRemote extends JFrame{
 	
 	/**
 	 * Method to be called by Observable's notifyObservers method.
-	 * @param obs the observable object
-	 * @param x an argument passed by the notifyObservers method.
+	 * @param info the information from the notify
+	 * @param color the color passed by the notifyObservers method.
+	 * @param type the type passed by the notifyObservers method.
 	 * @throws RemoteException remote error
 	 */	
 	public void update(String info, Color color, int type) throws RemoteException{
@@ -455,7 +455,8 @@ public class PhaseViewRemote extends JFrame{
 	/**
 	 * Method to be called by Observable's notifyObservers method.
 	 * @param obs the observable object
-	 * @param x an argument passed by the notifyObservers method.
+	 * @param current the current argument passed by the notifyObservers method.
+	 * @param type the type number of passed by the notifyObservers method.
 	 * @throws RemoteException remote error
 	 */	
 	public void update(Observable obs,int current, int type) throws RemoteException{
@@ -641,7 +642,11 @@ public class PhaseViewRemote extends JFrame{
 			labelPlayers[i].setEnabled(i==curPlayer);
 		}
 	}
-	
+
+	/**
+	 * Method of set the the label
+	 * @param info the information of the label
+	 */
 	public void setLabel(String info){
 		gameStageLabel4.setText(String.valueOf(info));
 		Dimension size = gameStageLabel4.getPreferredSize();
