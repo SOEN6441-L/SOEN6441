@@ -15,7 +15,7 @@ public class MyTree extends JTree {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Construct of class.
+	 * Constructor of class.
 	 * @param root a TreeNode object
 	 */
 	public MyTree(DefaultMutableTreeNode root) {

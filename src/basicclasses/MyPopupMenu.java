@@ -11,7 +11,7 @@ public class MyPopupMenu extends JPopupMenu {
 	private String owner;
 	
 	/**
-	 * Construct of class.
+	 * Constructor of class.
 	 */
 	public MyPopupMenu(){
 		super();

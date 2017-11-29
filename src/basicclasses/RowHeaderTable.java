@@ -94,7 +94,7 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
 	/**
 	 * Method to if the row header cell has been selected.
 	 * @param row row of header
-	 * @return if the cell is selected
+	 * @return the status of the cell
 	 */
 	private boolean isSelect(int row){  
 		int[] sel = reftable.getSelectedRows();  
@@ -107,6 +107,7 @@ class RowHeaderRenderer extends JLabel implements TableCellRenderer,ListSelectio
   
 /**
  * This is header class used to fill the head of table.
+ * @see AbstractTableModel
  */
 class RowHeaderTableModel extends AbstractTableModel{  
 	private static final long serialVersionUID = 1L;
@@ -146,6 +147,8 @@ class RowHeaderTableModel extends AbstractTableModel{
 	
 	/**
 	 * Method to get value at row and column
+	 * @param row the row of table
+	 * @param column the column at the table
 	 * @return value at row and column
 	 */		
 	public Object getValueAt(int row, int column){  

@@ -5,6 +5,7 @@ import java.util.Observable;
 /**
  * Class for define a observable log string
  * @see Observable
+ * @see Serializable
  */
 public class Log extends Observable implements Serializable{
 	private static final long serialVersionUID = 6L;

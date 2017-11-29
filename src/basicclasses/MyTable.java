@@ -15,7 +15,7 @@ public class MyTable extends JTable{
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Construct of class.
+	 * Constructor of class.
 	 * @param table the data modal of table
 	 */
 	public MyTable(DefaultTableModel table){
