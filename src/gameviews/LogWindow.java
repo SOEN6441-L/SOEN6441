@@ -7,7 +7,7 @@ import gamecontrollers.MonitorInterface;
 /**
  * 
  * Class to define log window
- *
+ *@see Observer
  */
 
 public class LogWindow implements Observer{

@@ -30,7 +30,7 @@ import mapmodels.CountryModel;
  * This class is the implementation of reinforcement phase in the Risk.
  * <p> The ReinforcementPhase class will allow players add armies to their<br>
  * to their country, based on the countries under control.</p >
- *
+ *@see JDialog
  */
 public class FortificationPhaseView extends JDialog{
 	private static final long serialVersionUID = 1L;
@@ -274,6 +274,7 @@ public class FortificationPhaseView extends JDialog{
     }
     /**
      * Class to define the action of enter Button 
+     * @see ActionListener
      */
     private class enterBtnHandler implements ActionListener {
 		/**

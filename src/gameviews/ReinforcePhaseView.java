@@ -28,7 +28,7 @@ import mapmodels.CountryModel;
  * This class is the implementation of reinforcement phase in the Risk.
  * <p> The ReinforcementPhase class will allow players add armies to their<br>
  * to their country, based on the countries under control.</p >
- *
+ *@see JDialog
  */
 public class ReinforcePhaseView extends JDialog{
 
@@ -318,8 +318,13 @@ public class ReinforcePhaseView extends JDialog{
 
     /**
      * To add action listener to the enter button
+     * @see ActionListener
      */
     private class enterBtnHandler implements ActionListener {
+    	/**
+    	 * method to perform the action from user
+    	 * @param e event of action
+    	 */
         public void actionPerformed(ActionEvent e) {
         	confirm();
             setVisible(false);
@@ -338,7 +343,10 @@ public class ReinforcePhaseView extends JDialog{
     		}
     	}
     }	
-
+    
+    /**
+     * method to change the cards in hand
+     */
     public void exchangeCards(){
         player.setExchangeStatus("Exchanging Cards ...");
 		myGame.myLog.setLogStr("\n    "+player.getName()+ " begin to exhanging cards ...\n");
@@ -376,6 +384,7 @@ public class ReinforcePhaseView extends JDialog{
 
     /**
      * To add action listener to the exchange card handler
+     * @see ActionListener
      */
     private class exchangeHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {

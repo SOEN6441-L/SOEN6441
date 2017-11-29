@@ -19,6 +19,7 @@ import mapmodels.RiskMapModel;
 
 /**
  * Render the matrix in table showing the relationship of countries.
+ * @see TableCellRenderer
  */
 class MatrixRenderer implements TableCellRenderer{     
 	private int[] areaContinents;
@@ -89,6 +90,7 @@ class MatrixRenderer implements TableCellRenderer{
 
 /**
  * Render each continent node
+ * @see DefaultTableCellRenderer
  */
 class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
 	private static final long serialVersionUID = 1L;
@@ -147,6 +149,7 @@ class  ContinentNodeRenderer  extends  DefaultTreeCellRenderer{
 
 /**
  * Render the players' node
+ * @see DefaultTableCellRenderer
  */
 class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
 	private static final long serialVersionUID = 1L;
@@ -204,6 +207,7 @@ class  PlayerNodeRenderer  extends  DefaultTreeCellRenderer{
 
 /**
  * Render the node of countries
+ * @see DefaultTableCellRenderer
  */
 class  CountryNodeRenderer  extends  DefaultTreeCellRenderer{
 	private static final long serialVersionUID = 1L;

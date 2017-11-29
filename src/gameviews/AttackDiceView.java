@@ -45,6 +45,7 @@ public class AttackDiceView extends JDialog{
      * Constructor of class ReinforcePhaseView to generate reinforce phase UI
      * @param country1 The player that who is in turn
      * @param country2 The game reinforce phase is in
+     * @param mode 0-normal 1-aggressive 3-random
      */
     public AttackDiceView(CountryModel country1, CountryModel country2, int mode){
         player1 = country1.getOwner();
@@ -260,6 +261,7 @@ public class AttackDiceView extends JDialog{
     
 	/**
 	 * Class to define action Listener.
+	 * @see ActionListener
 	 */
 	private class ButtonHandler implements ActionListener { 
 		/**

@@ -30,8 +30,7 @@ public class AssignPlayerStrategy extends JDialog{
     
     /**
      * Constructor of class ReinforcePhaseView to generate reinforce phase UI
-     * @param country1 The player that who is in turn
-     * @param country2 The game reinforce phase is in
+     * @param playerNum the number of players
      */
 	public AssignPlayerStrategy(int playerNum){
         setTitle("Assign players strategy");
@@ -77,6 +76,7 @@ public class AssignPlayerStrategy extends JDialog{
 	
 	/**
 	 * Class to define action Listener.
+	 * @see ActionListener
 	 */
 	private class ButtonHandler implements ActionListener { 
 		/**

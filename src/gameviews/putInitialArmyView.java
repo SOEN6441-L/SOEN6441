@@ -273,11 +273,12 @@ public class putInitialArmyView extends JDialog{
 
 	/**
 	 * Method to define action performed according to different users' action.
+	 * @see ActionListener
 	 */
 	private class ButtonHandler implements ActionListener {
-		/*
-		 * (non-Javadoc)
-		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		/**
+		 * @param e event of button
+		 * 
 		 */
 		public void actionPerformed(ActionEvent e) {
 			String buttonName = e.getActionCommand();
@@ -297,8 +298,7 @@ public class putInitialArmyView extends JDialog{
 	}	
 	
 	/**
-	 * This is a enter button implements the class ActionListener.
-	 * <p> Create an invisible enter button until the end of current phase</p>
+	 * the state of options
 	 */
 	private void confirmInput() { 
 		state = 1;

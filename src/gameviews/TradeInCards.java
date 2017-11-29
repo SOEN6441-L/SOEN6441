@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 /**
  *   This class is GUI for Exchange cards to armies.
+ *   @see JDialog
  */
 
 public class TradeInCards extends JDialog{
@@ -125,6 +126,9 @@ public class TradeInCards extends JDialog{
         return null;
     }
  
+    /**
+     * Method to change the cards automatically
+     */
     public void exhangeAuto(){
 		if (Math.min(myCards[0], Math.min(myCards[1], myCards[2]))>=1){
 			b1Click();
@@ -152,6 +156,9 @@ public class TradeInCards extends JDialog{
 		}
     }
     
+    /**
+     * Method to submit players' action
+     */
     public void submit(){
         if(submitButton.isEnabled()){
         	player.setCards(myCards);                	
@@ -193,6 +200,9 @@ public class TradeInCards extends JDialog{
         }    	
     }
 
+    /**
+     * b1 click action, infantry clicked
+     */
     public void b1Click(){
    		if(b1.isEnabled()&&myCards[0] > 0){
    			JLabel al = getAndSetAvailable();
@@ -205,6 +215,9 @@ public class TradeInCards extends JDialog{
    		}	
     }
     
+    /**
+     * b2 click action, cavalry clicked
+     */
     public void b2Click(){
         if(b2.isEnabled()&&myCards[1] > 0){
             JLabel al = getAndSetAvailable();
@@ -217,6 +230,9 @@ public class TradeInCards extends JDialog{
         }	
     }
     
+    /**
+     * b3 click action,artillery clicked
+     */
     public void b3Click(){
         if(b3.isEnabled()&&myCards[2] > 0){
             JLabel al = getAndSetAvailable();
@@ -232,7 +248,7 @@ public class TradeInCards extends JDialog{
 
 
     /**
-     *  This method is to Listen b1(infantry) b2(cavalry) b3(artillery")
+     *  This method is to Listen b1(infantry) b2(cavalry) b3(artillery)
      *
      */
     private void Mylistener(){
@@ -330,7 +346,7 @@ public class TradeInCards extends JDialog{
     }
 
     /**
-     *   To check name of labels
+     *  To check name of labels
      *	@param label JLabel object
      *  @return number of labels
      */
@@ -349,7 +365,7 @@ public class TradeInCards extends JDialog{
     }
 
     /**
-     *   To check if exchange is legal
+     *   To check if exchange is legal or not
      *
      *   @return 0- 3 infantry,1-3 cavalry ,2- 3 artillery, 3- 1+1+1, -1: none 
      */

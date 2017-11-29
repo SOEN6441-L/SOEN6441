@@ -9,6 +9,7 @@ import java.util.Observer;
 
 /**
  * Class to display the domination status
+ * @see Observer
  */
 public class DominationView implements Observer{
 	MonitorInterface server;

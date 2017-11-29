@@ -32,7 +32,8 @@ import mapmodels.RiskMapModel;
 
 /**
  * The class is used to create a window for player to edit maps of games
- *
+ *@see Observer
+ *@see JFrame
  */
 public class RiskGameView extends JFrame implements Observer{
 	private static final long serialVersionUID = 1L;
@@ -226,6 +227,7 @@ public class RiskGameView extends JFrame implements Observer{
 	
 	/**
 	 * Class to define local action Listener.
+	 * @see ActionListener
 	 */
 	private class ButtonHandler implements ActionListener { 
 		/**

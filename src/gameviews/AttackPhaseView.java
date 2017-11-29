@@ -358,6 +358,7 @@ public class AttackPhaseView extends JDialog{
     
 	/**
 	 * Class to define action Listener.
+	 * @see ActionListener
 	 */
 	private class ButtonHandler implements ActionListener { 
 		/**

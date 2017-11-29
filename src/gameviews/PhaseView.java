@@ -13,7 +13,7 @@ import gamemodels.RiskGameModel;
 /**
  * PhaseView is the GUI for monitors to see the progress of a game
  * 
- * @see JFrame
+ * @see Observer
  */
 public class PhaseView implements Observer{
 	MonitorInterface server;
@@ -21,6 +21,7 @@ public class PhaseView implements Observer{
 	
 	/**
 	 * Constructor for PhaseView class.
+	 * @param server remote server
 	 */
 	public PhaseView(MonitorInterface server){
 		this.server = server;
@@ -29,7 +30,7 @@ public class PhaseView implements Observer{
 	}
 	/**
 	 * Method to get the observer label for the assign countries progress.
-	 * @return the observer label
+	 * @return observer label
 	 */
 	public ObserverLabel getAssignCountryLable(){
 		return gameStageLabel4;
@@ -153,6 +154,7 @@ public class PhaseView implements Observer{
 /**
  * Class to define a label can act as an observer, 
  * to show the internal progress of an operation.
+ * @see Observer
  */
 class ObserverLabel implements Observer{
 

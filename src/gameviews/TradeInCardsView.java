@@ -10,6 +10,7 @@ import java.util.Observer;
 /**
  * 
  * Class to monitor the trade cards process
+ * @see Observer
  *
  */
 public class TradeInCardsView implements Observer {
