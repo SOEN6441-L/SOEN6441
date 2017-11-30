@@ -242,7 +242,7 @@ public class AttackPhaseView extends JDialog{
         
         if (attackingCountry.size()==0){
         	player.setAttackInfo("No more territories can attack, attack phase finished");
-        	myGame.myLog.setLogStr(player.getName()+", no more territories can attack, attack phase finished\n");
+        	myGame.myLog.setLogStr(player.getDiscription()+", no more territories can attack, attack phase finished\n");
         	setVisible(false);
         	return;
         }
@@ -318,19 +318,18 @@ public class AttackPhaseView extends JDialog{
      */
     public void finishPhase(){
     	player.setAttackInfo("Attack phase terminated.");
-    	myGame.myLog.setLogStr(player.getName()+" Attack phase terminated.\n");
+    	myGame.myLog.setLogStr(player.getDiscription()+" Attack phase terminated.\n");
     }	
     
     /**
      * Method to attack once;
-     * @param mode 0-human 1-aggressive 2-random
      */
-    public void attackOneCountry(int mode){
+    public void attackOneCountry(){
     	player.setAttackInfo(selCountryNameFrom+" attacking "+selCountryNameTo);
     	CountryModel country1 = myGame.getGameMap().findCountry(selCountryNameFrom);
     	CountryModel country2 = myGame.getGameMap().findCountry(selCountryNameTo);
-    	myGame.myLog.setLogStr("\n    "+player.getName()+" ("+selCountryNameFrom+" "+country1.getArmyNumber()+
-    			" armies) attacking "+country2.getOwner().getName()+" ("+selCountryNameTo+" "+country2.getArmyNumber()+" armies)\n");
+    	myGame.myLog.setLogStr("\n    "+player.getDiscription()+" ("+selCountryNameFrom+" "+country1.getArmyNumber()+
+    			" armies) attacking "+country2.getOwner().getDiscription()+" ("+selCountryNameTo+" "+country2.getArmyNumber()+" armies)\n");
     	AttackDiceView diceView = new AttackDiceView(myGame.getGameMap().findCountry(selCountryNameFrom),
     			myGame.getGameMap().findCountry(selCountryNameTo), mode);
     	if (mode == 0) diceView.setVisible(true);
@@ -374,7 +373,7 @@ public class AttackPhaseView extends JDialog{
 	            setVisible(false);
 				break;	
 			case "Attack":  
-				attackOneCountry(mode);
+				attackOneCountry();
 	            break;
 			}
 		}

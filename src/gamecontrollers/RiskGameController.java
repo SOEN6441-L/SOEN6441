@@ -2,9 +2,11 @@ package gamecontrollers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,10 +16,12 @@ import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.server.RMISocketFactory;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 
 import gamemodels.Aggressive;
@@ -26,11 +30,13 @@ import gamemodels.Cheater;
 import gamemodels.Human;
 import gamemodels.Random;
 import gamemodels.RiskGameModel;
+import gamemodels.Strategy;
 import gameviews.AssignPlayerStrategy;
 import gameviews.DominationView;
 import gameviews.LogWindow;
 import gameviews.PhaseView;
 import gameviews.RiskGameView;
+import gameviews.TournamentResult;
 import mapmodels.ErrorMsg;
 
 /**
@@ -44,6 +50,11 @@ public class RiskGameController implements ActionListener {
 	private static PhaseView phaseView;
 	private static DominationView domiView;
 	private static LogWindow logWindow;
+	private int tourMapNum,tourPlayerNum,tourGameNum,tourTurnNum;
+	private String[] tourMaps;
+	private Strategy[] tourPlayers;
+	private String[][] tourResult;
+	private Boolean threadStop;
 	
 	/**
 	 * Method to define action performed according to different users' action.
@@ -65,7 +76,7 @@ public class RiskGameController implements ActionListener {
 			myGameModel.assignCountries();
 			break;
 		case "Step 4 - Put initial Armies":
-			putInitialArmy();
+			putInitialArmy(0);
 			break;			
 		case "Next Player":
 			nextPlayer();
@@ -84,10 +95,151 @@ public class RiskGameController implements ActionListener {
 			break;
 		case "Run to end":
 			runToEnd();
-			break;			
+			break;
+		case "Tournament":
+			loadTournament();
+			runTournament();
+			break;	
+		case "Stop":
+			threadStop = true;
+			break;	
 		}	
 	}	
-    
+
+	/**
+	 * Method to load tournament configuration file and prepare the environment
+	 */
+	public void loadTournament(){
+		
+		String inputFileName;
+		JFileChooser chooser;
+		chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File("./tournament"));
+		chooser.setDialogTitle("Choose config file");
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setFileFilter(new FileFilter(){
+			@Override
+			public boolean accept(File f){
+				if(f.getName().endsWith(".conf")||f.isDirectory())
+					return true;
+				else return false;
+			}
+			public String getDescription(){
+				return "config files(*.conf)";
+			}
+		});
+		if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			return;
+		}			
+		
+		inputFileName = chooser.getSelectedFile().getAbsolutePath();
+		
+		if (inputFileName.trim().isEmpty()){
+			JOptionPane.showMessageDialog(null,"Configuration file name invalid");
+		}
+		else{
+			BufferedReader br = null;
+			String inputLine = null;
+			try{
+				br = new BufferedReader(new FileReader(inputFileName));
+				inputLine = br.readLine();
+				String[] inputStr = inputLine.split(",");
+				tourMapNum = Integer.parseInt(inputStr[0]);
+				tourMaps = new String [tourMapNum];
+				for (int i=0;i<tourMapNum;i++){
+					tourMaps[i] = inputStr[i+1];
+				}
+				inputLine = br.readLine();
+				inputStr = inputLine.split(",");
+				tourPlayerNum = Integer.parseInt(inputStr[0]);
+				tourPlayers = new Strategy [tourPlayerNum];
+				for (int i=0;i<tourPlayerNum;i++){
+					switch (inputStr[i+1]){
+					case "Aggressive":
+						tourPlayers[i] = new Aggressive();
+						break;
+					case "Benevolent":
+						tourPlayers[i] = new Benevolent();
+						break;
+					case "Random":
+						tourPlayers[i] = new Random();
+						break;
+					case "Cheater":
+						tourPlayers[i] = new Cheater();
+						break;
+					}	
+				}
+				tourGameNum = Integer.parseInt(br.readLine());
+				tourTurnNum = Integer.parseInt(br.readLine());
+				tourResult = new String[tourMapNum][tourGameNum];
+			} catch (IOException e) {
+				//e.printStackTrace();
+			} finally {
+				try {
+					if (br != null)br.close();
+				} catch (IOException ex) {
+					//ex.printStackTrace();
+				}
+			}  	
+		}
+	}
+	
+	/**
+	 * Method to run tournament
+	 */
+	public void runTournament(){
+		//begin the tournament
+		SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+			@Override
+			protected Void doInBackground() {
+				for (int i=0;i<tourMapNum;i++){
+					for (int j=0;j<tourGameNum;j++){
+						myGameModel.setGameStage(1);//begin to load map file
+						ErrorMsg errorMdg = null;
+						if (!(errorMdg = myGameModel.loadMapFile("./tournament/"+tourMaps[i]+".map")).isResult()){
+							myGameModel.setGameStage(2);
+							myGameModel.myLog.setLogStr(errorMdg.getMsg()+"\n");
+						}
+						else myGameModel.myLog.setLogStr("Load map file "+ tourMaps[i]+".map succeed\n");
+
+						myGameModel.setGameStage(11);
+
+						myGameModel.createPlayers(tourPlayerNum);
+						for (int k=0;k<tourPlayerNum;k++)
+							myGameModel.getPlayers()[k].setStrategy(tourPlayers[k]);
+
+						myGameModel.setGameStage(20);
+						myGameModel.myLog.setLogStr("\nCreate "+myGameModel.getPlayers().length+" Players\n");
+						myGameModel.changeDominationView();
+			
+						myGameModel.assignCountriesManual();
+						putInitialArmy(1);	
+			
+						tourResult[i][j] = runToEndTour();
+						newGame();
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				return null;
+			}
+			@Override
+			protected void process(List<Integer> chunks) {
+			}
+			@Override
+			protected void done() {
+				new TournamentResult(tourMaps,tourGameNum,tourResult);
+			}
+		};
+		worker.execute();
+	}
+	
+	
 	/**
 	 * Method to save current game to disk
 	 */
@@ -145,7 +297,7 @@ public class RiskGameController implements ActionListener {
 	}
 	
 	/**
-	 * Handler used to load files.
+	 * Handler used to load game.
 	 */
 	private void loadGame() { 
 		String inputFileName;
@@ -178,7 +330,7 @@ public class RiskGameController implements ActionListener {
 	}
 	
 	/**
-	 * Handler used to load files.
+	 * Handler used to load map file.
 	 */
 	private void loadFromFile() { 
 		//JOptionPane.showMessageDialog(null, "load from file" );
@@ -321,16 +473,15 @@ public class RiskGameController implements ActionListener {
 				myGameModel.setGameStage(12);
 			}
 		}
-		
-
 	}	
 	
 	/**
 	 * Handler used to put initial armies
+	 * @param mode 0- normal 1-silent
 	 */
-	private void putInitialArmy() { 
+	private void putInitialArmy(int mode) { 
 		myGameModel.setGameStage(31);
-		if (!myGameModel.putInitialArmy()){
+		if (!myGameModel.putInitialArmy(mode)){
 			myGameModel.setGameStage(32);//user canceled
 		}	
 	}
@@ -339,24 +490,62 @@ public class RiskGameController implements ActionListener {
 	 * Handler used to run game without stop
 	 */
 	private void runToEnd() { 
-		if (myGameModel.getGameStage()<50){
-			startGame();
-			if (myGameModel.getGameStage()==54) return;
-		}
-		int turn = myGameModel.getTurn()+30;
-		while (true){
-			nextPlayer();
-			if (myGameModel.getGameStage()==54) break;
-			if (myGameModel.getTurn() == turn){
-				if (JOptionPane.showConfirmDialog(null,
-						"Already runned for 30 turns, do you want to continue?",
-						"Confirm", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-					turn += 30;
+		SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+			@Override
+			protected Void doInBackground() {
+				if (myGameModel.getGameStage()<50){
+					startGame();
+					if (myGameModel.getGameStage()==54) return null;
 				}
-				else break;
+				while (!threadStop){
+					nextPlayer();
+					if (myGameModel.getGameStage()==54) break;
+					publish(1);
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				return null;
 			}
-		}
+			@Override
+			protected void process(List<Integer> chunks) {
+			}
+			@Override
+			protected void done() {
+				gameView.stopBtn.setVisible(false);
+			}
+		};
+		threadStop = false;
+		gameView.stopBtn.setVisible(true);
+		worker.execute();
 	}	
+	
+	/**
+	 * Handler used to run game without stop
+	 * @return result of this game
+	 */
+	private String runToEndTour() { 
+		ErrorMsg result = myGameModel.startGame();
+		while (result.getResult()==0){
+			int curPlayer = myGameModel.getCurPlayer();
+			int currentTurn = myGameModel.getTurn();
+	        do {
+	            int tempPlayer=(curPlayer+1)%tourPlayerNum;
+	            if (tempPlayer<curPlayer) currentTurn++;
+	            curPlayer = tempPlayer;
+	        }while (!myGameModel.getPlayers()[curPlayer].getState());
+	        
+	        if (currentTurn>tourTurnNum){
+	        	return ("Draw");
+	        }
+			result = myGameModel.playerTurn();
+		}
+		String strategy = myGameModel.getPlayers()[myGameModel.getCurPlayer()].strategy.getClass().getName();
+		return strategy.substring(strategy.indexOf('.')+1);
+	}
 
 	/**
 	 * Handler used to start the game

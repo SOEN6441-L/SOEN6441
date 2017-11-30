@@ -2,6 +2,7 @@ basicclasses
 gamecontrollers
 gamemodels
 gameviews
+gameviewsremote
 mapcontrollers
 mapmodels
 mapviews

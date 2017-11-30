@@ -20,7 +20,7 @@ public class LogWindowRemote extends JFrame{
 	 */
 	public LogWindowRemote (){
 		outputArea = new JTextArea(10,10);  
-		outputArea.setEditable(false);
+		outputArea.setEditable(true);
 		outputArea.setLineWrap(true);
 		Dimension windowSize =  java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		setTitle("Log window");

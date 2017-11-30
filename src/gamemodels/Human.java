@@ -17,14 +17,14 @@ public class Human implements Strategy,Serializable{
 
 	/**
 	 * Human strategy in reinforcement phase
-	 * @param player
+	 * @param player player object
 	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
 		player.calculateArmyNumber();
 		player.setPhaseString("Reinforcement Phase");
-		player.getMyGame().myLog.setLogStr("\n"+player.getName()+" reinforcement phase begin.\n");
+		player.getMyGame().myLog.setLogStr("\n"+player.getDiscription()+" reinforcement phase begin.\n");
 		player.getMyGame().myLog.setLogStr("    Totla reinforcement army is "+player.getTotalReinforcement()+"\n");
 		player.getMyGame().myLog.setLogStr("        "+player.getReinforcementStr()+"\n");	
 		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(player,0);
@@ -34,7 +34,7 @@ public class Human implements Strategy,Serializable{
 
 	/**
 	 * Human strategy in attack phase
-	 * @param player
+	 * @param player player object
 	 * @return 1 or 0
 	 */
 	@Override
@@ -53,7 +53,7 @@ public class Human implements Strategy,Serializable{
 
 	/**
 	 * Human strategy in fortification phase
-	 * @param player
+	 * @param player player object
 	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {

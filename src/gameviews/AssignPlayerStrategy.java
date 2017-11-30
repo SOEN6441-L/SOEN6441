@@ -9,27 +9,22 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
-
-
 /**
- * This class is the implementation of attack dice in the Risk.
+ * This class is the implementation of Assign Strategy to players in the Risk.
  *@see JDialog
  */
 public class AssignPlayerStrategy extends JDialog{
 
 	private static final long serialVersionUID = 1L;
-
-	//components in this window
     JLabel[] players ;
-    
     public JComboBox<?> [] strategies; 
-    
     JButton enterBtn;
+
     int width = 350;
     int height =600;
     
     /**
-     * Constructor of class ReinforcePhaseView to generate reinforce phase UI
+     * Constructor of class AssignPlayerStrategy
      * @param playerNum the number of players
      */
 	public AssignPlayerStrategy(int playerNum){

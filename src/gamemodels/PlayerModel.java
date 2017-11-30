@@ -58,6 +58,17 @@ public class PlayerModel extends Observable  implements Serializable {
     }
     
     /**
+     * Method to get the description of player.
+     * @return player's name
+     */
+    public String getDiscription()
+    {
+		String strategy = this.strategy.getClass().getName();
+		strategy = strategy.substring(strategy.indexOf('.')+1);
+        return name+" ("+strategy+")";
+    }    
+    
+    /**
      * Method to get a copy of cards.
      * @param myCards integer array to store the copy of cards
      */
@@ -289,7 +300,7 @@ public class PlayerModel extends Observable  implements Serializable {
         if (winGame(myGame.getGameMap().getCountryNum())){
     		myGame.setGameStage(54);
     		setPhaseString("Game Over");
-    		myGame.myLog.setLogStr("\n"+getName()+" has win the game!\n");
+    		myGame.myLog.setLogStr("\n"+getDiscription()+" has win the game!\n");
             return new ErrorMsg(1,getName()+" has win the game!");
         }
         fortificationPhase();
@@ -299,7 +310,7 @@ public class PlayerModel extends Observable  implements Serializable {
 	
 	/**
 	 * Method to set player's strategy
-	 * @param strategy
+	 * @param strategy player's strategy
 	 */
     public void setStrategy(Strategy strategy) {
         this.strategy = strategy;
@@ -318,11 +329,11 @@ public class PlayerModel extends Observable  implements Serializable {
      */
     public void attackPhase(){
 		this.setPhaseString("Attack Phase");
-		myGame.myLog.setLogStr("\n"+getName()+" attack phase begin\n");
+		myGame.myLog.setLogStr("\n"+getDiscription()+" attack phase begin\n");
 		int result = strategy.attackPhase(this);
 		if (result == 1){
         	setAttackInfo("No more territories can attack, attack phase finished");
-        	myGame.myLog.setLogStr(getName()+", no more territories can attack, attack phase finished\n");
+        	myGame.myLog.setLogStr(getDiscription()+", no more territories can attack, attack phase finished\n");
 		}
     }
     /**
@@ -467,7 +478,7 @@ public class PlayerModel extends Observable  implements Serializable {
 	
 	/**
 	 * This method is to get valid attacking countries
-	 * @param 0- army number>1, 1- no army number limit
+	 * @param mode 0- army number greater than 1, 1- no army number limit
 	 * @return valid attacking countries
 	 */
 	public ArrayList<CountryModel> getAttackingCountry(int mode) {

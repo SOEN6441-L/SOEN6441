@@ -1,0 +1,21 @@
+[Map]
+author=Invincible Team Four
+warn=yes
+image=none
+wrap=no
+scroll=none
+
+[Continents]
+Asia=10
+Europe=5
+America=10
+
+[Territories]
+Asia1,0,0,Asia,Asia2,America2,America1,Europe1
+Asia2,0,0,Asia,America2,Asia1,America1,Europe1
+
+Europe1,0,0,Europe,Asia2,America2,Asia1,America1
+
+America1,0,0,America,Asia2,America2,Asia1,Europe1
+America2,0,0,America,Asia2,Asia1,America1,Europe1
+

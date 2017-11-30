@@ -308,9 +308,10 @@ public class RiskGameModel extends Observable implements Serializable{
     
     /**
      * The function to call putInitialArm phase's UI
+     * @param mode 0-normal 1-silent
      * @return succeed or not
      */
-    public boolean putInitialArmy() {
+    public boolean putInitialArmy(int mode) {
     	if (localCountries!=null){
     		localCountries.deleteObservers();
     		localCountries = null;
@@ -326,7 +327,11 @@ public class RiskGameModel extends Observable implements Serializable{
         }
         localCountries.addObserver(AssignCountryLabel);
         putInitialArmyView startupPhase = new putInitialArmyView(this);
-        startupPhase.setVisible(true);
+        if (mode==0) startupPhase.setVisible(true);
+        else {
+        	startupPhase.byComputerManul();
+        	startupPhase.confirmInput();
+        }
         int state = startupPhase.state;
         startupPhase.dispose();
         if (state ==1){
@@ -360,7 +365,7 @@ public class RiskGameModel extends Observable implements Serializable{
         	if (players[i].winGame(gameMap.getCountryNum())){
         		setGameStage(54);
         		setPhaseString("Game Over");
-        		myLog.setLogStr("\n"+players[i].getName()+" has win the game!\n");
+        		myLog.setLogStr("\n"+players[i].getDiscription()+" has win the game!\n");
         		return new ErrorMsg(1,players[i].getName()+" has win the game!");
 
         	}

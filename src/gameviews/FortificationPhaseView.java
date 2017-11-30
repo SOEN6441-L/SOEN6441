@@ -69,7 +69,7 @@ public class FortificationPhaseView extends JDialog{
         this.myGame = player.getMyGame();
 
         setTitle("Fortification Phase");
-        myGame.myLog.setLogStr("\n"+player.getName()+" fortification begin.\n");
+        myGame.myLog.setLogStr("\n"+player.getDiscription()+" fortification begin.\n");
         player.setAttackInfo("fortification begin.");
         setSize(width,height);
         int screenWidth = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
@@ -252,9 +252,9 @@ public class FortificationPhaseView extends JDialog{
            					selCountryNameTo = selCountryNameTo.substring(0, selCountryNameTo.indexOf("(")-1); 
            					if (armyNumberCombo.getSelectedIndex()!=-1){
            						player.moveArmies(myGame.getGameMap().findCountry(selCountryNameTo),myGame.getGameMap().findCountry(selCountryNameFrom),armyNumberCombo.getSelectedIndex()+1);
-           						myGame.myLog.setLogStr("    "+player.getName()+" move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".\n");
+           						myGame.myLog.setLogStr("    "+player.getDiscription()+" move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".\n");
            				        player.setAttackStepInfo("Move "+(armyNumberCombo.getSelectedIndex()+1)+" armies from "+ selCountryNameFrom+" to "+ selCountryNameTo+".");
-           						myGame.myLog.setLogStr(player.getName()+" fortification finished.\n");
+           						myGame.myLog.setLogStr(player.getDiscription()+" fortification finished.\n");
            				        player.setAttackInfo("fortification finished.");
            						state=1;
            						setVisible(false);
@@ -284,7 +284,7 @@ public class FortificationPhaseView extends JDialog{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			myGame.myLog.setLogStr(player.getName()+" fortification finished.\n");
+			myGame.myLog.setLogStr(player.getDiscription()+" fortification finished.\n");
 			setVisible(false);
 		}
     }

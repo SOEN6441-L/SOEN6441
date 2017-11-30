@@ -162,7 +162,7 @@ public class AttackDiceView extends JDialog{
         
 		if (attackingArmy==0){
 			if (mode==0) JOptionPane.showMessageDialog(null, player1.getName()+" failed.");
-			myGame.myLog.setLogStr("    "+player1.getName()+" attack failed.\n");
+			myGame.myLog.setLogStr("    "+player1.getDiscription()+" attack failed.\n");
 			myGame.myLog.setLogStr("    Now, "+country1.getOwner().getName()+" ("+country1.getShowName()+" "+country1.getArmyNumber()+
 					" armies) and "+country2.getOwner().getName()+" ("+country2.getShowName()+" "+country2.getArmyNumber()+" armies)\n");
 			player1.setAttackInfo(player1.getName()+" failed.");
@@ -217,7 +217,7 @@ public class AttackDiceView extends JDialog{
 				myGame.myLog.setLogStr("        "+player1.getName()+" puts "+lastDice+" armies on "+country2.getShowName()+"\n");
 			}
 			
-			myGame.myLog.setLogStr("    "+player1.getName()+" grasps "+country2.getShowName()+" owned by "+player2.getName()+" before\n");
+			myGame.myLog.setLogStr("    "+player1.getDiscription()+" grasps "+country2.getShowName()+" owned by "+player2.getName()+" before\n");
 			myGame.myLog.setLogStr("    Now, "+country1.getOwner().getName()+" ("+country1.getShowName()+" "+country1.getArmyNumber()+
 					" armies) and "+country2.getOwner().getName()+" ("+country2.getShowName()+" "+country2.getArmyNumber()+" armies)\n");
 			setVisible(false);
@@ -307,7 +307,7 @@ public class AttackDiceView extends JDialog{
 	 */
 	public void betray(){
 		if (mode==0) JOptionPane.showMessageDialog(null, player1.getName()+" betrayed.");
-		myGame.myLog.setLogStr("    "+player1.getName()+" betrayed.");
+		myGame.myLog.setLogStr("    "+player1.getDiscription()+" betrayed.");
 		myGame.myLog.setLogStr("    Now, "+country1.getOwner().getName()+" ("+country1.getShowName()+" "+country1.getArmyNumber()+
 			" armies) and "+country2.getOwner().getName()+" ("+country2.getShowName()+" "+country2.getArmyNumber()+" armies)\n");
 		player1.setAttackInfo(player1.getName()+" betrayed.");

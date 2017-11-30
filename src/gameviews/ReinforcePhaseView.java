@@ -246,7 +246,7 @@ public class ReinforcePhaseView extends JDialog{
     	leftArmies-=armyNumberCombo.getSelectedIndex()+1;
     	localCountries[selRow].setNumber(localCountries[selRow].getNumber() + armyNumberCombo.getSelectedIndex()+1);
     	player.setPutArmyStr("Places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow].getName());
-    	myGame.myLog.setLogStr("    "+player.getName()+" places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow].getName()+"\n");
+    	myGame.myLog.setLogStr("    "+player.getDiscription()+" places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow].getName()+"\n");
        	reloadGUI();
     }
     
@@ -303,7 +303,7 @@ public class ReinforcePhaseView extends JDialog{
                             leftArmies-=armyNumberCombo.getSelectedIndex()+1;
                             localCountries[selRow-1].setNumber(localCountries[selRow-1].getNumber() + armyNumberCombo.getSelectedIndex()+1);
                             player.setPutArmyStr("Places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName());
-                            myGame.myLog.setLogStr("    "+player.getName()+" places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName()+"\n");
+                            myGame.myLog.setLogStr("    "+player.getDiscription()+" places "+(armyNumberCombo.getSelectedIndex()+1)+" armies on "+localCountries[selRow-1].getName()+"\n");
                             reloadGUI();
                         }
                     }
@@ -349,8 +349,8 @@ public class ReinforcePhaseView extends JDialog{
      */
     public void exchangeCards(){
         player.setExchangeStatus("Exchanging Cards ...");
-		myGame.myLog.setLogStr("\n    "+player.getName()+ " begin to exhanging cards ...\n");
-		myGame.myLog.setLogStr("    "+player.getName()+ " now have "+player.getCardsString(1)+"\n");
+		myGame.myLog.setLogStr("\n    "+player.getDiscription()+ " begin to exhanging cards ...\n");
+		myGame.myLog.setLogStr("    "+player.getDiscription()+ " now have "+player.getCardsString(1)+"\n");
         TradeInCards exchangeView = new TradeInCards(player,mode);
         if (mode==0) exchangeView.setVisible(true);
         else if (mode==1){//aggressive
@@ -377,8 +377,8 @@ public class ReinforcePhaseView extends JDialog{
         }
         armyNumberCombo.setSelectedIndex(leftArmies-1);
         exchangeView.dispose();
-        myGame.myLog.setLogStr("    "+player.getName()+ " now have "+player.getCardsString(1)+"\n");
-        myGame.myLog.setLogStr("    "+player.getName()+ " now reinforcement armies = "+player.getTotalReinforcement()+"\n");
+        myGame.myLog.setLogStr("    "+player.getDiscription()+ " now have "+player.getCardsString(1)+"\n");
+        myGame.myLog.setLogStr("    "+player.getDiscription()+ " now reinforcement armies = "+player.getTotalReinforcement()+"\n");
         player.setExchangeStatus("Exchange Cards ... finished.");
     }
 

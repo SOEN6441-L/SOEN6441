@@ -19,14 +19,14 @@ public class Aggressive implements Strategy,Serializable{
 
 	/**
 	 * Aggressive strategy  in reinforcement phase.
-	 * @param player
+	 * @param player player object
 	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
 		player.calculateArmyNumber();
 		player.setPhaseString("Reinforcement Phase");
-		player.getMyGame().myLog.setLogStr("\n"+player.getName()+" reinforcement phase begin.\n");
+		player.getMyGame().myLog.setLogStr("\n"+player.getDiscription()+" reinforcement phase begin.\n");
 		player.getMyGame().myLog.setLogStr("    Totla reinforcement army is "+player.getTotalReinforcement()+"\n");
 		player.getMyGame().myLog.setLogStr("        "+player.getReinforcementStr()+"\n");	
 		ReinforcePhaseView reinforcementPhase = new ReinforcePhaseView(player,1);
@@ -66,8 +66,8 @@ public class Aggressive implements Strategy,Serializable{
 
 	/**
 	 * Aggressive strategy  in attack phase.
-	 * @param player
-	 * @return 1 or 0
+	 * @param player player object
+	 * @return 1-no attacking or 0- normal
 	 */
 	@Override
 	public int attackPhase(PlayerModel player) {
@@ -90,7 +90,7 @@ public class Aggressive implements Strategy,Serializable{
         while (true) {
         	attackPhase.selCountryNameTo = attackPhase.localAdjacencyList.
         			get(myMap.findCountry(attackPhase.selCountryNameFrom)).get(0).getShowName();
-        	attackPhase.attackOneCountry(1);
+        	attackPhase.attackOneCountry();
     		if (player.getAttackingCountry(0).size()==0){
             	break;
     		}
@@ -112,12 +112,12 @@ public class Aggressive implements Strategy,Serializable{
 
 	/**
 	 * Aggressive strategy  in fortification phase.
-	 * @param player
+	 * @param player player object
 	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
-		player.getMyGame().myLog.setLogStr("\n"+player.getName()+" fortification begin.\n");
+		player.getMyGame().myLog.setLogStr("\n"+player.getDiscription()+" fortification begin.\n");
         player.setAttackInfo("fortification begin.");
         
         RiskMapModel myMap = player.getMyGame().getGameMap();
@@ -180,10 +180,10 @@ public class Aggressive implements Strategy,Serializable{
 		if (MaxValue!=-1){
 			int armyNumber = solution[0].getArmyNumber()-1;
 			player.moveArmies(solution[1],solution[0],armyNumber);
-			player.getMyGame().myLog.setLogStr("    "+player.getName()+" move "+armyNumber+" armies from "+ solution[0].getShowName()+" to "+ solution[1].getShowName()+".\n");
+			player.getMyGame().myLog.setLogStr("    "+player.getDiscription()+" move "+armyNumber+" armies from "+ solution[0].getShowName()+" to "+ solution[1].getShowName()+".\n");
 		    player.setAttackStepInfo("Move "+armyNumber+" armies from "+ solution[0].getShowName()+" to "+ solution[1].getShowName()+".");
 		}
-	    player.getMyGame().myLog.setLogStr(player.getName()+" fortification finished.\n");
+	    player.getMyGame().myLog.setLogStr(player.getDiscription()+" fortification finished.\n");
 	    player.setAttackInfo("fortification finished.");		
 	}
 }

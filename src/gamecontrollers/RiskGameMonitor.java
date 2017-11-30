@@ -35,8 +35,8 @@ public class RiskGameMonitor implements MonitorInterface{
 
 	/**
 	 * The Server for export location
-	 * @param location
-	 * @throws Exception
+	 * @param location server location
+	 * @throws Exception remote Exceptions
 	 */
 	public void exportServer(String location) throws Exception {
 		Remote obj = UnicastRemoteObject.exportObject(this, 2021);
@@ -86,7 +86,7 @@ public class RiskGameMonitor implements MonitorInterface{
 	/**
 	 * Implement the updateLogWindow method
 	 * @param newLog the log window of the update information
-	 * @throws RemoteException 
+	 * @throws RemoteException  Remote Exceptions
 	 */	
 	@Override
 	public void updateLogWindow(String newLog) throws RemoteException {
@@ -98,7 +98,7 @@ public class RiskGameMonitor implements MonitorInterface{
 	 * @param num the number of the domination view
 	 * @param size the size of the domination view
 	 * @param colors the color the domination view
-	 * @throws RemoteException 
+	 * @throws RemoteException  Remote Exceptions
 	 */	
 	@Override
 	public void updateDomiView(int num,int[] size, Color[] colors) throws RemoteException {
@@ -113,7 +113,7 @@ public class RiskGameMonitor implements MonitorInterface{
 	 * @param info4 the information of card 4
 	 * @param type the number of type
 	 * @return whether it success or not
-	 * @throws RemoteException 
+	 * @throws RemoteException Remote Exceptions
 	 */	
 	@Override
 	public boolean updateCardsView(String info1, String info2, String info3, String info4, int type) throws RemoteException {
@@ -127,7 +127,6 @@ public class RiskGameMonitor implements MonitorInterface{
 	 * Implement the createTradeInCardsView method
 	 * @param x the location x for the phase
 	 * @param y the location y for the phase
-	 * @throws RemoteException 
 	 */	
 	@Override
 	public void createTradeInCardsView(int x, int y) {
@@ -139,7 +138,7 @@ public class RiskGameMonitor implements MonitorInterface{
 	/**
 	 * Implement the updateLabel method
 	 * @param info the information of the update label
-	 * @throws RemoteException 
+	 * @throws RemoteException Remote Exceptions
 	 */	
 	@Override
 	public void updateLabel(String info) throws RemoteException {

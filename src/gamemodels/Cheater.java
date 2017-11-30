@@ -14,24 +14,24 @@ public class Cheater implements Strategy,Serializable{
 
 	/**
 	 * Cheater strategy in reinforcement phase
-	 * @param player
+	 * @param player player object
 	 */
 	@Override
 	public void reinforcementPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
 		player.setPhaseString("Reinforcement Phase");
-		player.getMyGame().myLog.setLogStr("\n"+player.getName()+" reinforcement phase begin.\n");
+		player.getMyGame().myLog.setLogStr("\n"+player.getDiscription()+" reinforcement phase begin.\n");
 		for (CountryModel loopCountry:player.getCountries()){
 			loopCountry.setArmyNumber(loopCountry.getArmyNumber()*2);
 		}
 		player.addArmies(player.getTotalArmies());
-		player.getMyGame().myLog.setLogStr("    "+player.getName()+" double the armies number on all his territories, now has "+player.getTotalArmies()+" armies\n");
+		player.getMyGame().myLog.setLogStr("    "+player.getDiscription()+" double the armies number on all his territories, now has "+player.getTotalArmies()+" armies\n");
 	}
 
 	/**
 	 * Cheater strategy in attack phase
-	 * @param player
-	 * @return 0
+	 * @param player player object
+	 * @return 0 no meaning
 	 */
 	@Override
 	public int attackPhase(PlayerModel player) {
@@ -48,25 +48,25 @@ public class Cheater implements Strategy,Serializable{
 		    		oldPlayer.addArmies(0-neighbour.getArmyNumber());
 					neighbour.setArmyNumber(1);
 					player.addArmies(1);
-					player.getMyGame().myLog.setLogStr("    "+player.getName()+" conquers "+neighbour.getShowName()+"\n");
+					player.getMyGame().myLog.setLogStr("    "+player.getDiscription()+" conquers "+neighbour.getShowName()+"\n");
 				}
 			}
 		}
-		//player.getMyGame().myLog.setLogStr("    "+player.getName()+" conquers all his neighbours\n");
+		//player.getMyGame().myLog.setLogStr("    "+player.getDiscription()+" conquers all his neighbours\n");
 		player.getMyGame().changeDominationView();
     	player.setAttackInfo("Attack phase terminated.");
-    	player.getMyGame().myLog.setLogStr(player.getName()+" Attack phase terminated.\n");
+    	player.getMyGame().myLog.setLogStr(player.getDiscription()+" Attack phase terminated.\n");
 		return 0;
 	}
 
 	/**
 	 * Cheater strategy in fortification phase
-	 * @param player
+	 * @param player player object
 	 */
 	@Override
 	public void fortificationPhase(PlayerModel player) {
 		// TODO Auto-generated method stub
-		player.getMyGame().myLog.setLogStr("\n"+player.getName()+" fortification begin.\n");
+		player.getMyGame().myLog.setLogStr("\n"+player.getDiscription()+" fortification begin.\n");
         player.setAttackInfo("fortification begin.");
         
         ArrayList<CountryModel> countryList = player.getAttackingCountry(1);
@@ -75,9 +75,9 @@ public class Cheater implements Strategy,Serializable{
 			loopCountry.setArmyNumber(loopCountry.getArmyNumber()*2);
 		}
 
-		player.getMyGame().myLog.setLogStr("    "+player.getName()+" double the armies number on all his territories that has enemies around.\n");
+		player.getMyGame().myLog.setLogStr("    "+player.getDiscription()+" double the armies number on all his territories that has enemies around.\n");
 
-	    player.getMyGame().myLog.setLogStr(player.getName()+" fortification finished.\n");
+	    player.getMyGame().myLog.setLogStr(player.getDiscription()+" fortification finished.\n");
 	    player.setAttackInfo("fortification finished.");		
 	}
 }

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JFrame;
 import gamecontrollers.MonitorInterface;
 import gamemodels.PlayerModel;
 import gamemodels.RiskGameModel;

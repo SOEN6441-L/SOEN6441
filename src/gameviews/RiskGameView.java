@@ -44,6 +44,7 @@ public class RiskGameView extends JFrame implements Observer{
 	private JButton adjustWidthBtn;	
 	private JButton saveBtn;
 	private JButton loadBtn;
+	public JButton stopBtn;
 	private JTextField colWidthEdit;
     
 	//label show info
@@ -141,13 +142,17 @@ public class RiskGameView extends JFrame implements Observer{
 		size = functionsBtn.getPreferredSize();		
 		functionsBtn.setBounds(scrollPaneForMatrix.getBounds().x+scrollPaneForMatrix.getSize().width-size.width-11,625,size.width+10,size.height);  
 	
-		previousBtn = new javax.swing.JButton("<< Previous");
-		previousBtn.setMnemonic('p');
-		previousBtn.setDisplayedMnemonicIndex(3);
+		previousBtn = new javax.swing.JButton("Tournament");
 		previousBtn.setFont(new java.awt.Font("dialog",1,17));		
-		previousBtn.setVisible(false);
+		previousBtn.setVisible(true);
 		add(previousBtn);	
 		previousBtn.setBounds(functionsBtn.getBounds().x-size.width+30,625,size.width-40,size.height); 
+		
+		stopBtn = new javax.swing.JButton("Stop");
+		stopBtn.setFont(new java.awt.Font("dialog",1,17));		
+		stopBtn.setVisible(false);
+		add(stopBtn);	
+		stopBtn.setBounds(previousBtn.getBounds().x-size.width+30,625,size.width-40,size.height);	
 		
 		adjustWidthBtn = new javax.swing.JButton("Full width");
 		adjustWidthBtn.setMnemonic('f');
@@ -183,7 +188,7 @@ public class RiskGameView extends JFrame implements Observer{
 		add(loadBtn);	
 		size = loadBtn.getPreferredSize();
 		loadBtn.setBounds(saveBtn.getBounds().x+ saveBtn.getSize().width+15,625,size.width,size.height);
-		
+
 		this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         
 		setVisible(false);          
@@ -223,6 +228,7 @@ public class RiskGameView extends JFrame implements Observer{
 		previousBtn.addActionListener(controller);
 		saveBtn.addActionListener(controller);
 		loadBtn.addActionListener(controller);
+		stopBtn.addActionListener(controller);
 	}	
 	
 	/**
@@ -546,7 +552,9 @@ public class RiskGameView extends JFrame implements Observer{
 				reloadPlayers();
 				saveBtn.setEnabled(true);
 				loadBtn.setEnabled(true);
-				previousBtn.setVisible(false);
+				previousBtn.setText("Tournament");
+				previousBtn.setVisible(true);
+				previousBtn.setEnabled(true);
 				functionsBtn.setText("Step 1 - Load A Risk Map");
 				functionsBtn.setEnabled(true);
 				break;

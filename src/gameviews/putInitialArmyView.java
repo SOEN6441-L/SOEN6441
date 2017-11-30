@@ -277,6 +277,7 @@ public class putInitialArmyView extends JDialog{
 	 */
 	private class ButtonHandler implements ActionListener {
 		/**
+		 * action actionPerformed
 		 * @param e event of button
 		 * 
 		 */
@@ -298,9 +299,9 @@ public class putInitialArmyView extends JDialog{
 	}	
 	
 	/**
-	 * the state of options
+	 * confirm the operation
 	 */
-	private void confirmInput() { 
+	public void confirmInput() { 
 		state = 1;
 		setVisible(false);
 	}
@@ -353,5 +354,22 @@ public class putInitialArmyView extends JDialog{
 		reloadGUI(false);
 		worker.execute();
 	}	
+	
+	/**
+	 * Method to define a swing worker to do put armies job in background.
+	 */
+	public void byComputerManul() { 
+		byComputerBtn.setVisible(false);
+		cancelBtn.setVisible(false);
+		reloadGUI(false);
+		do {
+			int children = localCountries.getNodes()[curPlayer].length;
+			int randomCountryIndex = (int)(Math.random()*children);
+			totalInitialArmies--;
+			leftArmies[curPlayer]--;
+			localCountries.increaseValue(curPlayer,randomCountryIndex);
+		}while (findNextPlayer());
+	}
+	
 }
  
