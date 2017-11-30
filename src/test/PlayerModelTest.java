@@ -7,8 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+import gamemodels.Aggressive;
+import gamemodels.Benevolent;
 import gamemodels.PlayerModel;
 import gamemodels.RiskGameModel;
 import mapmodels.CountryModel;
@@ -37,6 +42,7 @@ public class PlayerModelTest {
         map = new RiskMapModel();
         map.initMapModel("testMap");
         game.setGameMap(map);
+        game.createPlayers(2);
         map.addContinent("test1", 10);
         map.addContinent("test2", 5);
         map.addCountry("A", "test1",0,0);
@@ -49,8 +55,8 @@ public class PlayerModelTest {
         country3 = map.findCountry("C");
         country4 = map.findCountry("D");
         country5 = map.findCountry("E");
-        player = new PlayerModel("1", Color.red, game);
-        player2 = new PlayerModel("2", Color.BLACK, game);
+        player = game.getPlayers()[0];
+        player2 = game.getPlayers()[1];
         player.addCountry(country1);
         country1.setOwner(player);
         player.addCountry(country2);
@@ -107,23 +113,72 @@ public class PlayerModelTest {
      * To test if it is a correct fortification case
      */
     @Test
+    public void testAttack(){
+        //test connection
+        map.addConnections("A","B");
+        map.addConnections("B","D");
+        map.addConnections("A","C");
+        map.addConnections("A","D");
+        map.addConnections("A","E");
+        //map.addConnection("A","E");
+        country1.setArmyNumber(100);
+        country3.setArmyNumber(1);
+        country4.setArmyNumber(1);
+        country5.setArmyNumber(1);
+
+        player.setStrategy(new Aggressive());
+        player2.setStrategy(new Benevolent());
+        
+        ArrayList<CountryModel> countryList = player.getAttackingCountry(0);
+    	Boolean found = false;
+    	for (int i=0;i<countryList.size();i++){
+    		if (countryList.get(i).equals(country1)){
+    			found = true;
+    			break; 
+    		}
+    	}
+    	assertTrue(found);
+    	player.attackPhase();
+    	assertEquals(3,country3.getArmyNumber());
+    	assertEquals(3,country4.getArmyNumber());
+    	assertEquals(3,country5.getArmyNumber());
+    	assertTrue(player.winGame(game.getGameMap().getCountryNum()));
+        //test same owner
+        System.out.println("success test of Attack phase");
+    }    
+    
+    /**
+     * To test if it is a correct fortification case
+     */
+    @Test
     public void testFortification(){
         //test connection
-        country1.setOwner(player);
-        country2.setOwner(player);
-        country3.setOwner(player);
-        country4.setOwner(player);
-        country5.setOwner(player);
         map.addConnections("A","B");
         map.addConnections("B","D");
         map.addConnections("A","C");
         //map.addConnection("A","E");
-        assertTrue(map.getAdjacencyList().get(country1).contains(country2));
+        player.addCountry(country4);
+        country4.setOwner(player);
+        player2.removeCountry(country4);
+        country1.setArmyNumber(5);
+        country2.setArmyNumber(1);
+        country4.setArmyNumber(2);
+        player.setStrategy(new Aggressive());
+		Map<CountryModel,ArrayList<CountryModel>> localAdjacencyList = new HashMap<CountryModel,ArrayList<CountryModel>>();
+		for (CountryModel loopCountry: player.getCountries()){
+			localAdjacencyList.put(loopCountry, new ArrayList<CountryModel>());
+			for (CountryModel neighbour: map.getAdjacencyList().get(loopCountry)){
+				if (neighbour.getOwner()==player){
+					localAdjacencyList.get(loopCountry).add(neighbour);
+				}
+			}
+		}
+		map.findPath(localAdjacencyList, country1);
+        assertTrue(country4.isFlagDFS());
+		player.fortificationPhase();
+		assertEquals(6,country1.getArmyNumber());
+
         //test same owner
-        assertEquals(player,country1.getOwner());
-        assertEquals(player,country4.getOwner());
-        //test armies
-        assertFalse(country1.getArmyNumber()>1);
         System.out.println("success test of fortification phase");
     }
     
@@ -145,7 +200,7 @@ public class PlayerModelTest {
 		    @SuppressWarnings("resource")
 			ObjectInputStream input = new ObjectInputStream(new FileInputStream("player.bin"));
 		    PlayerModel newPlayer = (PlayerModel) input.readObject();
-		    assertEquals("1",newPlayer.getName());
+		    assertEquals("Player1",newPlayer.getName());
 		    assertEquals(2,newPlayer.getCountries().size());
 		    assertEquals("a",newPlayer.getMyGame().getGameMap().findCountry("A").getName());
 		} catch (Exception e) {

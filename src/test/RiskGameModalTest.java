@@ -1,60 +1,103 @@
 package test;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.swing.JOptionPane;
-
-import gamemodels.Aggressive;
+import gamemodels.Benevolent;
 import gamemodels.Cheater;
+import gamemodels.Human;
 import gamemodels.RiskGameModel;
+import gameviews.DominationView;
+import gameviews.LogWindow;
 import gameviews.PhaseView;
 import gameviews.RiskGameView;
 
+
 import org.junit.Before;
 import org.junit.Test;
+
+import gamecontrollers.MonitorInterface;
+import gamecontrollers.RiskGameController;
 
 /**
  * This class is to test start up phase
  */
 public class RiskGameModalTest {
-    private RiskGameModel game,game2;
-    private Cheater cheater;
-    private Aggressive aggressive;
-    private RiskGameView gameView;
-    private PhaseView phaseView;
+	private RiskGameModel myGameModel;
+	private RiskGameView gameView;
+	private MonitorInterface server = null;
+	private PhaseView phaseView;
+	private DominationView domiView;
+	private LogWindow logWindow;
+	RiskGameController gameController;
 
     /**
      * set up environment
      */
     @Before
     public void setUp() {
-    	gameView = new RiskGameView();
-    	phaseView = new PhaseView(null);
-    	    
-        game = new RiskGameModel();
-        game.loadMapFile("./src/map/5.map");
-        game.createPlayers(5);
-        game.assignCountriesManual();
-        //game.putInitialArmy();
-        
-        game2 = new RiskGameModel();
-        game2.loadMapFile("./src/map/5.map");
-        game2.addObserver(phaseView);
-    	game2.setPhaseView(phaseView,null);
-    	game2.setObserverLabel(phaseView.getAssignCountryLable());
-    	game2.addObserver(gameView);
-        game2.createPlayers(2);
-        game2.getPlayers()[0].setStrategy(new Cheater());
-        game2.getPlayers()[1].setStrategy(new Aggressive());
-        game2.assignCountriesManual();
-        game2.putInitialArmy();
+		File outputFile = new File("./src/map/test/5.map");
+		FileWriter fw = null;
+		try{
+			if (outputFile.exists()&&outputFile.isFile()) {
+				outputFile.delete();
+			}
+			outputFile.createNewFile();
+			fw = new FileWriter(outputFile.getAbsoluteFile(),false);
+			fw.write("[Map]\r\nauthor=Invincible Team Four\r\nwarn=yes\r\nimage=none\r\nwrap=no\r\nscroll=none\r\n\r\n");
+			fw.write("[Continents]\r\nAsia=10\r\nEurope=5\r\nAmerica=10\r\n\r\n");
+			fw.write("[Territories]\r\nAsia1,0,0,Asia,Asia2,America2,America1,Europe1\r\nAsia2,0,0,Asia,America2,Asia1,America1,Europe1\r\n");
+			fw.write("\r\nEurope1,0,0,Europe,Asia2,America2,Asia1,America1\r\n");
+			fw.write("\r\nAmerica1,0,0,America,Asia2,America2,Asia1,Europe1\r\nAmerica2,0,0,America,Asia2,Asia1,America1,Europe1\r\n");
 
-        
+			fw.close();
+		}catch (IOException e) {
+			//e.printStackTrace();	
+		} finally {
+			try {
+				if (fw != null)fw.close();
+			} catch (IOException ex) {
+				//ex.printStackTrace();
+			}
+		}
+		gameView = new RiskGameView();
+		server = null;
+
+		phaseView = new PhaseView(server);
+		domiView = new DominationView(server);
+		logWindow = new LogWindow(server);
+		
+		myGameModel = new RiskGameModel();
+		myGameModel.addLog(logWindow,0);
+
+		RiskGameController.myGameModel = myGameModel;
+		RiskGameController.gameView = gameView;
+		RiskGameController.phaseView = phaseView;
+		RiskGameController.domiView = domiView;
+		RiskGameController.logWindow = logWindow;
+
+		gameController = new RiskGameController();
+		//add model and controller to views
+		//phaseView.addModel(gameModel);
+		gameView.addModel(myGameModel);
+		gameView.addController(gameController);
+
+		//add phase view to model
+		myGameModel.addObserver(phaseView);
+		myGameModel.addObserver(domiView);
+		myGameModel.setPhaseView(phaseView,server);
+		myGameModel.setObserverLabel(phaseView.getAssignCountryLable());
+		//initialize model
+		myGameModel.setPhaseString("Start Up Phase");
+		myGameModel.setGameStage(0);
+		//add game view to model
+		myGameModel.addObserver(gameView);
     }
 
     /**
@@ -62,8 +105,12 @@ public class RiskGameModalTest {
      */
     @Test
     public void createPlayer(){
-        assertEquals(5,game.getPlayers().length);
-        System.out.println("Success creation of initial armies");
+		myGameModel.loadMapFile("./src/map/test/5.map");
+    	myGameModel.createPlayers(5);
+		for (int k=0;k<5;k++)
+			myGameModel.getPlayers()[k].setStrategy(new Human());
+        assertEquals(5,myGameModel.getPlayers().length);
+        System.out.println("Success creation of players");
     }
 
     /**
@@ -71,28 +118,44 @@ public class RiskGameModalTest {
      */
     @Test
     public void assignCountries(){
-        assertEquals(1,game.getPlayers()[0].getCountries().size());
+		myGameModel.loadMapFile("./src/map/test/5.map");
+    	myGameModel.createPlayers(5);
+		for (int k=0;k<5;k++)
+			myGameModel.getPlayers()[k].setStrategy(new Human());
+    	myGameModel.assignCountriesManual();
+        assertEquals(1,myGameModel.getPlayers()[0].getCountries().size());
         System.out.println("Success test of assigning armies");
     }
 
     /**
-     * Test if armies are initiated
+     * Test if startup phase is OK
      */
     @Test
-    public void initiateArmies(){
-        assertEquals(26,game.getPlayers()[0].getTotalArmies());
-        System.out.println("Success test of initiating armies");
+    public void startup(){
+		myGameModel.loadMapFile("./src/map/test/5.map");
+    	myGameModel.createPlayers(5);
+		for (int k=0;k<5;k++)
+			myGameModel.getPlayers()[k].setStrategy(new Human());
+    	myGameModel.assignCountriesManual();
+    	myGameModel.putInitialArmy(1);	
+        assertEquals(26,myGameModel.getPlayers()[0].getTotalArmies());
+        System.out.println("Success test of startup phase");
     }
     
 	/**
-	 * Test the Serialization of game class
+	 * Test the save of game class
 	 */
 	@Test
-	public void gameSerializableTest(){
-
+	public void gameSaveTest(){
+		myGameModel.loadMapFile("./src/map/test/5.map");
+    	myGameModel.createPlayers(5);
+		for (int k=0;k<5;k++)
+			myGameModel.getPlayers()[k].setStrategy(new Human());
+    	myGameModel.assignCountriesManual();
+    	myGameModel.putInitialArmy(1);	
 		try {
 		    ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream("game.bin"));
-		    output.writeObject(game);
+		    output.writeObject(myGameModel);
 		    output.close();
 		} catch (IOException e) {
 		    e.printStackTrace();
@@ -108,7 +171,7 @@ public class RiskGameModalTest {
 		    e.printStackTrace();
 		} 
 		
-		System.out.println("Game Test: Serializability test finished");
+		System.out.println("Game Test: save test finished");
 	}	
 	
 	/**
@@ -116,27 +179,20 @@ public class RiskGameModalTest {
 	 */
 	@Test
 	public void gameLoadTest(){
-//
-//		try {
-//		    @SuppressWarnings("resource")
-//			ObjectInputStream input = new ObjectInputStream(new FileInputStream("game5401511993038227.bin"));
-//		    ObjectInputStream input2 = new ObjectInputStream(new FileInputStream("game5541511993060033.bin"));
-//		    RiskGameModel newGame = (RiskGameModel) input.readObject();
-//		    RiskGameModel newGame2 = (RiskGameModel) input2.readObject();
-//		    assertEquals(5,newGame.getGameMap().getCountryNum());
-//		    assertEquals(5,newGame.getPlayers().length);
-//		} catch (Exception e) {
-//		    e.printStackTrace();
-//		} 
-		game2.startGame();
-		if (game2.getGameStage()==54) return;
-		while (true){
-			game2.playerTurn();
-			if (game2.getGameStage()==54) break;
+		myGameModel.loadMapFile("./src/map/test/5.map");
+    	myGameModel.createPlayers(2);
+    	myGameModel.getPlayers()[0].setStrategy(new Cheater());
+    	myGameModel.getPlayers()[1].setStrategy(new Benevolent());
+    	myGameModel.assignCountriesManual();
+    	myGameModel.putInitialArmy(1);
+    	myGameModel.startGame();
+		if (myGameModel.getGameStage()==54);
+		while (myGameModel.getGameStage()!=54){
+			myGameModel.playerTurn();
 		}
 		try {
 		    ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream("game2.bin"));
-		    output.writeObject(game2);
+		    output.writeObject(myGameModel);
 		    output.close();
 		} catch (IOException e) {
 		    e.printStackTrace();
@@ -146,14 +202,51 @@ public class RiskGameModalTest {
 		    @SuppressWarnings("resource")
 			ObjectInputStream input = new ObjectInputStream(new FileInputStream("game2.bin"));
 		    RiskGameModel newGame2 = (RiskGameModel) input.readObject();
-		    boolean p1 = game2.getPlayers()[0].getState();
-		    boolean p2 = game2.getPlayers()[1].getState();
+		    boolean p1 = myGameModel.getPlayers()[0].getState();
+		    boolean p2 = myGameModel.getPlayers()[1].getState();
 		    assertEquals(p1,newGame2.getPlayers()[0].getState());
-		    assertEquals(p2,newGame2.getPlayers()[0].getState());
+		    assertEquals(p2,newGame2.getPlayers()[1].getState());
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
 		
-		System.out.println("Game Test: Serializability test finished");
+		System.out.println("Game Test: load test finished");
+	}
+	
+	/**
+	 * Test the load of the game
+	 */
+	@Test
+	public void tournamentTest(){
+		File outputFile = new File("./tournament/test.conf");
+		FileWriter fw = null;
+		try{
+			if (outputFile.exists()&&outputFile.isFile()) {
+				outputFile.delete();
+			}
+			outputFile.createNewFile();
+			fw = new FileWriter(outputFile.getAbsoluteFile(),false);
+			fw.write("3,Europe,3D Cliff,5\r\n");
+			fw.write("4,Aggressive,Random,Benevolent,Cheater\r\n");
+			fw.write("4\r\n");
+			fw.write("20\r\n");
+			fw.close();
+		}catch (IOException e) {
+			//e.printStackTrace();	
+		} finally {
+			try {
+				if (fw != null)fw.close();
+			} catch (IOException ex) {
+				//ex.printStackTrace();
+			}
+		}
+		gameController.loadTournament("./tournament/test.conf");
+		assertEquals(3,gameController.tourMapNum);
+		assertEquals(4,gameController.tourPlayerNum);
+		assertEquals(4,gameController.tourGameNum);
+		assertEquals(20,gameController.tourTurnNum);
+		gameController.runTournamentManul();
+		assertEquals("Cheater",gameController.tourResult[0][0]);
+		System.out.println("Game Test: tournament test finished");
 	}
 }

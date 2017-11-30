@@ -44,16 +44,16 @@ import mapmodels.ErrorMsg;
  * to define action performed according to different users' action.
  */
 public class RiskGameController implements ActionListener {
-	private static RiskGameModel myGameModel;
-	private static RiskGameView gameView;
-	private static MonitorInterface server = null;
-	private static PhaseView phaseView;
-	private static DominationView domiView;
-	private static LogWindow logWindow;
-	private int tourMapNum,tourPlayerNum,tourGameNum,tourTurnNum;
-	private String[] tourMaps;
-	private Strategy[] tourPlayers;
-	private String[][] tourResult;
+	public static RiskGameModel myGameModel;
+	public static RiskGameView gameView;
+	public static MonitorInterface server = null;
+	public static PhaseView phaseView;
+	public static DominationView domiView;
+	public static LogWindow logWindow;
+	public int tourMapNum,tourPlayerNum,tourGameNum,tourTurnNum;
+	public String[] tourMaps;
+	public Strategy[] tourPlayers;
+	public String[][] tourResult;
 	private Boolean threadStop;
 	
 	/**
@@ -139,50 +139,57 @@ public class RiskGameController implements ActionListener {
 			JOptionPane.showMessageDialog(null,"Configuration file name invalid");
 		}
 		else{
-			BufferedReader br = null;
-			String inputLine = null;
-			try{
-				br = new BufferedReader(new FileReader(inputFileName));
-				inputLine = br.readLine();
-				String[] inputStr = inputLine.split(",");
-				tourMapNum = Integer.parseInt(inputStr[0]);
-				tourMaps = new String [tourMapNum];
-				for (int i=0;i<tourMapNum;i++){
-					tourMaps[i] = inputStr[i+1];
-				}
-				inputLine = br.readLine();
-				inputStr = inputLine.split(",");
-				tourPlayerNum = Integer.parseInt(inputStr[0]);
-				tourPlayers = new Strategy [tourPlayerNum];
-				for (int i=0;i<tourPlayerNum;i++){
-					switch (inputStr[i+1]){
-					case "Aggressive":
-						tourPlayers[i] = new Aggressive();
-						break;
-					case "Benevolent":
-						tourPlayers[i] = new Benevolent();
-						break;
-					case "Random":
-						tourPlayers[i] = new Random();
-						break;
-					case "Cheater":
-						tourPlayers[i] = new Cheater();
-						break;
-					}	
-				}
-				tourGameNum = Integer.parseInt(br.readLine());
-				tourTurnNum = Integer.parseInt(br.readLine());
-				tourResult = new String[tourMapNum][tourGameNum];
-			} catch (IOException e) {
-				//e.printStackTrace();
-			} finally {
-				try {
-					if (br != null)br.close();
-				} catch (IOException ex) {
-					//ex.printStackTrace();
-				}
-			}  	
+			loadTournament(inputFileName);
 		}
+	}
+	/**
+	 * Method to load tournament configuration file
+	 * @param inputFileName input file name
+	 */
+	public void loadTournament(String inputFileName){
+		BufferedReader br = null;
+		String inputLine = null;
+		try{
+			br = new BufferedReader(new FileReader(inputFileName));
+			inputLine = br.readLine();
+			String[] inputStr = inputLine.split(",");
+			tourMapNum = Integer.parseInt(inputStr[0]);
+			tourMaps = new String [tourMapNum];
+			for (int i=0;i<tourMapNum;i++){
+				tourMaps[i] = inputStr[i+1];
+			}
+			inputLine = br.readLine();
+			inputStr = inputLine.split(",");
+			tourPlayerNum = Integer.parseInt(inputStr[0]);
+			tourPlayers = new Strategy [tourPlayerNum];
+			for (int i=0;i<tourPlayerNum;i++){
+				switch (inputStr[i+1]){
+				case "Aggressive":
+					tourPlayers[i] = new Aggressive();
+					break;
+				case "Benevolent":
+					tourPlayers[i] = new Benevolent();
+					break;
+				case "Random":
+					tourPlayers[i] = new Random();
+					break;
+				case "Cheater":
+					tourPlayers[i] = new Cheater();
+					break;
+				}	
+			}
+			tourGameNum = Integer.parseInt(br.readLine());
+			tourTurnNum = Integer.parseInt(br.readLine());
+			tourResult = new String[tourMapNum][tourGameNum];
+		} catch (IOException e) {
+			//e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)br.close();
+			} catch (IOException ex) {
+				//ex.printStackTrace();
+			}
+		}  	
 	}
 	
 	/**
@@ -239,6 +246,39 @@ public class RiskGameController implements ActionListener {
 		worker.execute();
 	}
 	
+	/**
+	 * Method to run tournament Manually
+	 */
+	public void runTournamentManul(){
+
+		for (int i=0;i<tourMapNum;i++){
+			for (int j=0;j<tourGameNum;j++){
+				myGameModel.setGameStage(1);//begin to load map file
+				ErrorMsg errorMdg = null;
+				if (!(errorMdg = myGameModel.loadMapFile("./tournament/"+tourMaps[i]+".map")).isResult()){
+					myGameModel.setGameStage(2);
+					myGameModel.myLog.setLogStr(errorMdg.getMsg()+"\n");
+				}
+				else myGameModel.myLog.setLogStr("Load map file "+ tourMaps[i]+".map succeed\n");
+
+				myGameModel.setGameStage(11);
+
+				myGameModel.createPlayers(tourPlayerNum);
+				for (int k=0;k<tourPlayerNum;k++)
+					myGameModel.getPlayers()[k].setStrategy(tourPlayers[k]);
+
+				myGameModel.setGameStage(20);
+				myGameModel.myLog.setLogStr("\nCreate "+myGameModel.getPlayers().length+" Players\n");
+				myGameModel.changeDominationView();
+	
+				myGameModel.assignCountriesManual();
+				putInitialArmy(1);	
+	
+				tourResult[i][j] = runToEndTour();
+				newGame();
+			}
+		}
+	}	
 	
 	/**
 	 * Method to save current game to disk
